@@ -42,7 +42,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
 
     public CardboardBox(CompatibleBlockSettings settings) {
         super(settings);
-        setNewDefaultState(getDefaultState().with(FACING.getProperty(), Direction.NORTH));
+        setNewDefaultState(getNewDefaultState().with(FACING.getProperty(), Direction.NORTH));
     }
 
     public void setFacing(Direction facing, World world, BlockPos pos) {

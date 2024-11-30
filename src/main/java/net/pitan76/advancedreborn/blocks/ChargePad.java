@@ -5,7 +5,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -40,7 +39,7 @@ public class ChargePad extends CompatBlock {
     }
 
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return state.get(USING.getProperty()) ? 15 : 0;
+        return USING.get(state) ? 15 : 0;
     }
 
     public ChargePad(CompatibleBlockSettings settings, int multiple) {
@@ -54,7 +53,7 @@ public class ChargePad extends CompatBlock {
     }
 
     public Direction getFacing(BlockState state) {
-        return state.get(FACING.getProperty());
+        return FACING.get(state);
     }
 
     public void onPlaced(BlockPlacedEvent e) {
@@ -66,7 +65,7 @@ public class ChargePad extends CompatBlock {
         if(placer != null)
             setFacing(placer.getHorizontalFacing().getOpposite(), world, pos);
 
-        BlockEntity blockEntity = WorldUtil.getBlockEntity(world, pos);
+        BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof MachineBaseBlockEntity) {
             ((MachineBaseBlockEntity) blockEntity).onPlace(world, pos, e.state, placer, e.stack);
         }
