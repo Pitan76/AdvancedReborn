@@ -3,15 +3,24 @@ package net.pitan76.advancedreborn.items;
 import net.minecraft.item.ItemStack;
 import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
 import net.pitan76.mcpitanlib.api.item.CompatibleArmorMaterial;
-import net.pitan76.mcpitanlib.api.item.ExtendItemProvider;
+import net.pitan76.mcpitanlib.api.item.v2.CompatItemProvider;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
 import reborncore.common.powerSystem.RcEnergyTier;
 import techreborn.items.armor.BatpackItem;
 import techreborn.utils.TRItemUtils;
 
-public class BetterBatpackItem extends BatpackItem implements ExtendItemProvider {
+public class BetterBatpackItem extends BatpackItem implements CompatItemProvider {
 
-    public BetterBatpackItem(int maxCharge, CompatibleArmorMaterial material, RcEnergyTier tier) {
+    protected CompatibleItemSettings settings;
+
+    @Override
+    public CompatibleItemSettings getCompatSettings() {
+        return settings;
+    }
+
+    public BetterBatpackItem(CompatibleItemSettings settings, int maxCharge, CompatibleArmorMaterial material, RcEnergyTier tier) {
         super(maxCharge, material.build(), tier);
+        this.settings = settings;
     }
 
     /*
@@ -28,7 +37,7 @@ public class BetterBatpackItem extends BatpackItem implements ExtendItemProvider
 
     @Override
     public void appendTooltip(ItemAppendTooltipEvent e, Options options) {
-        ExtendItemProvider.super.appendTooltip(e, options);
+        CompatItemProvider.super.appendTooltip(e, options);
         TRItemUtils.buildActiveTooltip(e.stack, e.tooltip);
 
     }

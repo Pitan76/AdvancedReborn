@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.pitan76.advancedreborn.AdvancedReborn;
 import net.pitan76.mcpitanlib.api.item.ArmorEquipmentType;
 import net.pitan76.mcpitanlib.api.item.CompatibleArmorMaterial;
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.util.IdentifierUtil;
 import reborncore.api.events.ApplyArmorToDamageCallback;
 import reborncore.api.items.ArmorBlockEntityTicker;

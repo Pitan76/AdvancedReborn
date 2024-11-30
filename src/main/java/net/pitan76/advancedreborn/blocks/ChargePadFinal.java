@@ -2,7 +2,7 @@ package net.pitan76.advancedreborn.blocks;
 
 import net.minecraft.item.ItemStack;
 import net.pitan76.advancedreborn.api.Energy;
-import net.pitan76.mcpitanlib.api.block.CompatibleBlockSettings;
+import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.event.block.EntityCollisionEvent;
 import team.reborn.energy.api.base.SimpleEnergyItem;

@@ -6,6 +6,7 @@ import net.pitan76.advancedreborn.blocks.RaySolar;
 import net.pitan76.mcpitanlib.api.item.CreativeTabBuilder;
 import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
 import net.pitan76.mcpitanlib.api.registry.v2.CompatRegistryV2;
+import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
 import net.pitan76.mcpitanlib.api.util.IdentifierUtil;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
 import net.pitan76.mcpitanlib.fabric.ExtendModInitializer;
@@ -67,8 +68,8 @@ public class AdvancedReborn extends ExtendModInitializer {
         //solars.add((RaySolar) Blocks.RAY_SOLAR_1);
     }
 
-    public static Identifier _id(String id) {
-        return IdentifierUtil.id(MOD_ID, id);
+    public static CompatIdentifier _id(String id) {
+        return CompatIdentifier.of(MOD_ID, id);
     }
 
     @Override

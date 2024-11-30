@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.pitan76.advancedreborn.AdvancedReborn;
 import net.pitan76.advancedreborn.tile.RaySolarTile;
-import net.pitan76.mcpitanlib.api.block.CompatibleBlockSettings;
+import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
 
 public class RaySolar extends AdvancedMachineBlock {

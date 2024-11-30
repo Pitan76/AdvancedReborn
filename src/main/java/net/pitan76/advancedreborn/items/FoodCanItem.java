@@ -12,22 +12,23 @@ import net.pitan76.advancedreborn.Items;
 import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.event.item.ItemFinishUsingEvent;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
-import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.v2.CompatItem;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
+import net.pitan76.mcpitanlib.api.util.StackActionResult;
 
 import static net.pitan76.advancedreborn.Items.CAN_FOOD_COMPONENT;
 
-public class FoodCanItem extends ExtendItem {
+public class FoodCanItem extends CompatItem {
     public FoodCanItem(CompatibleItemSettings settings) {
         super(settings);
     }
 
     @Override
-    public TypedActionResult<ItemStack> onRightClick(ItemUseEvent event) {
-        TypedActionResult<ItemStack> result = super.onRightClick(event);
-        if (result.getResult().equals(ActionResult.CONSUME)) {
-            event.user.getPlayerEntity().heal(1);
+    public StackActionResult onRightClick(ItemUseEvent e) {
+        StackActionResult result = super.onRightClick(e);
+        if (result.toActionResult().equals(ActionResult.CONSUME)) {
+            e.user.getPlayerEntity().heal(1);
         }
         return result;
     }
@@ -46,7 +47,7 @@ public class FoodCanItem extends ExtendItem {
 
             player.incrementStat(Stats.USED.getOrCreateStat(this));
             if (!player.isCreative()) {
-                player.eatFood(world, stack, CAN_FOOD_COMPONENT);
+                player.getEntity().eatFood(world, stack, CAN_FOOD_COMPONENT.build());
             }
         }
 

@@ -6,23 +6,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.pitan76.advancedreborn.Items;
 import net.pitan76.advancedreborn.tile.TeleporterTile;
 import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseOnBlockEvent;
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
-import net.pitan76.mcpitanlib.api.item.ExtendItem;
-import net.pitan76.mcpitanlib.api.util.CustomDataUtil;
-import net.pitan76.mcpitanlib.api.util.NbtUtil;
-import net.pitan76.mcpitanlib.api.util.TextUtil;
-import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.mcpitanlib.api.item.v2.CompatItem;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 
 import java.util.List;
 
-public class FreqTrans extends ExtendItem {
+public class FreqTrans extends CompatItem {
     public FreqTrans(CompatibleItemSettings settings) {
         super(settings);
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
@@ -45,13 +40,11 @@ public class FreqTrans extends ExtendItem {
         });
     }
 
-    public ActionResult onRightClickOnBlock(ItemUseOnBlockEvent e) {
-        World world = e.world;
-        BlockPos pos = e.hit.getBlockPos();
-        BlockEntity tile = WorldUtil.getBlockEntity(world, pos);
-        if (tile == null) return ActionResult.PASS;
-        if (!(tile instanceof TeleporterTile)) return ActionResult.PASS;
-        if (e.isClient()) return ActionResult.SUCCESS;
+    public CompatActionResult onRightClickOnBlock(ItemUseOnBlockEvent e) {
+        BlockEntity tile = e.getBlockEntity();
+        if (tile == null) return e.pass();
+        if (!(tile instanceof TeleporterTile)) return e.pass();
+        if (e.isClient()) return e.success();
 
         TeleporterTile machine = (TeleporterTile) tile;
         ItemStack stack = e.player.getStackInHand(e.hand);
@@ -65,7 +58,7 @@ public class FreqTrans extends ExtendItem {
         CustomDataUtil.setNbt(stack, tag);
 
         e.player.sendMessage(TextUtil.literal("Saved Machine's Pos to The Frequency Transmitter.(" + tag.getDouble("tpX") + "," + tag.getDouble("tpY") + "," + tag.getDouble("tpZ") + ")"));
-        return ActionResult.SUCCESS;
+        return e.success();
     }
 
     @Override

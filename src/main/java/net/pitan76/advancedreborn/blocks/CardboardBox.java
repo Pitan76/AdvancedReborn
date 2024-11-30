@@ -2,7 +2,6 @@ package net.pitan76.advancedreborn.blocks;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
@@ -13,45 +12,45 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
 import net.minecraft.text.MutableText;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.pitan76.advancedreborn.tile.CardboardBoxTile;
-import net.pitan76.mcpitanlib.api.block.CompatibleBlockSettings;
-import net.pitan76.mcpitanlib.api.block.ExtendBlock;
+import net.pitan76.mcpitanlib.api.block.CompatBlockRenderType;
+import net.pitan76.mcpitanlib.api.block.args.RenderTypeArgs;
+import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import net.pitan76.mcpitanlib.api.block.ExtendBlockEntityProvider;
+import net.pitan76.mcpitanlib.api.block.v2.CompatBlock;
 import net.pitan76.mcpitanlib.api.event.block.*;
 import net.pitan76.mcpitanlib.api.event.block.result.BlockBreakResult;
 import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
 import net.pitan76.mcpitanlib.api.event.nbt.NbtRWArgs;
+import net.pitan76.mcpitanlib.api.state.property.CompatProperties;
+import net.pitan76.mcpitanlib.api.state.property.DirectionProperty;
 import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.entity.ItemEntityUtil;
 
 import java.util.List;
 
-public class CardboardBox extends ExtendBlock implements ExtendBlockEntityProvider {
+public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvider {
 
-    public static Identifier CONTENTS = IdentifierUtil.id("contents");
-    public static DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+    public static CompatIdentifier CONTENTS = CompatIdentifier.of("contents");
+    public static DirectionProperty FACING = CompatProperties.HORIZONTAL_FACING;
 
     public CardboardBox(CompatibleBlockSettings settings) {
         super(settings);
-        getStateManager().getDefaultState().with(FACING, Direction.NORTH);
+        getStateManager().getDefaultState().with(FACING.getProperty(), Direction.NORTH);
     }
 
     public void setFacing(Direction facing, World world, BlockPos pos) {
-        WorldUtil.setBlockState(world, pos, WorldUtil.getBlockState(world, pos).with(FACING, facing));
+        WorldUtil.setBlockState(world, pos, WorldUtil.getBlockState(world, pos).with(FACING.getProperty(), facing));
     }
 
     public Direction getFacing(BlockState state) {
-        return state.get(FACING);
+        return FACING.get(state);
     }
 
     @Override
@@ -67,8 +66,8 @@ public class CardboardBox extends ExtendBlock implements ExtendBlockEntityProvid
     public BlockBreakResult onBreak(BlockBreakEvent e) {
         World world = e.world;
         BlockPos pos = e.pos;
-        BlockEntity blockEntity = WorldUtil.getBlockEntity(world, pos);
 
+        BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile) {
             CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
             if (!WorldUtil.isClient(world) && e.player.isCreative() && !tile.isEmpty()) {
@@ -118,19 +117,19 @@ public class CardboardBox extends ExtendBlock implements ExtendBlockEntityProvid
     }
 
     @Override
-    public ActionResult onRightClick(BlockUseEvent e) {
-        if (e.isClient()) return ActionResult.SUCCESS;
+    public CompatActionResult onRightClick(BlockUseEvent e) {
+        if (e.isClient()) return e.success();
 
         if (e.player.getPlayerEntity().isSpectator())
-            return ActionResult.CONSUME;
+            return e.consume();
 
         BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile) {
             CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
             e.player.openExtendedMenu(tile);
-            return ActionResult.CONSUME;
+            return e.consume();
         }
-        return ActionResult.PASS;
+        return e.pass();
     }
 
     @Override
@@ -138,7 +137,7 @@ public class CardboardBox extends ExtendBlock implements ExtendBlockEntityProvid
         ItemStack itemStack = super.getPickStack(e);
         BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile)
-            blockEntity.setStackNbt(itemStack, e.worldView.getRegistryManager());
+            blockEntity.setStackNbt(itemStack, e.getWorldView().getRegistryManager());
 
         return itemStack;
     }
@@ -160,7 +159,7 @@ public class CardboardBox extends ExtendBlock implements ExtendBlockEntityProvid
             }
             if (nbt.contains("Items", 9)) {
                 DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                NbtRWArgs args = new NbtRWArgs(nbt, e.context.getRegistryLookup());
+                NbtRWArgs args = new NbtRWArgs(nbt, e.getRegistryLookup());
                 InventoryUtil.readNbt(args, defaultedList);
                 int i = 0;
                 int j = 0;
@@ -184,8 +183,9 @@ public class CardboardBox extends ExtendBlock implements ExtendBlockEntityProvid
 
     }
 
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    @Override
+    public CompatBlockRenderType getRenderType(RenderTypeArgs args) {
+        return CompatBlockRenderType.MODEL;
     }
 
     public boolean hasComparatorOutput(BlockState state) {
@@ -201,7 +201,7 @@ public class CardboardBox extends ExtendBlock implements ExtendBlockEntityProvid
         BlockEntity blockEntity = args.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile) {
             CardboardBoxTile tile = (CardboardBoxTile)blockEntity;
-            args.builder = args.builder.addDynamicDrop(CONTENTS, (consumer) -> {
+            args.builder = args.builder.addDynamicDrop(CONTENTS.toMinecraft(), (consumer) -> {
                 for(int i = 0; i < tile.size(); ++i) {
                     consumer.accept(tile.getStack(i));
                 }

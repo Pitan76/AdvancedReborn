@@ -6,54 +6,55 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import net.pitan76.advancedreborn.Particles;
 import net.pitan76.advancedreborn.api.Energy;
-import net.pitan76.mcpitanlib.api.block.CompatibleBlockSettings;
-import net.pitan76.mcpitanlib.api.block.ExtendBlock;
+import net.pitan76.mcpitanlib.api.block.args.v2.OutlineShapeEvent;
+import net.pitan76.mcpitanlib.api.block.v2.CompatBlock;
+import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.event.block.*;
-import net.pitan76.mcpitanlib.api.util.PropertyUtil;
+import net.pitan76.mcpitanlib.api.state.property.BooleanProperty;
+import net.pitan76.mcpitanlib.api.state.property.CompatProperties;
+import net.pitan76.mcpitanlib.api.state.property.DirectionProperty;
 import net.pitan76.mcpitanlib.api.util.VoxelShapeUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import net.pitan76.mcpitanlib.api.util.math.random.CompatRandom;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import techreborn.blockentity.storage.energy.EnergyStorageBlockEntity;
 
-public class ChargePad extends ExtendBlock {
+public class ChargePad extends CompatBlock {
 
     public int multiple = 4;
 
     public static final VoxelShape SHAPE = VoxelShapeUtil.blockCuboid(0.0D, 0.0D, 0.0D, 16.0D, 1.5D, 16.0D);
 
-    public static BooleanProperty USING = PropertyUtil.createBooleanProperty("using");
-    public static DirectionProperty FACING = PropertyUtil.horizontalFacing();
+    public static BooleanProperty USING = BooleanProperty.of("using");
+    public static DirectionProperty FACING = CompatProperties.HORIZONTAL_FACING;
 
     public boolean hasComparatorOutput(BlockState state) {
         return true;
     }
 
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return state.get(USING) ? 15 : 0;
+        return state.get(USING.getProperty()) ? 15 : 0;
     }
 
     public ChargePad(CompatibleBlockSettings settings, int multiple) {
         super(settings);
-        setNewDefaultState(getNewDefaultState().with(FACING, Direction.NORTH).with(USING, false));
+        setNewDefaultState(getNewDefaultState().with(FACING.getProperty(), Direction.NORTH).with(USING.getProperty(), false));
         this.multiple = multiple;
     }
 
     public void setFacing(Direction facing, World world, BlockPos pos) {
-        WorldUtil.setBlockState(world, pos, WorldUtil.getBlockState(world, pos).with(FACING, facing));
+        WorldUtil.setBlockState(world, pos, WorldUtil.getBlockState(world, pos).with(FACING.getProperty(), facing));
     }
 
     public Direction getFacing(BlockState state) {
-        return state.get(FACING);
+        return state.get(FACING.getProperty());
     }
 
     public void onPlaced(BlockPlacedEvent e) {
@@ -121,8 +122,8 @@ public class ChargePad extends ExtendBlock {
             double rX = random.nextInt(9) * 0.1;
             double rZ = random.nextInt(9) * 0.1;
 
-            ((ServerWorld)world).spawnParticles((SimpleParticleType) Particles.ENERGY.getOrNull(), pos.getX() + 0.1 + rX, pos.getY() + 0.25, pos.getZ() + 0.1 + rZ, 1, 0, 0.3, 0, 0);
-            WorldUtil.setBlockState(world, pos, state.with(USING, true));
+            WorldUtil.spawnParticles(world, (SimpleParticleType) Particles.ENERGY.getOrNull(), pos.getX() + 0.1 + rX, pos.getY() + 0.25, pos.getZ() + 0.1 + rZ, 1, 0, 0.3, 0, 0);
+            WorldUtil.setBlockState(world, pos, state.with(USING.getProperty(), true));
             WorldUtil.scheduleBlockTick(world, pos, this, 5);
             WorldUtil.updateComparators(world, pos, this);
         }
@@ -134,7 +135,7 @@ public class ChargePad extends ExtendBlock {
         World world = e.getWorld();
         BlockPos pos = e.getPos();
 
-        WorldUtil.setBlockState(world, pos, e.state.with(USING, false));
+        WorldUtil.setBlockState(world, pos, e.state.with(USING.getProperty(), false));
         WorldUtil.updateComparators(world, pos, this);
     }
 
