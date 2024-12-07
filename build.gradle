@@ -37,7 +37,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	// TRのエネルギー用
+	// TRのエネルギー用 TODO: 1.21.3が出たら変更
 	modImplementation 'RebornCore:RebornCore-1.21:5.11.10'
 	modImplementation 'TechReborn:TechReborn-1.21:5.11.10'
 
