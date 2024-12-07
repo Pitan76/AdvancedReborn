@@ -17,7 +17,7 @@ public class GuiTypes {
     public static GuiType<EnchantmentExtractorTile> ENCHANTMENT_EXTRACTOR = register(AdvancedReborn.MOD_ID + "__enchantment_extractor");
 
     public static <T extends BlockEntity> GuiType<T> register(String id) {
-        return GuiType.register(AdvancedReborn.id(id));
+        return GuiType.register(AdvancedReborn._id(id).toMinecraft());
     }
 
     public static void init() {

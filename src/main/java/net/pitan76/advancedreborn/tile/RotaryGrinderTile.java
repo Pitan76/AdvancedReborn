@@ -35,7 +35,7 @@ public class RotaryGrinderTile extends HeatMachineTile implements IToolDrop, Inv
 
     public RotaryGrinderTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.ROTARY_GRINDER;
+        toolDrop = Blocks.ROTARY_GRINDER.getOrNull();
         energySlot = 3;
         inventory = new RebornInventory<>(4, "RotaryGrinderTile", 64, this);
         crafter = new RecipeCrafter(ModRecipes.GRINDER, this, 2, 1, inventory, new int[]{0}, new int[]{1});

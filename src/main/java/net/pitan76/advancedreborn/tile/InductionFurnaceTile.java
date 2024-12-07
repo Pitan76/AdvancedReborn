@@ -52,7 +52,7 @@ public class InductionFurnaceTile extends HeatMachineTile implements IToolDrop, 
 
     public InductionFurnaceTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.INDUCTION_FURNACE;
+        toolDrop = Blocks.INDUCTION_FURNACE.getOrNull();
         energySlot = 4;
         inventory = new RebornInventory<>(5, "InductionFurnaceTile", 64, this);
         checkTier();

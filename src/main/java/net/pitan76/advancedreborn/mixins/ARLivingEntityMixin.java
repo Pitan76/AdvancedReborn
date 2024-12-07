@@ -28,7 +28,7 @@ public abstract class ARLivingEntityMixin extends Entity {
         if (getWorld().isClient()) return;
         if (!((Object)this instanceof PlayerEntity)) return;
         PlayerEntity player = (PlayerEntity) (Object) this;
-        if (player.getEquippedStack(EquipmentSlot.FEET).getItem() == Items.NANO_SUIT_BOOTS) {
+        if (player.getEquippedStack(EquipmentSlot.FEET).getItem() == Items.NANO_SUIT_BOOTS.getOrNull()) {
             ItemStack stack = player.getEquippedStack(EquipmentSlot.FEET);
             if (!isSneaking()) {
                 int vanillaPlayerDamage = this.computeFallDamage(fallDistance, damageMultiplier);

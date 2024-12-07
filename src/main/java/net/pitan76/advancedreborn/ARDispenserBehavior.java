@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class ARDispenserBehavior {
     public static void init() {
-        DispenserBlock.registerBehavior(Blocks.INDUSTRIAL_TNT, new ItemDispenserBehavior() {
+        DispenserBlock.registerBehavior(Blocks.INDUSTRIAL_TNT.get(), new ItemDispenserBehavior() {
             public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
                 World world = pointer.getBlockEntity().getWorld();
                 BlockPos pointerPos = pointer.getBlockEntity().getPos();

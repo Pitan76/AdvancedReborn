@@ -9,6 +9,6 @@ public class Particles {
 
 
     public static void init() {
-        Registry.register(Registry.PARTICLE_TYPE, AdvancedReborn.id("energy"), ENERGY);
+        Registry.register(Registry.PARTICLE_TYPE, AdvancedReborn.INSTANCE.id("energy"), ENERGY);
     }
 }

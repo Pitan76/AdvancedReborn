@@ -38,7 +38,7 @@ public class ComputerCraftAddon {
 
 
     public static void init() {
-        AdvancedReborn.LOGGER.info("Found ComputerCraft");
+        AdvancedReborn.INSTANCE.logger.info("Found ComputerCraft");
         ComputerCraftAPI.registerTurtleUpgrade(RUBY_SWORD);
         ComputerCraftAPI.registerTurtleUpgrade(RUBY_SHOVEL);
         ComputerCraftAPI.registerTurtleUpgrade(RUBY_PICKAXE);

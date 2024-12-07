@@ -6,13 +6,14 @@ import net.minecraft.client.particle.EmotionParticle;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
 import net.pitan76.advancedreborn.packet.EntitySpawnPacket;
 import net.pitan76.advancedreborn.renderer.IndustrialTNTEntityRenderer;
 import net.pitan76.advancedreborn.screen.CardboardBoxScreen;
 import net.pitan76.mcpitanlib.api.client.registry.CompatRegistryClient;
-import net.pitan76.mcpitanlib.api.network.ClientNetworking;
+import net.pitan76.mcpitanlib.api.network.v2.ClientNetworking;
+import net.pitan76.mcpitanlib.api.util.EntityTypeUtil;
 
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class AdvancedRebornClient implements ClientModInitializer {
     public static MinecraftClient client = MinecraftClient.getInstance();
 
     public void onInitializeClient() {
-        CompatRegistryClient.registryClientSpriteAtlasTexture(AdvancedReborn.id("particle/energy"));
+        CompatRegistryClient.registryClientSpriteAtlasTexture(AdvancedReborn._id("particle/energy").toMinecraft());
 
         CompatRegistryClient.registerParticle(Particles.ENERGY, EmotionParticle.HeartFactory::new);
 
@@ -30,13 +31,14 @@ public class AdvancedRebornClient implements ClientModInitializer {
 
         CompatRegistryClient.registerScreen(ScreenHandlers.CARDBOARD_BOX_SCREEN_HANDLER, CardboardBoxScreen::new);
 
-        ClientNetworking.registerReceiver(Defines.SPAWN_PACKET_ID, (client, player, byteBuf) -> {
-            EntityType<?> et = Registry.ENTITY_TYPE.get(byteBuf.readVarInt());
-            UUID uuid = byteBuf.readUuid();
-            int entityId = byteBuf.readVarInt();
-            Vec3d pos = EntitySpawnPacket.PacketBufUtil.readVec3d(byteBuf);
-            float pitch = EntitySpawnPacket.PacketBufUtil.readAngle(byteBuf);
-            float yaw = EntitySpawnPacket.PacketBufUtil.readAngle(byteBuf);
+        ClientNetworking.registerReceiver(Defines.SPAWN_PACKET_ID, (e) -> {
+            PacketByteBuf buf = e.getBuf();
+            EntityType<?> et = EntityTypeUtil.fromIndex(buf.readVarInt());
+            UUID uuid = buf.readUuid();
+            int entityId = buf.readVarInt();
+            Vec3d pos = EntitySpawnPacket.PacketBufUtil.readVec3d(buf);
+            float pitch = EntitySpawnPacket.PacketBufUtil.readAngle(buf);
+            float yaw = EntitySpawnPacket.PacketBufUtil.readAngle(buf);
             if (client.world == null) return;
             Entity entity = et.create(client.world);
             if (entity == null) return;

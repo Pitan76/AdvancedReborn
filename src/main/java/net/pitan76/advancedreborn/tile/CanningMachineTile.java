@@ -38,7 +38,7 @@ public class CanningMachineTile extends PowerAcceptorBlockEntity implements IToo
 
     public CanningMachineTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.CANNING_MACHINE;
+        toolDrop = Blocks.CANNING_MACHINE.getOrNull();
         energySlot = 3;
         inventory = new RebornInventory<>(4, "CanningMachineTile", 64, this);
         crafter = new RecipeCrafter(Recipes.CANNING_MACHINE, this, 3, 1, inventory, new int[]{0, 1}, new int[]{2});

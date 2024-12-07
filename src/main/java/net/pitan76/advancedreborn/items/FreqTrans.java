@@ -12,8 +12,9 @@ import net.pitan76.advancedreborn.Items;
 import net.pitan76.advancedreborn.tile.TeleporterTile;
 import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseOnBlockEvent;
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.util.CompatActionResult;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 
@@ -41,15 +42,15 @@ public class FreqTrans extends ExtendItem {
         });
     }
 
-    public ActionResult onRightClickOnBlock(ItemUseOnBlockEvent event) {
-        World world = event.world;
-        BlockPos pos = event.hit.getBlockPos();
+    public CompatActionResult onRightClickOnBlock(ItemUseOnBlockEvent e) {
+        World world = e.getWorld();
+        BlockPos pos = e.getBlockPos();
         BlockEntity tile = world.getBlockEntity(pos);
-        if (tile == null) return ActionResult.PASS;
-        if (!(tile instanceof TeleporterTile)) return ActionResult.PASS;
-        if (world.isClient()) return ActionResult.SUCCESS;
+        if (tile == null) return e.pass();
+        if (!(tile instanceof TeleporterTile)) return e.pass();
+        if (world.isClient()) return e.success();
         TeleporterTile machine = (TeleporterTile) tile;
-        ItemStack stack = event.player.getPlayerEntity().getStackInHand(event.hand);
+        ItemStack stack = e.getStack();
         NbtCompound tag = stack.getNbt();
         if (tag == null) {
             tag = new NbtCompound();
@@ -58,8 +59,8 @@ public class FreqTrans extends ExtendItem {
         tag.putDouble("tpY", machine.getY());
         tag.putDouble("tpZ", machine.getZ());
         stack.setNbt(tag);
-        event.player.sendMessage(TextUtil.literal("Saved Machine's Pos to The Frequency Transmitter.(" + tag.getDouble("tpX") + "," + tag.getDouble("tpY") + "," + tag.getDouble("tpZ") + ")"));
-        return ActionResult.SUCCESS;
+        e.player.sendMessage(TextUtil.literal("Saved Machine's Pos to The Frequency Transmitter.(" + tag.getDouble("tpX") + "," + tag.getDouble("tpY") + "," + tag.getDouble("tpZ") + ")"));
+        return e.success();
     }
 
     @Override

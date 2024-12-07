@@ -18,7 +18,7 @@ import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 
 public class RaySolarTile extends PowerAcceptorBlockEntity implements IToolDrop {
 
-    public RaySolar solar = (RaySolar) Blocks.RAY_SOLAR_1;
+    public RaySolar solar = (RaySolar) Blocks.RAY_SOLAR_1.getOrNull();
     public long energy = 1;
 
     public RaySolarTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {

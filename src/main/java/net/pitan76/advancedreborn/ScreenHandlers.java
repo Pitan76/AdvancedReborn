@@ -10,6 +10,6 @@ public class ScreenHandlers {
     public static ScreenHandlerType<CardboardBoxScreenHandler> CARDBOARD_BOX_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(CardboardBoxScreenHandler::new);
 
     public static void init() {
-        registry.registerScreenHandlerType(AdvancedReborn.id("cardboard_box"), () -> CARDBOARD_BOX_SCREEN_HANDLER);
+        registry.registerScreenHandlerType(AdvancedReborn._id("cardboard_box"), () -> CARDBOARD_BOX_SCREEN_HANDLER);
     }
 }

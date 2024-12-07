@@ -42,7 +42,7 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
 
     public FertilizerSpreaderTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.FERTILIZER_SPREADER;
+        toolDrop = Blocks.FERTILIZER_SPREADER.getOrNull();
         energySlot = 10;
         inventory = new RebornInventory<>(11, "FertilizerSpreaderTile", 64, this);
         checkTier();

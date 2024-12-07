@@ -37,7 +37,7 @@ public class CentrifugalExtractorTile extends HeatMachineTile implements IToolDr
 
     public CentrifugalExtractorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.CENTRIFUGAL_EXTRACTOR;
+        toolDrop = Blocks.CENTRIFUGAL_EXTRACTOR.getOrNull();
         energySlot = 4;
         inventory = new RebornInventory<>(5, "CentrifugalExtractorTile", 64, this);
         crafter = new RecipeCrafter(ModRecipes.EXTRACTOR, this, 2, 1, inventory, new int[]{0}, new int[]{1});

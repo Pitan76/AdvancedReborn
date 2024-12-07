@@ -12,8 +12,9 @@ import net.pitan76.advancedreborn.Items;
 import net.pitan76.advancedreborn.mixins.MachineBaseBlockEntityAccessor;
 import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseOnBlockEvent;
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.util.CompatActionResult;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import reborncore.common.blockentity.FluidConfiguration;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
@@ -27,7 +28,7 @@ public class ConfigWrench extends ExtendItem {
         super(settings);
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
             ItemStack stack = player.getStackInHand(hand);
-            if (stack.getItem().equals(Items.CONFIG_WRENCH)) {
+            if (stack.getItem().equals(Items.CONFIG_WRENCH.get())) {
                 if (world.isClient()) return ActionResult.PASS;
                 BlockEntity tile = world.getBlockEntity(pos);
                 if (tile instanceof MachineBaseBlockEntity) {
@@ -50,13 +51,14 @@ public class ConfigWrench extends ExtendItem {
         });
     }
 
-    public ActionResult onRightClickOnBlock(ItemUseOnBlockEvent event) {
-        World world = event.world;
-        BlockPos pos = event.hit.getBlockPos();
+    @Override
+    public CompatActionResult onRightClickOnBlock(ItemUseOnBlockEvent e) {
+        World world = e.getWorld();
+        BlockPos pos = e.getBlockPos();
         BlockEntity tile = world.getBlockEntity(pos);
-        if (tile == null) return ActionResult.PASS;
-        if (!(tile instanceof MachineBaseBlockEntity)) return ActionResult.PASS;
-        if (world.isClient()) return ActionResult.SUCCESS;
+        if (tile == null) return e.pass();
+        if (!(tile instanceof MachineBaseBlockEntity)) return e.pass();
+        if (world.isClient()) return e.success();
         MachineBaseBlockEntity machine = (MachineBaseBlockEntity) tile;
         MachineBaseBlockEntityAccessor machineAccessor = (MachineBaseBlockEntityAccessor) machine;
         SlotConfiguration slotConfig = null;
@@ -66,7 +68,7 @@ public class ConfigWrench extends ExtendItem {
         if (machine.fluidConfiguration != null)
             fluidConfig = machineAccessor.getFluidConfiguration();
 
-        ItemStack stack = event.player.getPlayerEntity().getStackInHand(event.hand);
+        ItemStack stack = e.getStack();
         NbtCompound tag = stack.getNbt();
         if (tag == null) {
             tag = new NbtCompound();
@@ -80,8 +82,8 @@ public class ConfigWrench extends ExtendItem {
             config.put("redstone", redstoneConfig.write());
         tag.put("configs", config);
         stack.setNbt(tag);
-        event.player.sendMessage(TextUtil.literal("Saved Configuration to The Config Wrench."));
-        return ActionResult.SUCCESS;
+        e.player.sendMessage(TextUtil.literal("Saved Configuration to The Config Wrench."));
+        return e.success();
     }
 
     @Override

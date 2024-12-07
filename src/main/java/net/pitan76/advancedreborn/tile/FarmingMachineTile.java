@@ -50,7 +50,7 @@ public class FarmingMachineTile extends PowerAcceptorBlockEntity implements IToo
 
     public FarmingMachineTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.FARMING_MACHINE;
+        toolDrop = Blocks.FARMING_MACHINE.getOrNull();
         energySlot = 9;
         inventory = new RebornInventory<>(10, "FarmingMachineTile", 64, this);
         checkTier();

@@ -1,102 +1,103 @@
 package net.pitan76.advancedreborn;
 
 import net.minecraft.block.Block;
-import net.minecraft.sound.BlockSoundGroup;
 import net.pitan76.advancedreborn.blocks.*;
-import net.pitan76.mcpitanlib.api.block.CompatibleBlockSettings;
+import net.pitan76.mcpitanlib.api.block.v2.BlockSettingsBuilder;
+import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import net.pitan76.mcpitanlib.api.block.CompatibleMaterial;
-import net.pitan76.mcpitanlib.api.block.ExtendBlock;
+import net.pitan76.mcpitanlib.api.block.v2.CompatBlock;
+import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
+import net.pitan76.mcpitanlib.api.sound.CompatBlockSoundGroup;
+
+import static net.pitan76.advancedreborn.AdvancedReborn.*;
 
 public class Blocks {
 
-    public static CompatibleBlockSettings baseSetting = CompatibleBlockSettings.of(CompatibleMaterial.METAL).requiresTool().strength(2, 8);
+    public static BlockSettingsBuilder baseSettings = new BlockSettingsBuilder().material(CompatibleMaterial.METAL).requiresTool().strength(2, 8);
 
-    public static Block CHARGE_PAD_MK_1 = new ChargePad(baseSetting, 4);
-    public static Block CHARGE_PAD_MK_2 = new ChargePad(baseSetting, 16);
-    public static Block CHARGE_PAD_MK_3 = new ChargePad(baseSetting, 64);
-    public static Block CHARGE_PAD_MK_4 = new ChargePad(baseSetting, 128);
-    public static Block CHARGE_PAD_MK_FINAL = new ChargePadFinal(baseSetting, 256);
+    public static RegistryResult<Block> CHARGE_PAD_MK_1;
+    public static RegistryResult<Block> CHARGE_PAD_MK_2;
+    public static RegistryResult<Block> CHARGE_PAD_MK_3;
+    public static RegistryResult<Block> CHARGE_PAD_MK_4;
+    public static RegistryResult<Block> CHARGE_PAD_MK_FINAL;
 
-    public static Block RAY_SOLAR_1 = new RaySolar(baseSetting, 1, false);
-    public static Block RAY_SOLAR_2 = new RaySolar(baseSetting, 8, false);
-    public static Block RAY_SOLAR_3 = new RaySolar(baseSetting, 64, false);
-    public static Block RAY_SOLAR_4 = new RaySolar(baseSetting, 512, false);
+    public static RegistryResult<Block> RAY_SOLAR_1;
+    public static RegistryResult<Block> RAY_SOLAR_2;
+    public static RegistryResult<Block> RAY_SOLAR_3;
+    public static RegistryResult<Block> RAY_SOLAR_4;
 
-    public static Block RAY_GENERATOR_1 = new RaySolar(baseSetting, 2, true);
-    public static Block RAY_GENERATOR_2 = new RaySolar(baseSetting, 8, true);
-    public static Block RAY_GENERATOR_3 = new RaySolar(baseSetting, 32, true);
-    public static Block RAY_GENERATOR_4 = new RaySolar(baseSetting, 128, true);
-    public static Block RAY_GENERATOR_5 = new RaySolar(baseSetting, 512, true);
-    public static Block RAY_GENERATOR_6 = new RaySolar(baseSetting, 2048, true);
-    public static Block RAY_GENERATOR_7 = new RaySolar(baseSetting, 8192, true);
-    public static Block RAY_GENERATOR_8 = new RaySolar(baseSetting, 32768, true);
-    public static Block RAY_GENERATOR_9 = new RaySolar(baseSetting, 131072, true);
-    public static Block RAY_GENERATOR_10 = new RaySolar(baseSetting, 532480, true);
+    public static RegistryResult<Block> RAY_GENERATOR_1;
+    public static RegistryResult<Block> RAY_GENERATOR_2;
+    public static RegistryResult<Block> RAY_GENERATOR_3;
+    public static RegistryResult<Block> RAY_GENERATOR_4;
+    public static RegistryResult<Block> RAY_GENERATOR_5;
+    public static RegistryResult<Block> RAY_GENERATOR_6;
+    public static RegistryResult<Block> RAY_GENERATOR_7;
+    public static RegistryResult<Block> RAY_GENERATOR_8;
+    public static RegistryResult<Block> RAY_GENERATOR_9;
+    public static RegistryResult<Block> RAY_GENERATOR_10;
 
 
-    public static Block INDUCTION_FURNACE = new InductionFurnace(baseSetting);
-    public static Block ROTARY_GRINDER = new RotaryGrinder(baseSetting);
-    public static Block CENTRIFUGAL_EXTRACTOR = new CentrifugalExtractor(baseSetting);
-    public static Block SINGULARITY_COMPRESSOR = new SingularityCompressor(baseSetting);
-    public static Block CANNING_MACHINE = new CanningMachine(baseSetting);
-    public static Block RENAMING_MACHINE = new RenamingMachine(baseSetting);
-    public static Block TELEPORTER = new Teleporter(baseSetting);
-    public static Block FARMING_MACHINE = new FarmingMachine(baseSetting);
-    public static Block LOGGING_MACHINE = new LoggingMachine(baseSetting);
-    public static Block FERTILIZER_SPREADER = new FertilizerSpreader(baseSetting);
-    public static Block ENCHANTMENT_EXTRACTOR = new EnchantmentExtractor(baseSetting);
+    public static RegistryResult<Block> INDUCTION_FURNACE;
+    public static RegistryResult<Block> ROTARY_GRINDER;
+    public static RegistryResult<Block> CENTRIFUGAL_EXTRACTOR;
+    public static RegistryResult<Block> SINGULARITY_COMPRESSOR;
+    public static RegistryResult<Block> CANNING_MACHINE;
+    public static RegistryResult<Block> RENAMING_MACHINE;
+    public static RegistryResult<Block> TELEPORTER;
+    public static RegistryResult<Block> FARMING_MACHINE;
+    public static RegistryResult<Block> LOGGING_MACHINE;
+    public static RegistryResult<Block> FERTILIZER_SPREADER;
+    public static RegistryResult<Block> ENCHANTMENT_EXTRACTOR;
 
 
     //breakByHand
-    public static Block CARDBOARD_BOX = new CardboardBox(CompatibleBlockSettings.of(CompatibleMaterial.WOOD).sounds(BlockSoundGroup.WOOD).strength(1, 3));
-    public static Block CARDBOARD_BOX_MINEZON = new CardboardBox(CompatibleBlockSettings.of(CompatibleMaterial.WOOD).sounds(BlockSoundGroup.WOOD).strength(1, 3));
-    public static Block CARDBOARD_BOX_MINETARO = new CardboardBox(CompatibleBlockSettings.of(CompatibleMaterial.WOOD).sounds(BlockSoundGroup.WOOD).strength(1, 3));
-    public static Block CARDBOARD_BOX_NOTHING = new CardboardBox(CompatibleBlockSettings.of(CompatibleMaterial.WOOD).sounds(BlockSoundGroup.WOOD).strength(1, 3));
+    public static RegistryResult<Block> CARDBOARD_BOX;
+    public static RegistryResult<Block> CARDBOARD_BOX_MINEZON;
+    public static RegistryResult<Block> CARDBOARD_BOX_MINETARO;
+    public static RegistryResult<Block> CARDBOARD_BOX_NOTHING;
 
-    public static Block LIGHT = new ExtendBlock(CompatibleBlockSettings.of(CompatibleMaterial.METAL).strength(1.5F, 4).luminance((state) -> 15));
+    public static RegistryResult<Block> LIGHT;
     // breakByHand
 
-    public static Block INDUSTRIAL_TNT = new IndustrialTNT(CompatibleBlockSettings.copy(net.minecraft.block.Blocks.TNT));
+    public static RegistryResult<Block> INDUSTRIAL_TNT;
 
     public static void init() {
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("charge_pad"), () -> CHARGE_PAD_MK_1);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("charge_pad_2"), () -> CHARGE_PAD_MK_2);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("charge_pad_3"), () -> CHARGE_PAD_MK_3);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("charge_pad_4"), () -> CHARGE_PAD_MK_4);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("charge_pad_final"), () -> CHARGE_PAD_MK_FINAL);
-
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_solar_panel"), () -> RAY_SOLAR_1);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_solar_panel_2"), () -> RAY_SOLAR_2);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_solar_panel_3"), () -> RAY_SOLAR_3);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_solar_panel_4"), () -> RAY_SOLAR_4);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator"), () -> RAY_GENERATOR_1);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_2"), () -> RAY_GENERATOR_2);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_3"), () -> RAY_GENERATOR_3);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_4"), () -> RAY_GENERATOR_4);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_5"), () -> RAY_GENERATOR_5);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_6"), () -> RAY_GENERATOR_6);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_7"), () -> RAY_GENERATOR_7);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_8"), () -> RAY_GENERATOR_8);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_9"), () -> RAY_GENERATOR_9);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("ray_generator_10"), () -> RAY_GENERATOR_10);
-
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("induction_furnace"), () -> INDUCTION_FURNACE);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("rotary_grinder"), () -> ROTARY_GRINDER);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("centrifugal_extractor"), () -> CENTRIFUGAL_EXTRACTOR);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("singularity_compressor"), () -> SINGULARITY_COMPRESSOR);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("canning_machine"), () -> CANNING_MACHINE);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("renaming_machine"), () -> RENAMING_MACHINE);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("teleporter"), () -> TELEPORTER);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("farming_machine"), () -> FARMING_MACHINE);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("logging_machine"), () -> LOGGING_MACHINE);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("fertilizer_spreader"), () -> FERTILIZER_SPREADER);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("enchantment_extractor"), () -> ENCHANTMENT_EXTRACTOR);
-
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("industrial_tnt"), () -> INDUSTRIAL_TNT);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("light"), () -> LIGHT);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("cardboard_box"), () -> CARDBOARD_BOX);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("cardboard_box_minetaro"), () -> CARDBOARD_BOX_MINETARO);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("cardboard_box_minezon"), () -> CARDBOARD_BOX_MINEZON);
-        AdvancedReborn.registry.registerBlock(AdvancedReborn.id("cardboard_box_nothing_logo"), () -> CARDBOARD_BOX_NOTHING);
+        CHARGE_PAD_MK_1 = registry.registerBlock(_id("charge_pad"), () -> new ChargePad(baseSettings.build(_id("charge_pad")), 4));
+        CHARGE_PAD_MK_2 = registry.registerBlock(_id("charge_pad_2"), () -> new ChargePad(baseSettings.build(_id("charge_pad_2")), 16));
+        CHARGE_PAD_MK_3 = registry.registerBlock(_id("charge_pad_3"), () -> new ChargePad(baseSettings.build(_id("charge_pad_3")), 64));
+        CHARGE_PAD_MK_4 = registry.registerBlock(_id("charge_pad_4"), () -> new ChargePad(baseSettings.build(_id("charge_pad_4")), 128));
+        CHARGE_PAD_MK_FINAL = registry.registerBlock(_id("charge_pad_final"), () -> new ChargePadFinal(baseSettings.build(_id("charge_pad_final")), 256));
+        RAY_SOLAR_1 = registry.registerBlock(_id("ray_solar_panel"), () -> new RaySolar(baseSettings.build(_id("ray_solar_panel")), 1, false));
+        RAY_SOLAR_2 = registry.registerBlock(_id("ray_solar_panel_2"), () -> new RaySolar(baseSettings.build(_id("ray_solar_panel_2")), 8, false));
+        RAY_SOLAR_3 = registry.registerBlock(_id("ray_solar_panel_3"), () -> new RaySolar(baseSettings.build(_id("ray_solar_panel_3")), 64, false));
+        RAY_SOLAR_4 = registry.registerBlock(_id("ray_solar_panel_4"), () -> new RaySolar(baseSettings.build(_id("ray_solar_panel_4")), 512, false));
+        RAY_GENERATOR_1 = registry.registerBlock(_id("ray_generator"), () -> new RaySolar(baseSettings.build(_id("ray_generator")), 2, true));
+        RAY_GENERATOR_2 = registry.registerBlock(_id("ray_generator_2"), () -> new RaySolar(baseSettings.build(_id("ray_generator_2")), 8, true));
+        RAY_GENERATOR_3 = registry.registerBlock(_id("ray_generator_3"), () -> new RaySolar(baseSettings.build(_id("ray_generator_3")), 32, true));
+        RAY_GENERATOR_4 = registry.registerBlock(_id("ray_generator_4"), () -> new RaySolar(baseSettings.build(_id("ray_generator_4")), 128, true));
+        RAY_GENERATOR_5 = registry.registerBlock(_id("ray_generator_5"), () -> new RaySolar(baseSettings.build(_id("ray_generator_5")), 512, true));
+        RAY_GENERATOR_6 = registry.registerBlock(_id("ray_generator_6"), () -> new RaySolar(baseSettings.build(_id("ray_generator_6")), 2048, true));
+        RAY_GENERATOR_7 = registry.registerBlock(_id("ray_generator_7"), () -> new RaySolar(baseSettings.build(_id("ray_generator_7")), 8192, true));
+        RAY_GENERATOR_8 = registry.registerBlock(_id("ray_generator_8"), () -> new RaySolar(baseSettings.build(_id("ray_generator_8")), 32768, true));
+        RAY_GENERATOR_9 = registry.registerBlock(_id("ray_generator_9"), () -> new RaySolar(baseSettings.build(_id("ray_generator_9")), 131072, true));
+        RAY_GENERATOR_10 = registry.registerBlock(_id("ray_generator_10"), () -> new RaySolar(baseSettings.build(_id("ray_generator_10")), 532480, true));
+        INDUCTION_FURNACE = registry.registerBlock(_id("induction_furnace"), () -> new InductionFurnace(baseSettings.build(_id("induction_furnace"))));
+        ROTARY_GRINDER = registry.registerBlock(_id("rotary_grinder"), () -> new RotaryGrinder(baseSettings.build(_id("rotary_grinder"))));
+        CENTRIFUGAL_EXTRACTOR = registry.registerBlock(_id("centrifugal_extractor"), () -> new CentrifugalExtractor(baseSettings.build(_id("centrifugal_extractor"))));
+        SINGULARITY_COMPRESSOR = registry.registerBlock(_id("singularity_compressor"), () -> new SingularityCompressor(baseSettings.build(_id("singularity_compressor"))));
+        CANNING_MACHINE = registry.registerBlock(_id("canning_machine"), () -> new CanningMachine(baseSettings.build(_id("canning_machine"))));
+        RENAMING_MACHINE = registry.registerBlock(_id("renaming_machine"), () -> new RenamingMachine(baseSettings.build(_id("renaming_machine"))));
+        TELEPORTER = registry.registerBlock(_id("teleporter"), () -> new Teleporter(baseSettings.build(_id("teleporter"))));
+        FARMING_MACHINE = registry.registerBlock(_id("farming_machine"), () -> new FarmingMachine(baseSettings.build(_id("farming_machine"))));
+        LOGGING_MACHINE = registry.registerBlock(_id("logging_machine"), () -> new LoggingMachine(baseSettings.build(_id("logging_machine"))));
+        FERTILIZER_SPREADER = registry.registerBlock(_id("fertilizer_spreader"), () -> new FertilizerSpreader(baseSettings.build(_id("fertilizer_spreader"))));
+        ENCHANTMENT_EXTRACTOR = registry.registerBlock(_id("enchantment_extractor"), () -> new EnchantmentExtractor(baseSettings.build(_id("enchantment_extractor"))));
+        CARDBOARD_BOX = registry.registerBlock(_id("cardboard_box"), () -> new CardboardBox(CompatibleBlockSettings.of(_id("cardboard_box"), CompatibleMaterial.WOOD).sounds(CompatBlockSoundGroup.WOOD).strength(1, 3)));
+        CARDBOARD_BOX_MINEZON = registry.registerBlock(_id("cardboard_box_minezon"), () -> new CardboardBox(CompatibleBlockSettings.of(_id("cardboard_box_minezon"), CompatibleMaterial.WOOD).sounds(CompatBlockSoundGroup.WOOD).strength(1, 3)));
+        CARDBOARD_BOX_MINETARO = registry.registerBlock(_id("cardboard_box_minetaro"), () -> new CardboardBox(CompatibleBlockSettings.of(_id("cardboard_box_minetaro"), CompatibleMaterial.WOOD).sounds(CompatBlockSoundGroup.WOOD).strength(1, 3)));
+        CARDBOARD_BOX_NOTHING = registry.registerBlock(_id("cardboard_box_nothing_logo"), () -> new CardboardBox(CompatibleBlockSettings.of(_id("cardboard_box_nothing_logo"), CompatibleMaterial.WOOD).sounds(CompatBlockSoundGroup.WOOD).strength(1, 3)));
+        LIGHT = registry.registerBlock(_id("light"), () -> new CompatBlock(CompatibleBlockSettings.of(_id("light"), CompatibleMaterial.METAL).strength(1.5F, 4).luminance((state) -> 15)));
+        INDUSTRIAL_TNT = registry.registerBlock(_id("industrial_tnt"), () -> new IndustrialTNT(CompatibleBlockSettings.copy(_id("industrial_tnt"), net.minecraft.block.Blocks.TNT)));
     }
 }

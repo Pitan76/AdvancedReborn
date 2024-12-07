@@ -42,7 +42,7 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
 
     public EnchantmentExtractorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.ENCHANTMENT_EXTRACTOR;
+        toolDrop = Blocks.ENCHANTMENT_EXTRACTOR.getOrNull();
         energySlot = 10;
         inventory = new RebornInventory<>(12, "EnchantmentExtractorTile", 64, this);
         checkTier();

@@ -1,14 +1,11 @@
 package net.pitan76.advancedreborn.blocks;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -18,22 +15,23 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import net.pitan76.advancedreborn.Particles;
 import net.pitan76.advancedreborn.api.Energy;
-import net.pitan76.mcpitanlib.api.block.CompatibleBlockSettings;
-import net.pitan76.mcpitanlib.api.block.ExtendBlock;
+import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
+import net.pitan76.mcpitanlib.api.block.v2.CompatBlock;
+import net.pitan76.mcpitanlib.api.event.block.AppendPropertiesArgs;
 import net.pitan76.mcpitanlib.api.event.block.BlockPlacedEvent;
 import net.pitan76.mcpitanlib.api.event.block.BlockScheduledTickEvent;
-import net.pitan76.mcpitanlib.api.event.block.OutlineShapeEvent;
+import net.pitan76.mcpitanlib.api.block.args.v2.OutlineShapeEvent;
+import net.pitan76.mcpitanlib.api.util.VoxelShapeUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.mcpitanlib.api.util.math.random.CompatRandom;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import techreborn.blockentity.storage.energy.EnergyStorageBlockEntity;
 
-import java.util.Random;
-
-public class ChargePad extends ExtendBlock {
+public class ChargePad extends CompatBlock {
 
     public int multiple = 4;
 
-    public static final VoxelShape SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 1.5D, 16.0D);
+    public static final VoxelShape SHAPE = VoxelShapeUtil.blockCuboid(0.0D, 0.0D, 0.0D, 16.0D, 1.5D, 16.0D);
 
     public static BooleanProperty USING = BooleanProperty.of("using");
     public static DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -50,7 +48,7 @@ public class ChargePad extends ExtendBlock {
 
     public ChargePad(CompatibleBlockSettings settings, int multiple) {
         super(settings);
-        setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(USING, false));
+        setNewDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(USING, false));
         this.multiple = multiple;
     }
 
@@ -71,18 +69,18 @@ public class ChargePad extends ExtendBlock {
         if(placer != null)
             setFacing(placer.getHorizontalFacing().getOpposite(), world, pos);
 
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+        BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof MachineBaseBlockEntity) {
             ((MachineBaseBlockEntity) blockEntity).onPlace(world, pos, e.state, placer, e.stack);
         }
     }
 
-    public void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, USING);
-        super.appendProperties(builder);
+    public void appendProperties(AppendPropertiesArgs args) {
+        args.addProperty(FACING, USING);
+        super.appendProperties(args);
     }
 
-    Random random = new Random(256);
+    CompatRandom random = CompatRandom.of(256);
 
     @SuppressWarnings("deprecation")
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
@@ -124,11 +122,11 @@ public class ChargePad extends ExtendBlock {
             tile.setEnergy(eu - outputEU);
             double rX = random.nextInt(9) * 0.1;
             double rZ = random.nextInt(9) * 0.1;
-            ((ServerWorld)world).spawnParticles(Particles.ENERGY, pos.getX() + 0.1 + rX, pos.getY() + 0.25, pos.getZ() + 0.1 + rZ, 1, 0, 0.3, 0, 0);
-            world.setBlockState(pos, state.with(USING, true));
+            WorldUtil.spawnParticles(world, Particles.ENERGY, pos.getX() + 0.1 + rX, pos.getY() + 0.25, pos.getZ() + 0.1 + rZ, 1, 0, 0.3, 0, 0);
+            WorldUtil.setBlockState(world, pos, state.with(USING, true));
             //world.createAndScheduleBlockTick(pos, this, 5);
             WorldUtil.scheduleBlockTick(world, pos, this, 5);
-            world.updateComparators(pos, this);
+            WorldUtil.updateComparators(world, pos, this);
         }
     }
 
@@ -138,8 +136,8 @@ public class ChargePad extends ExtendBlock {
         World world = e.getWorld();
         BlockPos pos = e.getPos();
 
-        world.setBlockState(pos, e.state.with(USING, false));
-        world.updateComparators(pos, this);
+        WorldUtil.setBlockState(world, pos, e.state.with(USING, false));
+        WorldUtil.updateComparators(world, pos, this);
     }
 
     public VoxelShape getOutlineShape(OutlineShapeEvent e) {

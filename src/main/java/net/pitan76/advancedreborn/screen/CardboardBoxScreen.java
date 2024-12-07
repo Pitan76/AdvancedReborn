@@ -12,14 +12,14 @@ import net.pitan76.advancedreborn.Defines;
 import net.pitan76.mcpitanlib.api.client.SimpleInventoryScreen;
 import net.pitan76.mcpitanlib.api.client.render.handledscreen.DrawBackgroundArgs;
 import net.pitan76.mcpitanlib.api.client.render.handledscreen.KeyEventArgs;
-import net.pitan76.mcpitanlib.api.network.ClientNetworking;
+import net.pitan76.mcpitanlib.api.network.v2.ClientNetworking;
 import net.pitan76.mcpitanlib.api.network.PacketByteUtil;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import net.pitan76.mcpitanlib.api.util.client.RenderUtil;
 import net.pitan76.mcpitanlib.api.util.client.ScreenUtil;
 
 public class CardboardBoxScreen extends SimpleInventoryScreen {
-    private static final Identifier GUI = AdvancedReborn.id("textures/gui/cardboard_box.png");
+    private static final Identifier GUI = AdvancedReborn.INSTANCE.id("textures/gui/cardboard_box.png");
     private TextFieldWidget noteBox;
 
     private final CardboardBoxScreenHandler handler;

@@ -35,7 +35,7 @@ public class SingularityCompressorTile extends HeatMachineTile implements IToolD
 
     public SingularityCompressorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.SINGULARITY_COMPRESSOR;
+        toolDrop = Blocks.SINGULARITY_COMPRESSOR.getOrNull();
         energySlot = 2;
         inventory = new RebornInventory<>(3, "SingularityCompressorTile", 64, this);
         crafter = new RecipeCrafter(ModRecipes.COMPRESSOR, this, 2, 1, inventory, new int[]{0}, new int[]{1});

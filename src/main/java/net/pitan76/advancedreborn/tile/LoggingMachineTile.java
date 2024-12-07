@@ -50,7 +50,7 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
 
     public LoggingMachineTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.LOGGING_MACHINE;
+        toolDrop = Blocks.LOGGING_MACHINE.getOrNull();
         energySlot = 6;
         inventory = new RebornInventory<>(7, "LoggingMachineTile", 64, this);
         checkTier();

@@ -14,6 +14,7 @@ import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Recipes;
 import net.pitan76.advancedreborn.addons.autoconfig.AutoConfigAddon;
 import net.pitan76.advancedreborn.addons.rei.machine.TwoInputRightOutputCategory;
+import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
 import reborncore.common.crafting.RebornRecipe;
 import reborncore.common.crafting.RebornRecipeType;
 import reborncore.common.crafting.RecipeManager;
@@ -26,17 +27,17 @@ import java.util.function.Function;
 
 public class REIAddon implements REIClientPlugin {
 
-    public static Identifier PLUGIN = AdvancedReborn.id("advanced_plugin");
+    public static CompatIdentifier PLUGIN = AdvancedReborn._id("advanced_plugin");
 
     public REIAddon() {
-        ReiPlugin.iconMap.put(Recipes.CANNING_MACHINE, Blocks.CANNING_MACHINE);
-        ReiPlugin.iconMap.put(ModRecipes.GRINDER, Blocks.ROTARY_GRINDER);
-        ReiPlugin.iconMap.put(ModRecipes.EXTRACTOR, Blocks.CENTRIFUGAL_EXTRACTOR);
-        ReiPlugin.iconMap.put(ModRecipes.COMPRESSOR, Blocks.SINGULARITY_COMPRESSOR);
+        ReiPlugin.iconMap.put(Recipes.CANNING_MACHINE, Blocks.CANNING_MACHINE.get());
+        ReiPlugin.iconMap.put(ModRecipes.GRINDER, Blocks.ROTARY_GRINDER.get());
+        ReiPlugin.iconMap.put(ModRecipes.EXTRACTOR, Blocks.CENTRIFUGAL_EXTRACTOR.get());
+        ReiPlugin.iconMap.put(ModRecipes.COMPRESSOR, Blocks.SINGULARITY_COMPRESSOR.get());
     }
 
     public Identifier getPluginIdentifier() {
-        return PLUGIN;
+        return PLUGIN.toMinecraft();
     }
 
     public void registerCategories(CategoryRegistry recipeHelper) {
@@ -69,11 +70,11 @@ public class REIAddon implements REIClientPlugin {
     public void registerOthers() {
         if (AutoConfigAddon.getConfig().linkReiWithTR) registerOthersTR();
         if (AutoConfigAddon.getConfig().linkReiWithAR) {
-            addWorkstations(Recipes.CANNING_MACHINE.name(), EntryStacks.of(Blocks.CANNING_MACHINE));
-            addWorkstations(ModRecipes.GRINDER.name(), EntryStacks.of(Blocks.ROTARY_GRINDER));
-            addWorkstations(ModRecipes.EXTRACTOR.name(), EntryStacks.of(Blocks.CENTRIFUGAL_EXTRACTOR));
-            addWorkstations(ModRecipes.COMPRESSOR.name(), EntryStacks.of(Blocks.SINGULARITY_COMPRESSOR));
-            addWorkstations(BuiltinPlugin.SMELTING.getIdentifier(), EntryStacks.of(Blocks.INDUCTION_FURNACE));
+            addWorkstations(Recipes.CANNING_MACHINE.name(), EntryStacks.of(Blocks.CANNING_MACHINE.get()));
+            addWorkstations(ModRecipes.GRINDER.name(), EntryStacks.of(Blocks.ROTARY_GRINDER.get()));
+            addWorkstations(ModRecipes.EXTRACTOR.name(), EntryStacks.of(Blocks.CENTRIFUGAL_EXTRACTOR.get()));
+            addWorkstations(ModRecipes.COMPRESSOR.name(), EntryStacks.of(Blocks.SINGULARITY_COMPRESSOR.get()));
+            addWorkstations(BuiltinPlugin.SMELTING.getIdentifier(), EntryStacks.of(Blocks.INDUCTION_FURNACE.get()));
         }
     }
 

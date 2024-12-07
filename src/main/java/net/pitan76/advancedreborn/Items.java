@@ -1,184 +1,183 @@
 package net.pitan76.advancedreborn;
 
-import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 import net.pitan76.advancedreborn.armormaterials.BBArmorMaterial;
 import net.pitan76.advancedreborn.armormaterials.NanoArmorMaterial;
 import net.pitan76.advancedreborn.items.*;
 import net.pitan76.mcpitanlib.api.item.ArmorEquipmentType;
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
-import net.pitan76.mcpitanlib.api.item.ExtendItem;
-import net.pitan76.mcpitanlib.api.util.ItemUtil;
+import net.pitan76.mcpitanlib.api.item.CompatFoodComponent;
+import net.pitan76.mcpitanlib.api.item.v2.CompatItem;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.v2.ItemSettingsBuilder;
+import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
+import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
+import net.pitan76.mcpitanlib.api.util.item.ItemUtil;
 import reborncore.common.powerSystem.RcEnergyTier;
 import techreborn.config.TechRebornConfig;
 
-import static net.pitan76.advancedreborn.AdvancedReborn.registry;
+import static net.pitan76.advancedreborn.AdvancedReborn.*;
 
 public class Items {
-    public static CompatibleItemSettings nothingSettings = CompatibleItemSettings.of();
+    public static ItemSettingsBuilder nothingSettings = new ItemSettingsBuilder();
+    public static ItemSettingsBuilder betterBatpackSettings = new ItemSettingsBuilder().maxCount(1).enchantability(15);
 
-    public static Item CHARGE_PAD_MK_1 = ItemUtil.ofBlock(Blocks.CHARGE_PAD_MK_1, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("charge_pad")).maxCount(64));
-    public static Item CHARGE_PAD_MK_2 = ItemUtil.ofBlock(Blocks.CHARGE_PAD_MK_2, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("charge_pad_2")).maxCount(64));
-    public static Item CHARGE_PAD_MK_3 = ItemUtil.ofBlock(Blocks.CHARGE_PAD_MK_3, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("charge_pad_3")).maxCount(64));
-    public static Item CHARGE_PAD_MK_4 = ItemUtil.ofBlock(Blocks.CHARGE_PAD_MK_4, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("charge_pad_4")).maxCount(64));
-    public static Item CHARGE_PAD_MK_FINAL = ItemUtil.ofBlock(Blocks.CHARGE_PAD_MK_FINAL, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("charge_pad_final")).maxCount(64));
+    public static RegistryResult<Item> CHARGE_PAD_MK_1;
+    public static RegistryResult<Item> CHARGE_PAD_MK_2;
+    public static RegistryResult<Item> CHARGE_PAD_MK_3;
+    public static RegistryResult<Item> CHARGE_PAD_MK_4;
+    public static RegistryResult<Item> CHARGE_PAD_MK_FINAL;
 
-    public static Item RAY_SOLAR_1 = ItemUtil.ofBlock(Blocks.RAY_SOLAR_1, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_solar_panel")).maxCount(64));
-    public static Item RAY_SOLAR_2 = ItemUtil.ofBlock(Blocks.RAY_SOLAR_2, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_solar_panel_2")).maxCount(64));
-    public static Item RAY_SOLAR_3 = ItemUtil.ofBlock(Blocks.RAY_SOLAR_3, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_solar_panel_3")).maxCount(64));
-    public static Item RAY_SOLAR_4 = ItemUtil.ofBlock(Blocks.RAY_SOLAR_4, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_solar_panel_4")).maxCount(64));
-    public static Item RAY_GENERATOR_1 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_1, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator")).maxCount(64));
-    public static Item RAY_GENERATOR_2 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_2, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_2")).maxCount(64));
-    public static Item RAY_GENERATOR_3 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_3, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_3")).maxCount(64));
-    public static Item RAY_GENERATOR_4 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_4, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_4")).maxCount(64));
-    public static Item RAY_GENERATOR_5 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_5, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_5")).maxCount(64));
-    public static Item RAY_GENERATOR_6 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_6, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_6")).maxCount(64));
-    public static Item RAY_GENERATOR_7 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_7, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_7")).maxCount(64));
-    public static Item RAY_GENERATOR_8 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_8, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_8")).maxCount(64));
-    public static Item RAY_GENERATOR_9 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_9, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_9")).maxCount(64));
-    public static Item RAY_GENERATOR_10 = ItemUtil.ofBlock(Blocks.RAY_GENERATOR_10, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("ray_generator_10")).maxCount(64));
+    public static RegistryResult<Item> RAY_SOLAR_1;
+    public static RegistryResult<Item> RAY_SOLAR_2;
+    public static RegistryResult<Item> RAY_SOLAR_3;
+    public static RegistryResult<Item> RAY_SOLAR_4;
+    public static RegistryResult<Item> RAY_GENERATOR_1;
+    public static RegistryResult<Item> RAY_GENERATOR_2;
+    public static RegistryResult<Item> RAY_GENERATOR_3;
+    public static RegistryResult<Item> RAY_GENERATOR_4;
+    public static RegistryResult<Item> RAY_GENERATOR_5;
+    public static RegistryResult<Item> RAY_GENERATOR_6;
+    public static RegistryResult<Item> RAY_GENERATOR_7;
+    public static RegistryResult<Item> RAY_GENERATOR_8;
+    public static RegistryResult<Item> RAY_GENERATOR_9;
+    public static RegistryResult<Item> RAY_GENERATOR_10;
 
-    public static Item INDUCTION_FURNACE = ItemUtil.ofBlock(Blocks.INDUCTION_FURNACE, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("induction_furnace")).maxCount(64));
-    public static Item ROTARY_GRINDER = ItemUtil.ofBlock(Blocks.ROTARY_GRINDER, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("rotary_grinder")).maxCount(64));
-    public static Item CENTRIFUGAL_EXTRACTOR = ItemUtil.ofBlock(Blocks.CENTRIFUGAL_EXTRACTOR, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("centrifugal_extractor")).maxCount(64));
-    public static Item SINGULARITY_COMPRESSOR = ItemUtil.ofBlock(Blocks.SINGULARITY_COMPRESSOR, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("singularity_compressor")).maxCount(64));
-    public static Item CANNING_MACHINE = ItemUtil.ofBlock(Blocks.CANNING_MACHINE, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("canning_machine")).maxCount(64));
-    public static Item RENAMING_MACHINE = ItemUtil.ofBlock(Blocks.RENAMING_MACHINE, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("renaming_machine")).maxCount(64));
-    public static Item TELEPORTER = ItemUtil.ofBlock(Blocks.TELEPORTER, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("teleporter")).maxCount(64));
-    public static Item FARMING_MACHINE = ItemUtil.ofBlock(Blocks.FARMING_MACHINE, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("farming_machine")).maxCount(64));
-    public static Item LOGGING_MACHINE = ItemUtil.ofBlock(Blocks.LOGGING_MACHINE, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("logging_machine")).maxCount(64));
-    public static Item FERTILIZER_SPREADER = ItemUtil.ofBlock(Blocks.FERTILIZER_SPREADER, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("fertilizer_spreader")).maxCount(64));
-    public static Item ENCHANTMENT_EXTRACTOR = ItemUtil.ofBlock(Blocks.ENCHANTMENT_EXTRACTOR, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("enchantment_extractor")).maxCount(64));
+    public static RegistryResult<Item> INDUCTION_FURNACE;
+    public static RegistryResult<Item> ROTARY_GRINDER;
+    public static RegistryResult<Item> CENTRIFUGAL_EXTRACTOR;
+    public static RegistryResult<Item> SINGULARITY_COMPRESSOR;
+    public static RegistryResult<Item> CANNING_MACHINE;
+    public static RegistryResult<Item> RENAMING_MACHINE;
+    public static RegistryResult<Item> TELEPORTER;
+    public static RegistryResult<Item> FARMING_MACHINE;
+    public static RegistryResult<Item> LOGGING_MACHINE;
+    public static RegistryResult<Item> FERTILIZER_SPREADER;
+    public static RegistryResult<Item> ENCHANTMENT_EXTRACTOR;
 
-    public static Item FREQ_TRANS = new FreqTrans(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("freq_trans")).maxCount(1).maxDamage(-1));
-    public static Item CONFIG_WRENCH = new ConfigWrench(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("config_wrench")).maxCount(1).maxDamage(-1));
-    public static Item FORGE_HAMMER;
-    public static Item ADVANCED_FORGE_HAMMER;
+    public static RegistryResult<Item> FREQ_TRANS;
+    public static RegistryResult<Item> CONFIG_WRENCH;
+    //public static Item FORGE_HAMMER;
+    //public static Item ADVANCED_FORGE_HAMMER;
 
     static {
         // 実装しないでおく
-        FORGE_HAMMER = new ForgeHammer(nothingSettings.recipeRemainder(FORGE_HAMMER), 80);
-        ADVANCED_FORGE_HAMMER = new ForgeHammer(nothingSettings.recipeRemainder(ADVANCED_FORGE_HAMMER), 360);
+        //FORGE_HAMMER = new ForgeHammer(nothingSettings.recipeRemainder(FORGE_HAMMER), 80);
+        //ADVANCED_FORGE_HAMMER = new ForgeHammer(nothingSettings.recipeRemainder(ADVANCED_FORGE_HAMMER), 360);
     }
 
-    public static Item NANO_SUIT_HELMET = new NanoSuitItem(NanoArmorMaterial.NANO, ArmorEquipmentType.HEAD, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("nano_helmet")).maxCount(1).maxDamage(-1));
-    public static Item NANO_SUIT_BODY_ARMOR = new NanoSuitItem(NanoArmorMaterial.NANO, ArmorEquipmentType.CHEST, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("nano_chestplate")).maxCount(1).maxDamage(-1));
-    public static Item NANO_SUIT_LEGGINGS = new NanoSuitItem(NanoArmorMaterial.NANO, ArmorEquipmentType.LEGS, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("nano_leggings")).maxCount(1).maxDamage(-1));
-    public static Item NANO_SUIT_BOOTS = new NanoSuitItem(NanoArmorMaterial.NANO, ArmorEquipmentType.FEET, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("nano_boots")).maxCount(1).maxDamage(-1));
+    public static RegistryResult<Item> NANO_SUIT_HELMET;
+    public static RegistryResult<Item> NANO_SUIT_BODY_ARMOR;
+    public static RegistryResult<Item> NANO_SUIT_LEGGINGS;
+    public static RegistryResult<Item> NANO_SUIT_BOOTS;
 
     // 強化バッテリー
-    public static Item ADVANCED_BATTERY = new AdvancedBattery(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("advanced_battery")).maxCount(1).maxDamage(-1), 8 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.HIGH);
-    public static Item ADVANCED_BATTERY_2 = new AdvancedBattery(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("advanced_battery_2")).maxCount(1).maxDamage(-1), 64 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.HIGH);
-    public static Item ADVANCED_BATTERY_3 = new AdvancedBattery(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("advanced_battery_3")).maxCount(1).maxDamage(-1), 512 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.HIGH);
-    public static Item ADVANCED_BATTERY_4 = new AdvancedBattery(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("advanced_battery_4")).maxCount(1).maxDamage(-1), 4096 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.HIGH);
-    public static Item ADVANCED_BATTERY_5 = new AdvancedBattery(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("advanced_battery_5")).maxCount(1).maxDamage(-1), 32768 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.EXTREME);
+    public static RegistryResult<Item> ADVANCED_BATTERY;
+    public static RegistryResult<Item> ADVANCED_BATTERY_2;
+    public static RegistryResult<Item> ADVANCED_BATTERY_3;
+    public static RegistryResult<Item> ADVANCED_BATTERY_4;
+    public static RegistryResult<Item> ADVANCED_BATTERY_5;
 
     // ダイナマイト (予定: 時限爆弾)
-    public static Item DYNAMITE = new Dynamite(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("dynamite")).maxCount(64));
-    public static Item STICKY_DYNAMITE = new Dynamite(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("sticky_dynamite")).maxCount(64),true);
-    public static Item INDUSTRIAL_DYNAMITE = new Dynamite(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("industrial_dynamite")).maxCount(64),false, true);
-    public static Item INDUSTRIAL_STICKY_DYNAMITE = new Dynamite(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("industrial_sticky_dynamite")).maxCount(64),true, true);
-    public static Item INDUSTRIAL_TNT = ItemUtil.ofBlock(Blocks.INDUSTRIAL_TNT, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("industrial_tnt")).maxCount(64));
+    public static RegistryResult<Item> DYNAMITE;
+    public static RegistryResult<Item> STICKY_DYNAMITE;
+    public static RegistryResult<Item> INDUSTRIAL_DYNAMITE;
+    public static RegistryResult<Item> INDUSTRIAL_STICKY_DYNAMITE;
+    public static RegistryResult<Item> INDUSTRIAL_TNT;
 
     // ライト、足場(鉄) 強化石材  ネーミングマシン
-    public static Item LIGHT = ItemUtil.ofBlock(Blocks.LIGHT, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("light")).maxCount(64));
+    public static RegistryResult<Item> LIGHT;
 
-    public static Item CARDBOARD_BOX = ItemUtil.ofBlock(Blocks.CARDBOARD_BOX, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("cardboard_box")).maxCount(64));
-    public static Item CARDBOARD_BOX_MINETARO = ItemUtil.ofBlock(Blocks.CARDBOARD_BOX_MINETARO, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("cardboard_box_minetaro")).maxCount(64));
-    public static Item CARDBOARD_BOX_MINEZON = ItemUtil.ofBlock(Blocks.CARDBOARD_BOX_MINEZON, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("cardboard_box_minezon")).maxCount(64));
-    public static Item CARDBOARD_BOX_NOTHING = ItemUtil.ofBlock(Blocks.CARDBOARD_BOX_NOTHING, CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("cardboard_box_nothing_logo")).maxCount(64));
+    public static RegistryResult<Item> CARDBOARD_BOX;
+    public static RegistryResult<Item> CARDBOARD_BOX_MINETARO;
+    public static RegistryResult<Item> CARDBOARD_BOX_MINEZON;
+    public static RegistryResult<Item> CARDBOARD_BOX_NOTHING;
 
     // 缶
-    public static Item EMPTY_CAN = new ExtendItem(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("empty_can")).maxCount(64));
-    public static Item FUEL_CAN = new FuelCanItem(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("fuel_can")).maxCount(64).recipeRemainder(EMPTY_CAN));
-    public static Item FOOD_CAN = new FoodCanItem(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("food_can")).maxCount(64).recipeRemainder(EMPTY_CAN).food(new FoodComponent.Builder().snack().hunger(2).saturationModifier(2).build()));
+    public static RegistryResult<Item> EMPTY_CAN;
+    public static RegistryResult<Item> FUEL_CAN;
+
+    public static CompatFoodComponent CAN_FOOD_COMPONENT = new CompatFoodComponent().setSnack().setHunger(2).setSaturation(2);
+    public static RegistryResult<Item> FOOD_CAN;
 
     // Better Batpack
-    public static Item BATPACK_4 = new BetterBatpackItem(TechRebornConfig.lithiumBatpackCharge * 4, new BBArmorMaterial("batpack4"), RcEnergyTier.MEDIUM);
-    public static Item BATPACK_16 = new BetterBatpackItem(TechRebornConfig.lithiumBatpackCharge * 16, new BBArmorMaterial("batpack16"), RcEnergyTier.HIGH);
-    public static Item BATPACK_64 = new BetterBatpackItem(TechRebornConfig.lithiumBatpackCharge * 64, new BBArmorMaterial("batpack64"), RcEnergyTier.EXTREME);
-    public static Item BATPACK_128 = new BetterBatpackItem(TechRebornConfig.lithiumBatpackCharge * 128, new BBArmorMaterial("batpack128"), RcEnergyTier.INSANE);
+    public static RegistryResult<Item> BATPACK_4;
+    public static RegistryResult<Item> BATPACK_16;
+    public static RegistryResult<Item> BATPACK_64;
+    public static RegistryResult<Item> BATPACK_128;
 
 
 
     // 素材アイテム
-    public static Item DUCT_TAPE = new ExtendItem(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("duct_tape")).maxCount(64));
-    public static Item CARDBOARD_SHEET = new ExtendItem(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("cardboard_sheet")).maxCount(64));
+    public static RegistryResult<Item> DUCT_TAPE;
+    public static RegistryResult<Item> CARDBOARD_SHEET;
 
-    //public static Item ADD_ITEMS = new AddItems(CompatibleItemSettings.of().addGroup(AdvancedReborn.AR_GROUP, AdvancedReborn.id("z_add_items")).maxCount(64));
+    //public static RegistryResult<Item> ADD_ITEMS;
 
     public static void init() {
-        registry.registerItem(AdvancedReborn.id("charge_pad"), () -> CHARGE_PAD_MK_1);
-        registry.registerItem(AdvancedReborn.id("charge_pad_2"), () -> CHARGE_PAD_MK_2);
-        registry.registerItem(AdvancedReborn.id("charge_pad_3"), () -> CHARGE_PAD_MK_3);
-        registry.registerItem(AdvancedReborn.id("charge_pad_4"), () -> CHARGE_PAD_MK_4);
-        registry.registerItem(AdvancedReborn.id("charge_pad_final"), () -> CHARGE_PAD_MK_FINAL);
+        CHARGE_PAD_MK_1 = registry.registerItem(_id("charge_pad"), () -> ItemUtil.create(Blocks.CHARGE_PAD_MK_1.getOrNull(), CompatibleItemSettings.of(_id("charge_pad")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CHARGE_PAD_MK_2 = registry.registerItem(_id("charge_pad_2"), () -> ItemUtil.create(Blocks.CHARGE_PAD_MK_2.getOrNull(), CompatibleItemSettings.of(_id("charge_pad_2")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CHARGE_PAD_MK_3 = registry.registerItem(_id("charge_pad_3"), () -> ItemUtil.create(Blocks.CHARGE_PAD_MK_3.getOrNull(), CompatibleItemSettings.of(_id("charge_pad_3")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CHARGE_PAD_MK_4 = registry.registerItem(_id("charge_pad_4"), () -> ItemUtil.create(Blocks.CHARGE_PAD_MK_4.getOrNull(), CompatibleItemSettings.of(_id("charge_pad_4")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CHARGE_PAD_MK_FINAL = registry.registerItem(_id("charge_pad_final"), () -> ItemUtil.create(Blocks.CHARGE_PAD_MK_FINAL.getOrNull(), CompatibleItemSettings.of(_id("charge_pad_final")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_SOLAR_1 = registry.registerItem(_id("ray_solar_panel"), () -> ItemUtil.create(Blocks.RAY_SOLAR_1.getOrNull(), CompatibleItemSettings.of(_id("ray_solar_panel")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_SOLAR_2 = registry.registerItem(_id("ray_solar_panel_2"), () -> ItemUtil.create(Blocks.RAY_SOLAR_2.getOrNull(), CompatibleItemSettings.of(_id("ray_solar_panel_2")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_SOLAR_3 = registry.registerItem(_id("ray_solar_panel_3"), () -> ItemUtil.create(Blocks.RAY_SOLAR_3.getOrNull(), CompatibleItemSettings.of(_id("ray_solar_panel_3")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_SOLAR_4 = registry.registerItem(_id("ray_solar_panel_4"), () -> ItemUtil.create(Blocks.RAY_SOLAR_4.getOrNull(), CompatibleItemSettings.of(_id("ray_solar_panel_4")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_1 = registry.registerItem(_id("ray_generator"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_1.getOrNull(), CompatibleItemSettings.of(_id("ray_generator")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_2 = registry.registerItem(_id("ray_generator_2"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_2.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_2")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_3 = registry.registerItem(_id("ray_generator_3"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_3.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_3")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_4 = registry.registerItem(_id("ray_generator_4"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_4.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_4")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_5 = registry.registerItem(_id("ray_generator_5"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_5.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_5")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_6 = registry.registerItem(_id("ray_generator_6"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_6.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_6")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_7 = registry.registerItem(_id("ray_generator_7"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_7.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_7")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_8 = registry.registerItem(_id("ray_generator_8"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_8.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_8")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_9 = registry.registerItem(_id("ray_generator_9"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_9.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_9")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RAY_GENERATOR_10 = registry.registerItem(_id("ray_generator_10"), () -> ItemUtil.create(Blocks.RAY_GENERATOR_10.getOrNull(), CompatibleItemSettings.of(_id("ray_generator_10")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        INDUCTION_FURNACE = registry.registerItem(_id("induction_furnace"), () -> ItemUtil.create(Blocks.INDUCTION_FURNACE.getOrNull(), CompatibleItemSettings.of(_id("induction_furnace")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        ROTARY_GRINDER = registry.registerItem(_id("rotary_grinder"), () -> ItemUtil.create(Blocks.ROTARY_GRINDER.getOrNull(), CompatibleItemSettings.of(_id("rotary_grinder")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CENTRIFUGAL_EXTRACTOR = registry.registerItem(_id("centrifugal_extractor"), () -> ItemUtil.create(Blocks.CENTRIFUGAL_EXTRACTOR.getOrNull(), CompatibleItemSettings.of(_id("centrifugal_extractor")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        SINGULARITY_COMPRESSOR = registry.registerItem(_id("singularity_compressor"), () -> ItemUtil.create(Blocks.SINGULARITY_COMPRESSOR.getOrNull(), CompatibleItemSettings.of(_id("singularity_compressor")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CANNING_MACHINE = registry.registerItem(_id("canning_machine"), () -> ItemUtil.create(Blocks.CANNING_MACHINE.getOrNull(), CompatibleItemSettings.of(_id("canning_machine")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        RENAMING_MACHINE = registry.registerItem(_id("renaming_machine"), () -> ItemUtil.create(Blocks.RENAMING_MACHINE.getOrNull(), CompatibleItemSettings.of(_id("renaming_machine")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        TELEPORTER = registry.registerItem(_id("teleporter"), () -> ItemUtil.create(Blocks.TELEPORTER.getOrNull(), CompatibleItemSettings.of(_id("teleporter")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        FARMING_MACHINE = registry.registerItem(_id("farming_machine"), () -> ItemUtil.create(Blocks.FARMING_MACHINE.getOrNull(), CompatibleItemSettings.of(_id("farming_machine")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        LOGGING_MACHINE = registry.registerItem(_id("logging_machine"), () -> ItemUtil.create(Blocks.LOGGING_MACHINE.getOrNull(), CompatibleItemSettings.of(_id("logging_machine")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        FERTILIZER_SPREADER = registry.registerItem(_id("fertilizer_spreader"), () -> ItemUtil.create(Blocks.FERTILIZER_SPREADER.getOrNull(), CompatibleItemSettings.of(_id("fertilizer_spreader")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        ENCHANTMENT_EXTRACTOR = registry.registerItem(_id("enchantment_extractor"), () -> ItemUtil.create(Blocks.ENCHANTMENT_EXTRACTOR.getOrNull(), CompatibleItemSettings.of(_id("enchantment_extractor")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        FREQ_TRANS = registry.registerItem(_id("freq_trans"), () -> new FreqTrans(CompatibleItemSettings.of(_id("freq_trans")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1)));
+        CONFIG_WRENCH = registry.registerItem(_id("config_wrench"), () -> new ConfigWrench(CompatibleItemSettings.of(_id("config_wrench")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1)));
 
-        registry.registerItem(AdvancedReborn.id("ray_solar_panel"), () -> RAY_SOLAR_1);
-        registry.registerItem(AdvancedReborn.id("ray_solar_panel_2"), () -> RAY_SOLAR_2);
-        registry.registerItem(AdvancedReborn.id("ray_solar_panel_3"), () -> RAY_SOLAR_3);
-        registry.registerItem(AdvancedReborn.id("ray_solar_panel_4"), () -> RAY_SOLAR_4);
-        registry.registerItem(AdvancedReborn.id("ray_generator"), () -> RAY_GENERATOR_1);
-        registry.registerItem(AdvancedReborn.id("ray_generator_2"), () -> RAY_GENERATOR_2);
-        registry.registerItem(AdvancedReborn.id("ray_generator_3"), () -> RAY_GENERATOR_3);
-        registry.registerItem(AdvancedReborn.id("ray_generator_4"), () -> RAY_GENERATOR_4);
-        registry.registerItem(AdvancedReborn.id("ray_generator_5"), () -> RAY_GENERATOR_5);
-        registry.registerItem(AdvancedReborn.id("ray_generator_6"), () -> RAY_GENERATOR_6);
-        registry.registerItem(AdvancedReborn.id("ray_generator_7"), () -> RAY_GENERATOR_7);
-        registry.registerItem(AdvancedReborn.id("ray_generator_8"), () -> RAY_GENERATOR_8);
-        registry.registerItem(AdvancedReborn.id("ray_generator_9"), () -> RAY_GENERATOR_9);
-        registry.registerItem(AdvancedReborn.id("ray_generator_10"), () -> RAY_GENERATOR_10);
+        NANO_SUIT_HELMET = registry.registerItem(_id("nano_suit_helmet"), () -> new NanoSuitItem(NanoArmorMaterial.NANO, ArmorEquipmentType.HEAD, CompatibleItemSettings.of(_id("nano_suit_helmet")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1)));
+        NANO_SUIT_BODY_ARMOR = registry.registerItem(_id("nano_suit_body_armor"), () -> new NanoSuitItem(NanoArmorMaterial.NANO, ArmorEquipmentType.CHEST, CompatibleItemSettings.of(_id("nano_suit_body_armor")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1)));
+        NANO_SUIT_LEGGINGS = registry.registerItem(_id("nano_suit_leggings"), () -> new NanoSuitItem(NanoArmorMaterial.NANO, ArmorEquipmentType.LEGS, CompatibleItemSettings.of(_id("nano_suit_leggings")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1)));
+        NANO_SUIT_BOOTS = registry.registerItem(_id("nano_suit_boots"), () -> new NanoSuitItem(NanoArmorMaterial.NANO, ArmorEquipmentType.FEET, CompatibleItemSettings.of(_id("nano_suit_boots")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1)));
 
-        registry.registerItem(AdvancedReborn.id("induction_furnace"), () -> INDUCTION_FURNACE);
-        registry.registerItem(AdvancedReborn.id("rotary_grinder"), () -> ROTARY_GRINDER);
-        registry.registerItem(AdvancedReborn.id("centrifugal_extractor"), () -> CENTRIFUGAL_EXTRACTOR);
-        registry.registerItem(AdvancedReborn.id("singularity_compressor"), () -> SINGULARITY_COMPRESSOR);
-        registry.registerItem(AdvancedReborn.id("canning_machine"), () -> CANNING_MACHINE);
-        registry.registerItem(AdvancedReborn.id("renaming_machine"), () -> RENAMING_MACHINE);
-        registry.registerItem(AdvancedReborn.id("teleporter"), () -> TELEPORTER);
-        registry.registerItem(AdvancedReborn.id("farming_machine"), () -> FARMING_MACHINE);
-        registry.registerItem(AdvancedReborn.id("logging_machine"), () -> LOGGING_MACHINE);
-        registry.registerItem(AdvancedReborn.id("fertilizer_spreader"), () -> FERTILIZER_SPREADER);
-        registry.registerItem(AdvancedReborn.id("enchantment_extractor"), () -> ENCHANTMENT_EXTRACTOR);
+        ADVANCED_BATTERY = registry.registerItem(_id("advanced_battery"), () -> new AdvancedBattery(CompatibleItemSettings.of(_id("advanced_battery")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1), 8 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.HIGH));
+        ADVANCED_BATTERY_2 = registry.registerItem(_id("advanced_battery_2"), () -> new AdvancedBattery(CompatibleItemSettings.of(_id("advanced_battery_2")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1), 64 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.HIGH));
+        ADVANCED_BATTERY_3 = registry.registerItem(_id("advanced_battery_3"), () -> new AdvancedBattery(CompatibleItemSettings.of(_id("advanced_battery_3")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1), 512 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.HIGH));
+        ADVANCED_BATTERY_4 = registry.registerItem(_id("advanced_battery_4"), () -> new AdvancedBattery(CompatibleItemSettings.of(_id("advanced_battery_4")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1), 4096 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.HIGH));
+        ADVANCED_BATTERY_5 = registry.registerItem(_id("advanced_battery_5"), () -> new AdvancedBattery(CompatibleItemSettings.of(_id("advanced_battery_5")).addGroup(AdvancedReborn.AR_GROUP).maxCount(1).maxDamage(-1), 32768 * TechRebornConfig.redCellBatteryMaxCharge, RcEnergyTier.EXTREME));
+        DYNAMITE = registry.registerItem(_id("dynamite"), () -> new Dynamite(CompatibleItemSettings.of(_id("dynamite")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        STICKY_DYNAMITE = registry.registerItem(_id("sticky_dynamite"), () -> new Dynamite(CompatibleItemSettings.of(_id("sticky_dynamite")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64),true));
+        INDUSTRIAL_DYNAMITE = registry.registerItem(_id("industrial_dynamite"), () -> new Dynamite(CompatibleItemSettings.of(_id("industrial_dynamite")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64),false, true));
+        INDUSTRIAL_STICKY_DYNAMITE = registry.registerItem(_id("industrial_sticky_dynamite"), () -> new Dynamite(CompatibleItemSettings.of(_id("industrial_sticky_dynamite")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64),true, true));
+        INDUSTRIAL_TNT = registry.registerItem(_id("industrial_tnt"), () -> ItemUtil.create(Blocks.INDUSTRIAL_TNT.getOrNull(), CompatibleItemSettings.of(_id("industrial_tnt")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        LIGHT = registry.registerItem(_id("light"), () -> ItemUtil.create(Blocks.LIGHT.getOrNull(), CompatibleItemSettings.of(_id("light")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CARDBOARD_BOX = registry.registerItem(_id("cardboard_box"), () -> ItemUtil.create(Blocks.CARDBOARD_BOX.getOrNull(), CompatibleItemSettings.of(_id("cardboard_box")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CARDBOARD_BOX_MINETARO = registry.registerItem(_id("cardboard_box_minetaro"), () -> ItemUtil.create(Blocks.CARDBOARD_BOX_MINETARO.getOrNull(), CompatibleItemSettings.of(_id("cardboard_box_minetaro")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CARDBOARD_BOX_MINEZON = registry.registerItem(_id("cardboard_box_minezon"), () -> ItemUtil.create(Blocks.CARDBOARD_BOX_MINEZON.getOrNull(), CompatibleItemSettings.of(_id("cardboard_box_minezon")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CARDBOARD_BOX_NOTHING = registry.registerItem(_id("cardboard_box_nothing_logo"), () -> ItemUtil.create(Blocks.CARDBOARD_BOX_NOTHING.getOrNull(), CompatibleItemSettings.of(_id("cardboard_box_nothing_logo")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        EMPTY_CAN = registry.registerItem(_id("empty_can"), () -> new CompatItem(CompatibleItemSettings.of(_id("empty_can")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        FUEL_CAN = registry.registerItem(_id("fuel_can"), () -> new FuelCanItem(CompatibleItemSettings.of(_id("fuel_can")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64).recipeRemainder(EMPTY_CAN.getOrNull())));
+        FOOD_CAN = registry.registerItem(_id("food_can"), () -> new FoodCanItem(CompatibleItemSettings.of(_id("food_can")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64).recipeRemainder(EMPTY_CAN.getOrNull()).food(CAN_FOOD_COMPONENT)));
+        BATPACK_4 = registry.registerItem(CompatIdentifier.of("better_batpack", "batpack4"), () -> new BetterBatpackItem(betterBatpackSettings.build(CompatIdentifier.of("better_batpack", "batpack4")), TechRebornConfig.lithiumBatpackCharge * 4, new BBArmorMaterial("batpack4"), RcEnergyTier.MEDIUM));
+        BATPACK_16 = registry.registerItem(CompatIdentifier.of("better_batpack", "batpack16"), () -> new BetterBatpackItem(betterBatpackSettings.build(CompatIdentifier.of("better_batpack", "batpack16")), TechRebornConfig.lithiumBatpackCharge * 16, new BBArmorMaterial("batpack16"), RcEnergyTier.HIGH));
+        BATPACK_64 = registry.registerItem(CompatIdentifier.of("better_batpack", "batpack64"), () -> new BetterBatpackItem(betterBatpackSettings.build(CompatIdentifier.of("better_batpack", "batpack64")), TechRebornConfig.lithiumBatpackCharge * 64, new BBArmorMaterial("batpack64"), RcEnergyTier.EXTREME));
+        BATPACK_128 = registry.registerItem(CompatIdentifier.of("better_batpack", "batpack128"), () -> new BetterBatpackItem(betterBatpackSettings.build(CompatIdentifier.of("better_batpack", "batpack128")), TechRebornConfig.lithiumBatpackCharge * 128, new BBArmorMaterial("batpack128"), RcEnergyTier.INSANE));
+        DUCT_TAPE = registry.registerItem(_id("duct_tape"), () -> new CompatItem(CompatibleItemSettings.of(_id("duct_tape")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
+        CARDBOARD_SHEET = registry.registerItem(_id("cardboard_sheet"), () -> new CompatItem(CompatibleItemSettings.of(_id("cardboard_sheet")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
 
-        registry.registerItem(AdvancedReborn.id("freq_trans"), () -> FREQ_TRANS);
-        registry.registerItem(AdvancedReborn.id("config_wrench"), () -> CONFIG_WRENCH);
-        registry.registerItem(AdvancedReborn.id("forge_hammer"), () -> FORGE_HAMMER);
-        registry.registerItem(AdvancedReborn.id("advanced_forge_hammer"), () -> ADVANCED_FORGE_HAMMER);
-        registry.registerItem(AdvancedReborn.id("dynamite"), () -> DYNAMITE);
-        registry.registerItem(AdvancedReborn.id("sticky_dynamite"), () -> STICKY_DYNAMITE);
-        registry.registerItem(AdvancedReborn.id("industrial_dynamite"), () -> INDUSTRIAL_DYNAMITE);
-        registry.registerItem(AdvancedReborn.id("industrial_sticky_dynamite"), () -> INDUSTRIAL_STICKY_DYNAMITE);
-        registry.registerItem(AdvancedReborn.id("industrial_tnt"), () -> INDUSTRIAL_TNT);
-        registry.registerItem(AdvancedReborn.id("light"), () -> LIGHT);
-        registry.registerItem(AdvancedReborn.id("cardboard_box"), () -> CARDBOARD_BOX);
-        registry.registerItem(AdvancedReborn.id("cardboard_box_minetaro"), () -> CARDBOARD_BOX_MINETARO);
-        registry.registerItem(AdvancedReborn.id("cardboard_box_minezon"), () -> CARDBOARD_BOX_MINEZON);
-        registry.registerItem(AdvancedReborn.id("cardboard_box_nothing_logo"), () -> CARDBOARD_BOX_NOTHING);
-
-        registry.registerItem(AdvancedReborn.id("advanced_battery"), () -> ADVANCED_BATTERY);
-        registry.registerItem(AdvancedReborn.id("advanced_battery_2"), () -> ADVANCED_BATTERY_2);
-        registry.registerItem(AdvancedReborn.id("advanced_battery_3"), () -> ADVANCED_BATTERY_3);
-        registry.registerItem(AdvancedReborn.id("advanced_battery_4"), () -> ADVANCED_BATTERY_4);
-        registry.registerItem(AdvancedReborn.id("advanced_battery_5"), () -> ADVANCED_BATTERY_5);
-
-        registry.registerItem(AdvancedReborn.id("nano_helmet"), () -> NANO_SUIT_HELMET);
-        registry.registerItem(AdvancedReborn.id("nano_chestplate"), () -> NANO_SUIT_BODY_ARMOR);
-        registry.registerItem(AdvancedReborn.id("nano_leggings"), () -> NANO_SUIT_LEGGINGS);
-        registry.registerItem(AdvancedReborn.id("nano_boots"), () -> NANO_SUIT_BOOTS);
-
-        registry.registerItem(AdvancedReborn.id("empty_can"), () -> EMPTY_CAN);
-        registry.registerItem(AdvancedReborn.id("fuel_can"), () -> FUEL_CAN);
-        registry.registerItem(AdvancedReborn.id("food_can"), () -> FOOD_CAN);
-        registry.registerItem(AdvancedReborn.id("cardboard_sheet"), () -> CARDBOARD_SHEET);
-        registry.registerItem(AdvancedReborn.id("duct_tape"), () -> DUCT_TAPE);
-
-        registry.registerItem(new Identifier("better_batpack:batpack4"), () -> BATPACK_4);
-        registry.registerItem(new Identifier("better_batpack:batpack16"), () -> BATPACK_16);
-        registry.registerItem(new Identifier("better_batpack:batpack64"), () -> BATPACK_64);
-        registry.registerItem(new Identifier("better_batpack:batpack128"), () -> BATPACK_128);
-
-        //registry.registerItem(AdvancedReborn.id("z_add_items"), () -> ADD_ITEMS);
+        registry.registerFuel(() -> FUEL_CAN.getOrNull(), 500);
+        //ADD_ITEMS = registry.registerItem(_id("add_items"), () -> new AddItems(CompatibleItemSettings.of(_id("add_items")).addGroup(AdvancedReborn.AR_GROUP).maxCount(64)));
     }
 }

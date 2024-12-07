@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import net.pitan76.advancedreborn.entities.IndustrialTNTEntity;
-import net.pitan76.mcpitanlib.api.block.CompatibleBlockSettings;
+import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import org.jetbrains.annotations.Nullable;
 
 public class IndustrialTNT extends TntBlock {

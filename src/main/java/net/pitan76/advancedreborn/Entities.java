@@ -9,8 +9,8 @@ import net.pitan76.advancedreborn.entities.DynamiteEntity;
 import net.pitan76.advancedreborn.entities.IndustrialTNTEntity;
 
 public class Entities {
-    public static EntityType<DynamiteEntity> DYNAMITE = Registry.register(Registry.ENTITY_TYPE, AdvancedReborn.id("dynamite"), (FabricEntityTypeBuilder.<DynamiteEntity>create(SpawnGroup.MISC, DynamiteEntity::new)).dimensions(EntityDimensions.fixed(0.25f,0.25f)).trackRangeBlocks(10).trackedUpdateRate(10).build());
-    public static EntityType<IndustrialTNTEntity> I_TNT = Registry.register(Registry.ENTITY_TYPE, AdvancedReborn.id("industrial_tnt"), (FabricEntityTypeBuilder.<IndustrialTNTEntity>create(SpawnGroup.MISC, IndustrialTNTEntity::new)).dimensions(EntityDimensions.fixed(0.98f,0.98f)).trackRangeBlocks(10).trackedUpdateRate(10).build());
+    public static EntityType<DynamiteEntity> DYNAMITE = Registry.register(Registry.ENTITY_TYPE, AdvancedReborn._id("dynamite").toMinecraft(), (FabricEntityTypeBuilder.<DynamiteEntity>create(SpawnGroup.MISC, DynamiteEntity::new)).dimensions(EntityDimensions.fixed(0.25f,0.25f)).trackRangeBlocks(10).trackedUpdateRate(10).build());
+    public static EntityType<IndustrialTNTEntity> I_TNT = Registry.register(Registry.ENTITY_TYPE, AdvancedReborn._id("industrial_tnt").toMinecraft(), (FabricEntityTypeBuilder.<IndustrialTNTEntity>create(SpawnGroup.MISC, IndustrialTNTEntity::new)).dimensions(EntityDimensions.fixed(0.98f,0.98f)).trackRangeBlocks(10).trackedUpdateRate(10).build());
 
     public static void init() {
 

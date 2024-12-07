@@ -3,20 +3,19 @@ package net.pitan76.advancedreborn.items;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
-import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
-import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
-import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.event.item.*;
+import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
+import net.pitan76.mcpitanlib.api.item.v2.CompatItem;
+import net.pitan76.mcpitanlib.api.util.StackActionResult;
+import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import reborncore.common.powerSystem.RcEnergyItem;
 import reborncore.common.powerSystem.RcEnergyTier;
 import reborncore.common.util.ItemUtils;
 import techreborn.items.BatteryItem;
 import techreborn.utils.MessageIDs;
 
-public class AdvancedBattery extends ExtendItem implements RcEnergyItem {
+public class AdvancedBattery extends CompatItem implements RcEnergyItem {
     public int maxEnergy;
     public RcEnergyTier tier;
 
@@ -27,24 +26,21 @@ public class AdvancedBattery extends ExtendItem implements RcEnergyItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> onRightClick(ItemUseEvent event) {
-        final ItemStack stack = event.user.getPlayerEntity().getStackInHand(event.hand);
-        if (event.user.isSneaking()) {
-            ItemUtils.switchActive(stack, 1, MessageIDs.poweredToolID, event.user.getPlayerEntity());
-            return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+    public StackActionResult onRightClick(ItemUseEvent e) {
+        final ItemStack stack = e.user.getStackInHand(e.hand);
+        if (e.isSneaking()) {
+            ItemUtils.switchActive(stack, 1, MessageIDs.poweredToolID, e.user.getPlayerEntity());
+            return e.success();
         }
-        return new TypedActionResult<>(ActionResult.PASS, stack);
+        return e.pass();
     }
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         ItemUtils.checkActive(stack, 1, MessageIDs.poweredToolID, entity);
-        if (world.isClient) {
-            return;
-        }
-        if (!ItemUtils.isActive(stack)){
-            return;
-        }
+        if (WorldUtil.isClient(world)) return;
+        if (!ItemUtils.isActive(stack)) return;
+
         if (entity instanceof PlayerEntity) {
             ItemUtils.distributePowerToInventory((PlayerEntity) entity, stack, tier.getMaxOutput(), (testStack) -> !(testStack.getItem() instanceof BatteryItem));
         }
@@ -66,17 +62,17 @@ public class AdvancedBattery extends ExtendItem implements RcEnergyItem {
     }
 
     @Override
-    public int getItemBarStep(ItemStack stack) {
-        return ItemUtils.getPowerForDurabilityBar(stack);
+    public int getItemBarStep(ItemBarStepArgs args) {
+        return ItemUtils.getPowerForDurabilityBar(args.stack);
     }
 
     @Override
-    public boolean isItemBarVisible(ItemStack stack) {
+    public int getItemBarColor(ItemBarColorArgs args) {
+        return ItemUtils.getColorForDurabilityBar(args.stack);
+    }
+
+    @Override
+    public boolean isItemBarVisible(ItemBarVisibleArgs args) {
         return true;
-    }
-
-    @Override
-    public int getItemBarColor(ItemStack stack) {
-        return ItemUtils.getColorForDurabilityBar(stack);
     }
 }

@@ -40,7 +40,7 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
 
     public RenamingMachineTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        toolDrop = Blocks.RENAMING_MACHINE;
+        toolDrop = Blocks.RENAMING_MACHINE.getOrNull();
         energySlot = 2;
         inventory = new RebornInventory<>(3, "RenamingMachineTile", 64, this);
         checkTier();
