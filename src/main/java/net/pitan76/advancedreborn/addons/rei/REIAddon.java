@@ -21,6 +21,7 @@ import net.pitan76.advancedreborn.addons.autoconfig.AutoConfigAddon;
 import net.pitan76.advancedreborn.addons.rei.machine.TwoInputRightOutputCategory;
 import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
 import reborncore.common.crafting.RebornRecipe;
+import reborncore.common.crafting.RebornRecipeType;
 import reborncore.common.crafting.RecipeManager;
 import techreborn.client.compat.rei.MachineRecipeDisplay;
 import techreborn.client.compat.rei.ReiPlugin;
@@ -28,8 +29,8 @@ import techreborn.client.compat.rei.fluidreplicator.FluidReplicatorRecipeDisplay
 import techreborn.client.compat.rei.rollingmachine.RollingMachineDisplay;
 import techreborn.init.ModRecipes;
 import techreborn.init.TRContent;
-import techreborn.recipe.recipes.FluidReplicatorRecipe;
-import techreborn.recipe.recipes.RollingMachineRecipe;
+import techreborn.api.recipe.recipes.FluidReplicatorRecipe;
+import techreborn.api.recipe.recipes.RollingMachineRecipe;
 
 import java.util.function.Function;
 

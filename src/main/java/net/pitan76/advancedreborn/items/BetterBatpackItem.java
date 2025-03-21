@@ -6,8 +6,8 @@ import net.pitan76.mcpitanlib.api.item.CompatibleArmorMaterial;
 import net.pitan76.mcpitanlib.api.item.v2.CompatItemProvider;
 import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
 import reborncore.common.powerSystem.RcEnergyTier;
+import reborncore.common.util.ItemUtils;
 import techreborn.items.armor.BatpackItem;
-import techreborn.utils.TRItemUtils;
 
 public class BetterBatpackItem extends BatpackItem implements CompatItemProvider {
 
@@ -23,12 +23,10 @@ public class BetterBatpackItem extends BatpackItem implements CompatItemProvider
         this.settings = settings;
     }
 
-    /*
     @Override
     public boolean isDamageable() {
         return false;
     }
-     */
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
@@ -38,7 +36,7 @@ public class BetterBatpackItem extends BatpackItem implements CompatItemProvider
     @Override
     public void appendTooltip(ItemAppendTooltipEvent e, Options options) {
         CompatItemProvider.super.appendTooltip(e, options);
-        TRItemUtils.buildActiveTooltip(e.stack, e.tooltip);
+        ItemUtils.buildActiveTooltip(e.stack, e.tooltip);
 
     }
 }

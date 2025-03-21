@@ -64,7 +64,8 @@ public class DynamiteEntity extends CompatThrownItemEntity {
     @Override
     public void initDataTracker(InitDataTrackerArgs args) {
         super.initDataTracker(args);
-        args.add(FUSE, fuseTimerInit);
+        //args.add(FUSE, fuseTimerInit);
+        dataTracker.startTracking(FUSE, fuseTimerInit);
     }
 
     public void setFuse(int fuse) {

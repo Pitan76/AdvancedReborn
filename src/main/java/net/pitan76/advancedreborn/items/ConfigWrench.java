@@ -21,7 +21,6 @@ import reborncore.common.blockentity.RedstoneConfiguration;
 import reborncore.common.blockentity.SlotConfiguration;
 
 import java.util.List;
-import java.util.Map;
 
 public class ConfigWrench extends CompatItem {
     public ConfigWrench(CompatibleItemSettings settings) {
@@ -41,15 +40,8 @@ public class ConfigWrench extends CompatItem {
                         accessor.getSlotConfiguration().read(config.getCompound("slot"));
                     if (config.contains("fluid"))
                         accessor.getFluidConfiguration().read(config.getCompound("fluid"));
-                    if (config.contains("redstone")) {
-                        Map<RedstoneConfiguration.Element, RedstoneConfiguration.State> stateMap = accessor.getRedstoneConfiguration().stateMap();
-                        NbtCompound redstone = config.getCompound("redstone");
-                        stateMap.forEach((element, state) -> {
-                            if (redstone.contains(element.name())) {
-                                stateMap.put(element, RedstoneConfiguration.State.valueOf(redstone.getString(element.name())));
-                            }
-                        });
-                    }
+                    if (config.contains("redstone"))
+                        accessor.getRedstoneConfiguration().read(config.getCompound("redstone"));
                     player.sendMessage(TextUtil.literal("Loaded Configuration from The Config Wrench."), false);
                     return ActionResult.SUCCESS;
                 }
@@ -85,13 +77,7 @@ public class ConfigWrench extends CompatItem {
         if (fluidConfig != null)
             config.put("fluid", fluidConfig.write());
         if (redstoneConfig != null) {
-            NbtCompound redstone = NbtUtil.create();
-            
-            redstoneConfig.stateMap().forEach((element, state) -> {
-                redstone.putString(element.name(), state.name());
-            });
-            
-            config.put("redstone", redstone);
+            config.put("redstone", redstoneConfig.write());
         }
         tag.put("configs", config);
         CustomDataUtil.setNbt(stack, tag);

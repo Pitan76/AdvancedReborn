@@ -13,7 +13,6 @@ import reborncore.common.powerSystem.RcEnergyItem;
 import reborncore.common.powerSystem.RcEnergyTier;
 import reborncore.common.util.ItemUtils;
 import techreborn.items.BatteryItem;
-import techreborn.utils.TRItemUtils;
 
 public class AdvancedBattery extends CompatItem implements RcEnergyItem {
     public int maxEnergy;
@@ -29,7 +28,7 @@ public class AdvancedBattery extends CompatItem implements RcEnergyItem {
     public StackActionResult onRightClick(ItemUseEvent e) {
         final ItemStack stack = e.user.getPlayerEntity().getStackInHand(e.hand);
         if (e.isSneaking()) {
-            TRItemUtils.switchActive(stack, 1, e.user.getEntity());
+            ItemUtils.switchActive(stack, 1, e.user.getEntity());
             return e.success();
         }
         return e.pass();
@@ -37,9 +36,9 @@ public class AdvancedBattery extends CompatItem implements RcEnergyItem {
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        TRItemUtils.checkActive(stack, 1, entity);
+        ItemUtils.checkActive(stack, 1, entity);
         if (WorldUtil.isClient(world)) return;
-        if (!TRItemUtils.isActive(stack)) return;
+        if (!ItemUtils.isActive(stack)) return;
 
         if (entity instanceof PlayerEntity) {
             ItemUtils.distributePowerToInventory((PlayerEntity) entity, stack, tier.getMaxOutput(), (testStack) -> !(testStack.getItem() instanceof BatteryItem));
@@ -48,7 +47,7 @@ public class AdvancedBattery extends CompatItem implements RcEnergyItem {
 
     @Override
     public void appendTooltip(ItemAppendTooltipEvent e) {
-        TRItemUtils.buildActiveTooltip(e.stack, e.tooltip);
+        ItemUtils.buildActiveTooltip(e.stack, e.tooltip);
     }
 
     @Override

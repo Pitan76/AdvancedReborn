@@ -1,0 +1,20 @@
+﻿{
+  "type": "advanced_reborn:canning_machine",
+  "power": 3,
+  "time": 100,
+  "ingredients": [
+    {
+      "item": "minecraft:carrot"
+    },
+    {
+      "item": "advanced_reborn:empty_can",
+      "count": 1
+    }
+  ],
+  "results": [
+    {
+      "item": "advanced_reborn:food_can",
+      "count": 1
+    }
+  ]
+}

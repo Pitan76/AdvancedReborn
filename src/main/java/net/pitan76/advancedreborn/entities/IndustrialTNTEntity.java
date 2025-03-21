@@ -34,8 +34,8 @@ public class IndustrialTNTEntity extends TntEntity {
      */
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
-        return super.createSpawnPacket(entityTrackerEntry);
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+        return super.createSpawnPacket();
     }
 
     public void tick() {
@@ -67,7 +67,7 @@ public class IndustrialTNTEntity extends TntEntity {
         Explosion explosion = new IndustrialExplosion(getEntityWorld(), this, null, null, getX(), getBodyY(0.0625D), getZ(),2.5F,false, Explosion.DestructionType.DESTROY);
         explosion.collectBlocksAndDamageEntities();
         explosion.affectWorld(true);
-        WorldUtil.playSound(getEntityWorld(), null, getBlockPos(), SoundEvents.ENTITY_GENERIC_EXPLODE.value(), SoundCategory.BLOCKS, 4.0F, (1.0F + (getEntityWorld().random.nextFloat() - getEntityWorld().random.nextFloat()) * 0.2F) * 0.7F);
+        WorldUtil.playSound(getEntityWorld(), null, getBlockPos(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, (1.0F + (getEntityWorld().random.nextFloat() - getEntityWorld().random.nextFloat()) * 0.2F) * 0.7F);
         ((ServerWorld)getEntityWorld()).spawnParticles(ParticleTypes.EXPLOSION, getX(), getY(), getZ(), 1, 0, 0, 0, 0);
     }
 }

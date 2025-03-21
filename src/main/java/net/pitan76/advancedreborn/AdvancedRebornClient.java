@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.EmotionParticle;
 import net.minecraft.entity.EntityType;
-import net.minecraft.particle.SimpleParticleType;
+import net.minecraft.particle.DefaultParticleType;
 import net.pitan76.advancedreborn.entities.IndustrialTNTEntity;
 import net.pitan76.advancedreborn.renderer.IndustrialTNTEntityRenderer;
 import net.pitan76.advancedreborn.screen.CardboardBoxScreen;
@@ -22,7 +22,7 @@ public class AdvancedRebornClient implements ClientModInitializer {
         CompatRegistryClient.registryClientSpriteAtlasTexture(INSTANCE.id("particle/energy"));
         INSTANCE.info("Registered particle texture");
 
-        CompatRegistryClient.registerParticle((SimpleParticleType) Particles.ENERGY.getOrNull(), EmotionParticle.HeartFactory::new);
+        CompatRegistryClient.registerParticle((DefaultParticleType) Particles.ENERGY.getOrNull(), EmotionParticle.HeartFactory::new);
         INSTANCE.info("Registered particle type");
 
         EntityRendererRegistry.registerEntityRendererAsFlyingItem(() -> Entities.DYNAMITE.getOrNull());

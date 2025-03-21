@@ -4,10 +4,10 @@ import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
-import net.minecraft.recipe.RecipeType;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import reborncore.client.gui.GuiBuilder;
 import reborncore.common.crafting.RebornRecipe;
+import reborncore.common.crafting.RebornRecipeType;
 import techreborn.client.compat.rei.MachineRecipeDisplay;
 import techreborn.client.compat.rei.ReiPlugin;
 import techreborn.client.compat.rei.machine.AbstractEnergyConsumingMachineCategory;
@@ -16,7 +16,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class TwoInputRightOutputCategory<R extends RebornRecipe> extends AbstractEnergyConsumingMachineCategory<R> {
-    public TwoInputRightOutputCategory(RecipeType<R> rebornRecipeType) {
+    public TwoInputRightOutputCategory(RebornRecipeType<R> rebornRecipeType) {
         super(rebornRecipeType);
     }
 

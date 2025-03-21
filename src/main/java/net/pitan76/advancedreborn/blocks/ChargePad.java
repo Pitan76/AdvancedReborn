@@ -4,7 +4,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.SimpleParticleType;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -19,6 +20,7 @@ import net.pitan76.mcpitanlib.api.event.block.*;
 import net.pitan76.mcpitanlib.api.state.property.BooleanProperty;
 import net.pitan76.mcpitanlib.api.state.property.CompatProperties;
 import net.pitan76.mcpitanlib.api.state.property.DirectionProperty;
+import net.pitan76.mcpitanlib.api.util.ParticleEffectUtil;
 import net.pitan76.mcpitanlib.api.util.VoxelShapeUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import net.pitan76.mcpitanlib.api.util.math.random.CompatRandom;
@@ -121,7 +123,7 @@ public class ChargePad extends CompatBlock {
             double rX = random.nextInt(9) * 0.1;
             double rZ = random.nextInt(9) * 0.1;
 
-            WorldUtil.spawnParticles(world, (SimpleParticleType) Particles.ENERGY.getOrNull(), pos.getX() + 0.1 + rX, pos.getY() + 0.25, pos.getZ() + 0.1 + rZ, 1, 0, 0.3, 0, 0);
+            WorldUtil.spawnParticles(world, ((DefaultParticleType) Particles.ENERGY.getOrNull()), pos.getX() + 0.1 + rX, pos.getY() + 0.25, pos.getZ() + 0.1 + rZ, 1, 0, 0.3, 0, 0);
             WorldUtil.setBlockState(world, pos, state.with(USING.getProperty(), true));
             WorldUtil.scheduleBlockTick(world, pos, this, 5);
             WorldUtil.updateComparators(world, pos, this);

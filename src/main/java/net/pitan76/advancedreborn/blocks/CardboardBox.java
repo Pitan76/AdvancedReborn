@@ -4,8 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.Inventory;
@@ -32,6 +30,7 @@ import net.pitan76.mcpitanlib.api.state.property.CompatProperties;
 import net.pitan76.mcpitanlib.api.state.property.DirectionProperty;
 import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.entity.ItemEntityUtil;
+import net.pitan76.mcpitanlib.api.util.v2.CustomNameUtil;
 
 import java.util.List;
 
@@ -74,8 +73,8 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
                 ItemStack stack = ItemStackUtil.create(this.asItem());
                 NbtCompound nbt = tile.writeInventoryNbt(NbtUtil.create());
                 if (tile.hasNote()) NbtUtil.set(nbt, "note" ,tile.getNote());
-                if (!nbt.isEmpty()) stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(nbt));
-                if (tile.hasCustomName()) stack.set(DataComponentTypes.CUSTOM_NAME, tile.getCustomName());
+                if (!nbt.isEmpty()) BlockEntityDataUtil.setBlockEntityNbt(stack, nbt);
+                if (tile.hasCustomName()) CustomNameUtil.setCustomName(stack, tile.getCustomName());
 
                 ItemEntity itemEntity = ItemEntityUtil.create(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
                 ItemEntityUtil.setToDefaultPickupDelay(itemEntity);
@@ -107,7 +106,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         if (placer != null)
             setFacing(placer.getHorizontalFacing().getOpposite(), world, pos);
 
-        if (stack.contains(DataComponentTypes.CUSTOM_NAME)) {
+        if (CustomNameUtil.hasCustomName(stack)) {
             BlockEntity blockEntity = WorldUtil.getBlockEntity(world, pos);
             if (blockEntity instanceof CardboardBoxTile) {
                 ((CardboardBoxTile)blockEntity).setCustomName(stack.getName());
@@ -137,7 +136,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         ItemStack itemStack = super.getPickStack(e);
         BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile)
-            blockEntity.setStackNbt(itemStack, e.getWorldView().getRegistryManager());
+            blockEntity.setStackNbt(itemStack);
 
         return itemStack;
     }
@@ -147,9 +146,9 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
     public void appendTooltip(ItemAppendTooltipEvent e) {
         super.appendTooltip(e);
 
-        if (!e.stack.contains(DataComponentTypes.BLOCK_ENTITY_DATA)) return;
+        if (!BlockEntityDataUtil.hasBlockEntityNbt(e.stack)) return;
 
-        NbtCompound nbt = e.stack.get(DataComponentTypes.BLOCK_ENTITY_DATA).copyNbt();
+        NbtCompound nbt = NbtUtil.copy(BlockEntityDataUtil.getBlockEntityNbt(e.stack));
         if (nbt != null) {
             if (nbt.contains("note")) {
                 e.addTooltip(TextUtil.literal(nbt.getString("note")));

@@ -4,7 +4,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.pitan76.advancedreborn.tile.InductionFurnaceTile;
@@ -74,14 +73,14 @@ public abstract class HeatMachineTile extends PowerAcceptorBlockEntity {
     }
 
     @Override
-    public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(tag, registryLookup);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
         setHeat(tag.getInt("heat"));
     }
 
     @Override
-    public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+    public void writeNbt(NbtCompound tag) {
         tag.putInt("heat", getHeat());
-        super.writeNbt(tag, registryLookup);
+        super.writeNbt(tag);
     }
 }

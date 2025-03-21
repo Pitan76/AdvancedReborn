@@ -7,7 +7,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -123,17 +122,17 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
         return getPos().getZ();
     }
 
-    public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+    public void writeNbt(NbtCompound nbt) {
         if (getTeleportPos() != null) {
             nbt.putDouble("tpX", getTeleportPos().getX());
             nbt.putDouble("tpY", getTeleportPos().getY());
             nbt.putDouble("tpZ", getTeleportPos().getZ());
         }
-        super.writeNbt(nbt, registryLookup);
+        super.writeNbt(nbt);
     }
 
-    public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(tag, registryLookup);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
         if (tag.contains("tpX") && tag.contains("tpY") && tag.contains("tpZ")) teleportPos = PosUtil.flooredBlockPos(tag.getDouble("tpX"), tag.getDouble("tpY"), tag.getDouble("tpZ"));
     }
 }
