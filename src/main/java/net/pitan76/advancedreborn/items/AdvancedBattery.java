@@ -3,13 +3,11 @@ package net.pitan76.advancedreborn.items;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
-import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
+import net.pitan76.mcpitanlib.api.event.item.*;
 import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.util.StackActionResult;
 import reborncore.common.powerSystem.RcEnergyItem;
 import reborncore.common.powerSystem.RcEnergyTier;
 import reborncore.common.util.ItemUtils;
@@ -26,13 +24,13 @@ public class AdvancedBattery extends ExtendItem implements RcEnergyItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> onRightClick(ItemUseEvent event) {
-        final ItemStack stack = event.user.getPlayerEntity().getStackInHand(event.hand);
-        if (event.user.isSneaking()) {
-            ItemUtils.switchActive(stack, 1, event.user.getEntity());
-            return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+    public StackActionResult onRightClick(ItemUseEvent e) {
+        final ItemStack stack = e.getStack();
+        if (e.isSneaking()) {
+            ItemUtils.switchActive(stack, 1, e.user.getEntity());
+            return e.success();
         }
-        return new TypedActionResult<>(ActionResult.PASS, stack);
+        return e.success();
     }
 
     @Override
@@ -65,17 +63,17 @@ public class AdvancedBattery extends ExtendItem implements RcEnergyItem {
     }
 
     @Override
-    public int getItemBarStep(ItemStack stack) {
-        return ItemUtils.getPowerForDurabilityBar(stack);
+    public int getItemBarStep(ItemBarStepArgs args) {
+        return ItemUtils.getPowerForDurabilityBar(args.stack);
     }
 
     @Override
-    public boolean isItemBarVisible(ItemStack stack) {
+    public boolean isItemBarVisible(ItemBarVisibleArgs args) {
         return true;
     }
 
     @Override
-    public int getItemBarColor(ItemStack stack) {
-        return ItemUtils.getColorForDurabilityBar(stack);
+    public int getItemBarColor(ItemBarColorArgs args) {
+        return ItemUtils.getColorForDurabilityBar(args.stack);
     }
 }

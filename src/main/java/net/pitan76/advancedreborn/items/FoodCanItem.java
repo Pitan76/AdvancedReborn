@@ -13,6 +13,8 @@ import net.pitan76.mcpitanlib.api.event.item.ItemFinishUsingEvent;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
 import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.util.CompatActionResult;
+import net.pitan76.mcpitanlib.api.util.StackActionResult;
 
 public class FoodCanItem extends ExtendItem {
     public FoodCanItem(CompatibleItemSettings settings) {
@@ -20,10 +22,10 @@ public class FoodCanItem extends ExtendItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> onRightClick(ItemUseEvent event) {
-        TypedActionResult<ItemStack> result = super.onRightClick(event);
-        if (result.getResult().equals(ActionResult.CONSUME)) {
-            event.user.getPlayerEntity().heal(1);
+    public StackActionResult onRightClick(ItemUseEvent e) {
+        StackActionResult result = super.onRightClick(e);
+        if (result.asCompatActionResult().equals(CompatActionResult.CONSUME)) {
+            e.user.heal(1);
         }
         return result;
     }
@@ -38,7 +40,7 @@ public class FoodCanItem extends ExtendItem {
         }
         if (playerEntity != null) {
             playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
-            if (!playerEntity.getAbilities().creativeMode) {
+            if (!playerEntity.isCreative()) {
                 playerEntity.eatFood(world, stack);
             }
         }

@@ -13,6 +13,7 @@ import net.pitan76.advancedreborn.entities.DynamiteEntity;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
 import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.util.StackActionResult;
 
 public class Dynamite extends ExtendItem {
 
@@ -43,18 +44,18 @@ public class Dynamite extends ExtendItem {
         this.isIndustrial = isIndustrial;
     }
 
-    public TypedActionResult<ItemStack> onRightClick(ItemUseEvent event) {
-        ItemStack stack = event.user.getPlayerEntity().getStackInHand(event.hand);
-        if (!event.user.getAbilities().creativeMode) stack.decrement(1);
-        if (!event.world.isClient()) {
-            DynamiteEntity dynamiteEntity = new DynamiteEntity(event.world, event.user.getEntity());
-            dynamiteEntity.setVelocity(event.user.getPlayerEntity(), event.user.getPlayerEntity().getPitch(), event.user.getPlayerEntity().getYaw(), 0.0F, 1.5F, 1.0F);
+    public StackActionResult onRightClick(ItemUseEvent e) {
+        ItemStack stack = e.getStack();
+        if (!e.user.isCreative()) stack.decrement(1);
+        if (!e.isClient()) {
+            DynamiteEntity dynamiteEntity = new DynamiteEntity(e.world, e.user.getEntity());
+            dynamiteEntity.setVelocity(e.user.getPlayerEntity(), e.user.getPlayerEntity().getPitch(), e.user.getPlayerEntity().getYaw(), 0.0F, 1.5F, 1.0F);
             dynamiteEntity.setItem(stack);
             dynamiteEntity.setSticky(isSticky);
             dynamiteEntity.setIndustrial(isIndustrial);
-            event.world.spawnEntity(dynamiteEntity);
-            event.world.playSound(null, dynamiteEntity.getX(), dynamiteEntity.getY(), dynamiteEntity.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            e.world.spawnEntity(dynamiteEntity);
+            e.world.playSound(null, dynamiteEntity.getX(), dynamiteEntity.getY(), dynamiteEntity.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
-        return TypedActionResult.success(stack);
+        return e.success();
     }
 }

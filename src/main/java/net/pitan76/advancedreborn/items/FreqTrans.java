@@ -2,7 +2,6 @@ package net.pitan76.advancedreborn.items;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
@@ -15,9 +14,9 @@ import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseOnBlockEvent;
 import net.pitan76.mcpitanlib.api.item.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.ExtendItem;
+import net.pitan76.mcpitanlib.api.util.CompatActionResult;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -43,15 +42,15 @@ public class FreqTrans extends ExtendItem {
         });
     }
 
-    public ActionResult onRightClickOnBlock(ItemUseOnBlockEvent event) {
-        World world = event.world;
-        BlockPos pos = event.hit.getBlockPos();
+    public CompatActionResult onRightClickOnBlock(ItemUseOnBlockEvent e) {
+        World world = e.world;
+        BlockPos pos = e.hit.getBlockPos();
         BlockEntity tile = world.getBlockEntity(pos);
-        if (tile == null) return ActionResult.PASS;
-        if (!(tile instanceof TeleporterTile)) return ActionResult.PASS;
-        if (world.isClient()) return ActionResult.SUCCESS;
+        if (tile == null) return CompatActionResult.PASS;
+        if (!(tile instanceof TeleporterTile)) return CompatActionResult.PASS;
+        if (world.isClient()) return CompatActionResult.SUCCESS;
         TeleporterTile machine = (TeleporterTile) tile;
-        ItemStack stack = event.player.getPlayerEntity().getStackInHand(event.hand);
+        ItemStack stack = e.player.getPlayerEntity().getStackInHand(e.hand);
         NbtCompound tag = stack.getNbt();
         if (tag == null) {
             tag = new NbtCompound();
@@ -60,8 +59,8 @@ public class FreqTrans extends ExtendItem {
         tag.putDouble("tpY", machine.getY());
         tag.putDouble("tpZ", machine.getZ());
         stack.setNbt(tag);
-        event.player.sendMessage(TextUtil.literal("Saved Machine's Pos to The Frequency Transmitter.(" + tag.getDouble("tpX") + "," + tag.getDouble("tpY") + "," + tag.getDouble("tpZ") + ")"));
-        return ActionResult.SUCCESS;
+        e.player.sendMessage(TextUtil.literal("Saved Machine's Pos to The Frequency Transmitter.(" + tag.getDouble("tpX") + "," + tag.getDouble("tpY") + "," + tag.getDouble("tpZ") + ")"));
+        return CompatActionResult.SUCCESS;
     }
 
     @Override
