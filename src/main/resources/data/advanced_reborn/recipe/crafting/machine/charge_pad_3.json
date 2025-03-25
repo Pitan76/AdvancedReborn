@@ -16,7 +16,7 @@
       "item": "techreborn:insulated_hv_cable"
     },
     "F": {
-      "tag": "c:refined_iron_ingots"
+      "item": "techreborn:refined_iron_ingot"
     }
   },
   "result": {
