@@ -7,12 +7,10 @@
 
   ],
   "key": {
-    "A": {
-      "tag": "c:tin_ingots"
-    }
+    "A": "#c:ingots/tin"
   },
   "result": {
-    "item": "advanced_reborn:empty_can",
+    "id": "advanced_reborn:empty_can",
     "count": 8
   }
 }
