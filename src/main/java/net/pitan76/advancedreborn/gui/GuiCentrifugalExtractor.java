@@ -4,7 +4,9 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.pitan76.advancedreborn.tile.CentrifugalExtractorTile;
+import net.pitan76.mcpitanlib.api.client.render.DrawObjectDM;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
+import net.pitan76.mcpitanlib.api.util.client.ScreenUtil;
 import reborncore.client.gui.GuiBase;
 import reborncore.client.gui.GuiBuilder;
 import reborncore.common.screen.BuiltScreenHandler;
@@ -45,10 +47,9 @@ public class GuiCentrifugalExtractor extends GuiBase<BuiltScreenHandler> {
     }
 
     public void drawOutputThreeLongSlotBuilder(DrawContext context, Screen gui, int posX, int posY) {
-        getMinecraft().getTextureManager().bindTexture(GuiBuilder.GUI_ELEMENTS);
-        context.drawTexture(GuiBuilder.GUI_ELEMENTS, posX, posY, 174, 0, 26 - 4, 26);
-        context.drawTexture(GuiBuilder.GUI_ELEMENTS, posX + 22, posY, 174 + 4, 0, 26 - 8, 26);
-        context.drawTexture(GuiBuilder.GUI_ELEMENTS, posX + 40, posY, 174 + 4, 0, 26 - 4, 26);
+        ScreenUtil.RendererUtil.drawTexture(new DrawObjectDM(context), GuiBuilder.GUI_ELEMENTS, posX, posY, 174, 0, 26 - 4, 26);
+        ScreenUtil.RendererUtil.drawTexture(new DrawObjectDM(context), GuiBuilder.GUI_ELEMENTS, posX + 22, posY, 174 + 4, 0, 26 - 8, 26);
+        ScreenUtil.RendererUtil.drawTexture(new DrawObjectDM(context), GuiBuilder.GUI_ELEMENTS, posX + 40, posY, 174 + 4, 0, 26 - 4, 26);
     }
 
     public void drawForeground(DrawContext context, int mouseX, int mouseY) {

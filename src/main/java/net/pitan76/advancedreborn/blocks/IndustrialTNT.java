@@ -92,7 +92,7 @@ public class IndustrialTNT extends TntBlock {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         primeITnt(world, pos, player);
         WorldUtil.setBlockState(world, pos, Blocks.AIR.getDefaultState(), 11);
-        return ActionResult.success(WorldUtil.isClient(world));
+        return ActionResult.SUCCESS;
     }
 
     @Override

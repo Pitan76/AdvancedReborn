@@ -7,7 +7,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.pitan76.advancedreborn.Defines;
-import net.pitan76.mcpitanlib.api.client.CompatInventoryScreen;
+import net.pitan76.mcpitanlib.api.client.gui.screen.CompatInventoryScreen;
 import net.pitan76.mcpitanlib.api.client.render.handledscreen.DrawBackgroundArgs;
 import net.pitan76.mcpitanlib.api.client.render.handledscreen.KeyEventArgs;
 import net.pitan76.mcpitanlib.api.network.ClientNetworking;
@@ -20,13 +20,13 @@ import net.pitan76.mcpitanlib.api.util.client.ScreenUtil;
 
 import static net.pitan76.advancedreborn.AdvancedReborn.INSTANCE;
 
-public class CardboardBoxScreen extends CompatInventoryScreen {
+public class CardboardBoxScreen extends CompatInventoryScreen<CardboardBoxScreenHandler> {
     private static final CompatIdentifier TEXTURE = INSTANCE.compatId("textures/gui/cardboard_box.png");
     private TextFieldWidget noteBox;
 
     private final CardboardBoxScreenHandler handler;
 
-    public CardboardBoxScreen(ScreenHandler handler, PlayerInventory inventory, Text title) {
+    public CardboardBoxScreen(CardboardBoxScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         backgroundHeight = 133;
         this.playerInventoryTitleY = this.backgroundHeight - 94;
@@ -40,12 +40,12 @@ public class CardboardBoxScreen extends CompatInventoryScreen {
 
     @Override
     public void drawBackgroundOverride(DrawBackgroundArgs args) {
-        ScreenUtil.setBackground(getTexture());
+        ScreenUtil.setBackground(getCompatTexture().toMinecraft());
         if (client == null) return;
-        client.getTextureManager().bindTexture(getTexture());
+        //client.getTextureManager().bindTexture(getTexture());
         int x = (width - backgroundWidth) / 2;
         int y = (height - backgroundHeight) / 2;
-        args.getDrawObjectDM().getContext().drawTexture(getTexture(), x, y, 0, 0, backgroundWidth, backgroundHeight);
+        ScreenUtil.RendererUtil.drawTexture(args.getDrawObjectDM(), getCompatTexture(), x, y, 0, 0, backgroundWidth, backgroundHeight);
         getNoteBox().render(args.drawObjectDM.getContext(), args.mouseX, args.mouseY, args.delta);
         RenderUtil.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }

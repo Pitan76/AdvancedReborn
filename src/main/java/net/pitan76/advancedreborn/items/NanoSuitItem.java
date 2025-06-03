@@ -26,9 +26,16 @@ public class NanoSuitItem extends TREnergyArmourItem implements ArmorBlockEntity
 
     private static final EntityAttributeModifier DISABLED_ARMOR_MODIFIER = new EntityAttributeModifier(IdentifierUtil.id(AdvancedReborn.MOD_ID, "nano_armor"), -1, EntityAttributeModifier.Operation.ADD_VALUE);
 
+    private static int num = 0;
+    private static final String[] names = new String[]{
+            "nano_suit_helmet",
+            "nano_suit_chestplate",
+            "nano_suit_leggings",
+            "nano_suit_boots"
+    };
 
     public NanoSuitItem(CompatibleArmorMaterial material, ArmorEquipmentType slot, CompatibleItemSettings settings) {
-        super(material.build(), slot.getType(), 1_000_000, RcEnergyTier.EXTREME);//, settings.build());
+        super(material.build(), slot.getType(), 1_000_000, RcEnergyTier.EXTREME, names[num++]);
 
         ApplyArmorToDamageCallback.EVENT.register(((player, source, amount) -> {
             for (ItemStack stack : player.getArmorItems()) {
@@ -59,11 +66,6 @@ public class NanoSuitItem extends TREnergyArmourItem implements ArmorBlockEntity
     }
 
     @Override
-    public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-        return false;
-    }
-
-    @Override
     public int getItemBarStep(ItemStack stack) {
         return ItemUtils.getPowerForDurabilityBar(stack);
     }
@@ -79,12 +81,7 @@ public class NanoSuitItem extends TREnergyArmourItem implements ArmorBlockEntity
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public void tickArmor(ItemStack stack, PlayerEntity player) {
+    public void tickArmor(ItemStack stack, boolean b, PlayerEntity playerEntity) {
         /*
         if (stack.getItem().equals(Items.NANO_SUIT_HELMET)) {
             if (getStoredEnergy(stack) > 0) {
@@ -97,7 +94,7 @@ public class NanoSuitItem extends TREnergyArmourItem implements ArmorBlockEntity
         final EquipmentSlot slotType = this.getSlotType();
         AttributeModifiersComponent attributes = stack.getOrDefault(DataComponentTypes.ATTRIBUTE_MODIFIERS, AttributeModifiersComponent.DEFAULT);
 
-        attributes = attributes.with(EntityAttributes.GENERIC_ARMOR, getStoredEnergy(stack) > 0 ? ENABLED_ARMOR_MODIFIER : DISABLED_ARMOR_MODIFIER, AttributeModifierSlot.forEquipmentSlot(slotType));
+        attributes = attributes.with(EntityAttributes.ARMOR, getStoredEnergy(stack) > 0 ? ENABLED_ARMOR_MODIFIER : DISABLED_ARMOR_MODIFIER, AttributeModifierSlot.forEquipmentSlot(slotType));
         stack.set(DataComponentTypes.ATTRIBUTE_MODIFIERS, attributes);
     }
 }

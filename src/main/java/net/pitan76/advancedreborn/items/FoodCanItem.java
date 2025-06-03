@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import net.pitan76.advancedreborn.Items;
 import net.pitan76.mcpitanlib.api.entity.Player;
@@ -47,7 +46,7 @@ public class FoodCanItem extends CompatItem {
 
             player.incrementStat(Stats.USED.getOrCreateStat(this));
             if (!player.isCreative()) {
-                player.getEntity().eatFood(world, stack, CAN_FOOD_COMPONENT.build());
+                player.getEntity().getHungerManager().eat(CAN_FOOD_COMPONENT.build());
             }
         }
 

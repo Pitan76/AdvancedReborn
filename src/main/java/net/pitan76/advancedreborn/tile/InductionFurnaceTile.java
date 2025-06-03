@@ -11,6 +11,7 @@ import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.recipe.input.SingleStackRecipeInput;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -98,7 +99,11 @@ public class InductionFurnaceTile extends HeatMachineTile implements IToolDrop, 
             resetCrafter();
             return;
         }
-        Optional<RecipeEntry<SmeltingRecipe>> testRecipe = Objects.requireNonNull(world).getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SingleStackRecipeInput(inventory.getStack(inputSlot)), world);
+
+        MinecraftServer server = Objects.requireNonNull(world).getServer();
+        if (server == null) return;
+
+        Optional<RecipeEntry<SmeltingRecipe>> testRecipe = server.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SingleStackRecipeInput(inventory.getStack(inputSlot)), world);
         if (testRecipe.isEmpty()) {
             resetCrafter();
             return;
@@ -117,7 +122,11 @@ public class InductionFurnaceTile extends HeatMachineTile implements IToolDrop, 
             resetCrafter2();
             return;
         }
-        Optional<RecipeEntry<SmeltingRecipe>> testRecipe = Objects.requireNonNull(world).getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SingleStackRecipeInput(inventory.getStack(inputSlot2)), world);
+
+        MinecraftServer server = Objects.requireNonNull(world).getServer();
+        if (server == null) return;
+
+        Optional<RecipeEntry<SmeltingRecipe>> testRecipe = server.getRecipeManager().getFirstMatch(RecipeType.SMELTING, new SingleStackRecipeInput(inventory.getStack(inputSlot2)), world);
         if (testRecipe.isEmpty()) {
             resetCrafter2();
             return;

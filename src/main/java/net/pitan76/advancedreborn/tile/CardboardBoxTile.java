@@ -21,7 +21,8 @@ import net.pitan76.mcpitanlib.api.event.container.factory.ExtraDataArgs;
 import net.pitan76.mcpitanlib.api.event.nbt.NbtRWArgs;
 import net.pitan76.mcpitanlib.api.event.nbt.ReadNbtArgs;
 import net.pitan76.mcpitanlib.api.event.nbt.WriteNbtArgs;
-import net.pitan76.mcpitanlib.api.gui.ExtendedScreenHandlerFactory;
+import net.pitan76.mcpitanlib.api.gui.args.CreateMenuEvent;
+import net.pitan76.mcpitanlib.api.gui.v2.ExtendedScreenHandlerFactory;
 import net.pitan76.mcpitanlib.api.tile.CompatBlockEntity;
 import net.pitan76.mcpitanlib.api.util.InventoryUtil;
 import net.pitan76.mcpitanlib.api.util.NbtUtil;
@@ -59,7 +60,7 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, S
     }
 
     public boolean hasNote() {
-        return !note.equals("");
+        return !note.isEmpty();
     }
 
     public void writeNbt(WriteNbtArgs args) {
@@ -124,17 +125,17 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, S
         return customName;
     }
 
-    @Nullable
-    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new CardboardBoxScreenHandler(syncId, inv, this, getNote(), this);
+    @Override
+    public ScreenHandler createMenu(CreateMenuEvent e) {
+        return new CardboardBoxScreenHandler(e.getSyncId(), e.getPlayerInventory(), this, getNote(), this);
     }
 
     @Override
     public void writeExtraData(ExtraDataArgs args) {
         NbtCompound data = NbtUtil.create();
-        data.putDouble("x", getPos().getX());
-        data.putDouble("y", getPos().getY());
-        data.putDouble("z", getPos().getZ());
+        data.putDouble("x", callGetPos().getX());
+        data.putDouble("y", callGetPos().getY());
+        data.putDouble("z", callGetPos().getZ());
         data.putString("note", getNote());
         args.writeVar(data);
     }

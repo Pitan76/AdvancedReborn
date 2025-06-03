@@ -4,7 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.pitan76.advancedreborn.tile.EnchantmentExtractorTile;
+import net.pitan76.mcpitanlib.api.client.render.DrawObjectDM;
 import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
+import net.pitan76.mcpitanlib.api.util.client.ScreenUtil;
 import reborncore.client.gui.GuiBase;
 import reborncore.client.gui.GuiBuilder;
 import reborncore.common.screen.BuiltScreenHandler;
@@ -50,7 +52,7 @@ public class GuiEnchantmentExtractor extends GuiBase<BuiltScreenHandler> {
 
         //RenderSystem.setShaderTexture(0, GUI);
         // Book slot
-        context.drawTexture(GUI.toMinecraft(), 60 + this.x - 1, 25 + this.y - 1, 0, 0, 18, 18);
+        ScreenUtil.RendererUtil.drawTexture(new DrawObjectDM(context), GUI.toMinecraft(), 60 + this.x - 1, 25 + this.y - 1, 0, 0, 18, 18);
     }
 
     public void drawForeground(DrawContext context, int mouseX, int mouseY) {

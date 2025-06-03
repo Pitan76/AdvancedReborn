@@ -9,9 +9,9 @@ import static net.pitan76.advancedreborn.AdvancedReborn.INSTANCE;
 import static net.pitan76.advancedreborn.AdvancedReborn.registry;
 
 public class ScreenHandlers {
-    public static RegistryResult<ScreenHandlerType<?>> CARDBOARD_BOX_SCREEN_HANDLER;
+    public static RegistryResult<ScreenHandlerType<CardboardBoxScreenHandler>> CARDBOARD_BOX_SCREEN_HANDLER;
 
     public static void init() {
-        CARDBOARD_BOX_SCREEN_HANDLER = registry.registerScreenHandlerType(INSTANCE.compatId("cardboard_box"), () -> new ExtendedScreenHandlerTypeBuilder<>(CardboardBoxScreenHandler::new).build());
+        CARDBOARD_BOX_SCREEN_HANDLER = registry.registerScreenHandlerType(INSTANCE.compatId("cardboard_box"), new ExtendedScreenHandlerTypeBuilder<>(CardboardBoxScreenHandler::new));
     }
 }

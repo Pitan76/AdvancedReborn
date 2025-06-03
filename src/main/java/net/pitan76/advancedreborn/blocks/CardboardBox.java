@@ -8,10 +8,8 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
@@ -21,6 +19,8 @@ import net.minecraft.world.World;
 import net.pitan76.advancedreborn.tile.CardboardBoxTile;
 import net.pitan76.mcpitanlib.api.block.CompatBlockRenderType;
 import net.pitan76.mcpitanlib.api.block.args.RenderTypeArgs;
+import net.pitan76.mcpitanlib.api.block.args.v2.GetComparatorOutputArgs;
+import net.pitan76.mcpitanlib.api.block.args.v2.HasComparatorOutputArgs;
 import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import net.pitan76.mcpitanlib.api.block.ExtendBlockEntityProvider;
 import net.pitan76.mcpitanlib.api.block.v2.CompatBlock;
@@ -137,7 +137,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         ItemStack itemStack = super.getPickStack(e);
         BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile)
-            blockEntity.setStackNbt(itemStack, e.getWorldView().getRegistryManager());
+            BlockEntityUtil.setStackNbt(blockEntity, itemStack, RegistryLookupUtil.getRegistryLookup(blockEntity));
 
         return itemStack;
     }
@@ -188,12 +188,14 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         return CompatBlockRenderType.MODEL;
     }
 
-    public boolean hasComparatorOutput(BlockState state) {
+    @Override
+    public boolean hasComparatorOutput(HasComparatorOutputArgs args) {
         return true;
     }
 
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return ScreenHandler.calculateComparatorOutput((Inventory)WorldUtil.getBlockEntity(world, pos));
+    @Override
+    public int getComparatorOutput(GetComparatorOutputArgs args) {
+        return args.calcComparatorOutputFromBlockEntity();
     }
 
     @Override

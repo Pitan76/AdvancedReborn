@@ -12,15 +12,11 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 import net.pitan76.advancedreborn.Entities;
 import net.pitan76.advancedreborn.Items;
-import net.pitan76.advancedreborn.entities.itnt.IndustrialExplosion;
 import net.pitan76.mcpitanlib.api.entity.CompatThrownItemEntity;
 import net.pitan76.mcpitanlib.api.event.entity.CollisionEvent;
 import net.pitan76.mcpitanlib.api.event.entity.InitDataTrackerArgs;
-import net.pitan76.mcpitanlib.api.sound.CompatSoundCategory;
-import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 
 public class DynamiteEntity extends CompatThrownItemEntity {
@@ -115,7 +111,8 @@ public class DynamiteEntity extends CompatThrownItemEntity {
         if (stopped) {
             fuseTimer--;
             if (fuseTimer <= 0) {
-                kill();
+                if (getEntityWorld() instanceof ServerWorld)
+                    kill((ServerWorld) getEntityWorld());
                 if (!getEntityWorld().isClient()) {
                     explode();
                 }
@@ -130,11 +127,18 @@ public class DynamiteEntity extends CompatThrownItemEntity {
 
     public void explode() {
         if (isIndustrial) {
-            Explosion explosion = new IndustrialExplosion(getEntityWorld(), this, null, null, getX(), getBodyY(0.0625D), getZ(),2.5F,false, Explosion.DestructionType.DESTROY);
-            explosion.collectBlocksAndDamageEntities();
-            explosion.affectWorld(true);
-            WorldUtil.playSound(getEntityWorld(), null, getBlockPos(), CompatSoundEvents.ENTITY_GENERIC_EXPLODE, CompatSoundCategory.BLOCKS, 4.0F, (1.0F + (getEntityWorld().random.nextFloat() - getEntityWorld().random.nextFloat()) * 0.2F) * 0.7F);
-            ((ServerWorld)getEntityWorld()).spawnParticles(ParticleTypes.EXPLOSION, getX(), getY(), getZ(), 1, 0, 0, 0, 0);
+            this.getWorld()
+                    .createExplosion(
+                            this,
+                            null,
+                            null,
+                            this.getX(),
+                            this.getBodyY(0.0625),
+                            this.getZ(),
+                            2.5F,
+                            false,
+                            World.ExplosionSourceType.BLOCK
+                    );
             return;
         }
         getEntityWorld().createExplosion(this, getX(), getBodyY(0.0625D), getZ(), 4.0F, World.ExplosionSourceType.TNT);

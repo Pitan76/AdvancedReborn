@@ -1,19 +1,14 @@
 package net.pitan76.advancedreborn.entities;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.TntEntity;
+import net.minecraft.entity.*;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.EntityExplosionBehavior;
 import net.minecraft.world.explosion.Explosion;
-import net.pitan76.advancedreborn.entities.itnt.IndustrialExplosion;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,24 +45,44 @@ public class IndustrialTNTEntity extends TntEntity {
         }
         setFuse(getFuse() - 1);
         if (getFuse() <= 0) {
-            kill();
+            if (getEntityWorld() instanceof ServerWorld)
+                kill((ServerWorld) getEntityWorld());
             if (!getEntityWorld().isClient) {
                 iExplode();
             }
         } else {
             updateWaterState();
             if (getEntityWorld().isClient) {
-                getEntityWorld().addParticle(ParticleTypes.SMOKE, getX(), getY() + 0.5D, getZ(), 0.0D, 0.0D, 0.0D);
+                WorldUtil.addParticle(getEntityWorld(), ParticleTypes.SMOKE, getX(), getY() + 0.5D, getZ(), 0.0D, 0.0D, 0.0D);
             }
         }
 
     }
 
     public void iExplode() {
-        Explosion explosion = new IndustrialExplosion(getEntityWorld(), this, null, null, getX(), getBodyY(0.0625D), getZ(),2.5F,false, Explosion.DestructionType.DESTROY);
-        explosion.collectBlocksAndDamageEntities();
-        explosion.affectWorld(true);
-        WorldUtil.playSound(getEntityWorld(), null, getBlockPos(), SoundEvents.ENTITY_GENERIC_EXPLODE.value(), SoundCategory.BLOCKS, 4.0F, (1.0F + (getEntityWorld().random.nextFloat() - getEntityWorld().random.nextFloat()) * 0.2F) * 0.7F);
-        ((ServerWorld)getEntityWorld()).spawnParticles(ParticleTypes.EXPLOSION, getX(), getY(), getZ(), 1, 0, 0, 0, 0);
+        this.getWorld()
+                .createExplosion(
+                        this,
+                        null,
+                        new IndustrialTNTExplosionBehavior(this),
+                        this.getX(),
+                        this.getBodyY(0.0625),
+                        this.getZ(),
+                        2.5F,
+                        false,
+                        World.ExplosionSourceType.BLOCK
+                );
+    }
+
+    public static class IndustrialTNTExplosionBehavior extends EntityExplosionBehavior {
+
+        public IndustrialTNTExplosionBehavior(Entity entity) {
+            super(entity);
+        }
+
+        @Override
+        public boolean shouldDamage(Explosion explosion, Entity entity) {
+            return false;
+        }
     }
 }

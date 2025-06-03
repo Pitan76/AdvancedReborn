@@ -10,9 +10,12 @@ import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.pitan76.advancedreborn.AdvancedReborn;
 import net.pitan76.advancedreborn.Blocks;
@@ -22,10 +25,10 @@ import net.pitan76.advancedreborn.addons.rei.machine.TwoInputRightOutputCategory
 import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
 import reborncore.common.crafting.RebornRecipe;
 import reborncore.common.crafting.RecipeManager;
-import techreborn.client.compat.rei.MachineRecipeDisplay;
+import techreborn.compat.rei.FluidReplicatorRecipeDisplay;
+import techreborn.compat.rei.MachineRecipeDisplay;
 import techreborn.client.compat.rei.ReiPlugin;
-import techreborn.client.compat.rei.fluidreplicator.FluidReplicatorRecipeDisplay;
-import techreborn.client.compat.rei.rollingmachine.RollingMachineDisplay;
+import techreborn.compat.rei.RollingMachineDisplay;
 import techreborn.init.ModRecipes;
 import techreborn.init.TRContent;
 import techreborn.recipe.recipes.FluidReplicatorRecipe;
@@ -71,20 +74,17 @@ public class REIAddon implements REIClientPlugin {
         if (recipeType != ModRecipes.RECYCLER) {
             Function<RecipeEntry<RebornRecipe>, Display> recipeDisplay = MachineRecipeDisplay::new;
             if (recipeType == ModRecipes.ROLLING_MACHINE) {
-                recipeDisplay = (r) -> {
-                    RollingMachineRecipe rollingMachineRecipe = (RollingMachineRecipe)r.value();
-                    return new RollingMachineDisplay(new RecipeEntry<>(Registries.RECIPE_TYPE.getId(recipeType), rollingMachineRecipe.getShapedRecipe()));
-                };
+                recipeDisplay = RollingMachineDisplay::new;
             }
 
             if (recipeType == ModRecipes.FLUID_REPLICATOR) {
-                recipeDisplay = (r) -> {
-                    FluidReplicatorRecipe recipe = (FluidReplicatorRecipe)r.value();
-                    return new FluidReplicatorRecipeDisplay(new RecipeEntry<>(Registries.RECIPE_TYPE.getId(recipeType), recipe));
-                };
+                recipeDisplay = FluidReplicatorRecipeDisplay::new;
             }
 
-            registry.registerRecipeFiller(RebornRecipe.class, (recipeType1) -> true, (recipeEntry) -> recipeEntry.value().getType() == recipeType, recipeDisplay);
+            Function<RecipeEntry, Display> finalRecipeDisplay = (Function) recipeDisplay;
+            registry.beginFiller(RecipeEntry.class).filter(recipeType1 -> true)
+                    .filter((recipeEntry) -> recipeEntry.value().getType() == recipeType)
+                    .fill(finalRecipeDisplay);
         }
     }
 

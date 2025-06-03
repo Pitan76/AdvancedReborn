@@ -8,7 +8,7 @@ import net.minecraft.recipe.RecipeType;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import reborncore.client.gui.GuiBuilder;
 import reborncore.common.crafting.RebornRecipe;
-import techreborn.client.compat.rei.MachineRecipeDisplay;
+import techreborn.compat.rei.MachineRecipeDisplay;
 import techreborn.client.compat.rei.ReiPlugin;
 import techreborn.client.compat.rei.machine.AbstractEnergyConsumingMachineCategory;
 

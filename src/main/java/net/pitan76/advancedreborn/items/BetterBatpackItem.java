@@ -1,6 +1,7 @@
 package net.pitan76.advancedreborn.items;
 
 import net.minecraft.item.ItemStack;
+import net.pitan76.mcpitanlib.api.event.item.EnchantableArgs;
 import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
 import net.pitan76.mcpitanlib.api.item.CompatibleArmorMaterial;
 import net.pitan76.mcpitanlib.api.item.v2.CompatItemProvider;
@@ -13,13 +14,15 @@ public class BetterBatpackItem extends BatpackItem implements CompatItemProvider
 
     protected CompatibleItemSettings settings;
 
+    private static int num = 0;
+
     @Override
     public CompatibleItemSettings getCompatSettings() {
         return settings;
     }
 
     public BetterBatpackItem(CompatibleItemSettings settings, int maxCharge, CompatibleArmorMaterial material, RcEnergyTier tier) {
-        super(maxCharge, material.build(), tier);
+        super(maxCharge, material.build(), tier, "better_batpack_" + num++);
         this.settings = settings;
     }
 
@@ -31,7 +34,7 @@ public class BetterBatpackItem extends BatpackItem implements CompatItemProvider
      */
 
     @Override
-    public boolean isEnchantable(ItemStack stack) {
+    public boolean isEnchantable(EnchantableArgs args) {
         return true;
     }
 
@@ -39,6 +42,5 @@ public class BetterBatpackItem extends BatpackItem implements CompatItemProvider
     public void appendTooltip(ItemAppendTooltipEvent e, Options options) {
         CompatItemProvider.super.appendTooltip(e, options);
         TRItemUtils.buildActiveTooltip(e.stack, e.tooltip);
-
     }
 }
