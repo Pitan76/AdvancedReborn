@@ -35,18 +35,18 @@ public class ConfigWrench extends CompatItem {
                     if (!CustomDataUtil.hasNbt(stack)) return ActionResult.FAIL;
                     NbtCompound tag = CustomDataUtil.getNbt(stack);
                     if (!tag.contains("configs")) return ActionResult.FAIL;
-                    NbtCompound config = tag.getCompound("configs");
+                    NbtCompound config = NbtUtil.get(tag, "configs");
                     MachineBaseBlockEntityAccessor accessor = (MachineBaseBlockEntityAccessor) tile;
                     if (config.contains("slot"))
-                        accessor.getSlotConfiguration().read(config.getCompound("slot"));
+                        accessor.getSlotConfiguration().read(NbtUtil.get(config, "slot"));
                     if (config.contains("fluid"))
-                        accessor.getFluidConfiguration().read(config.getCompound("fluid"));
+                        accessor.getFluidConfiguration().read(NbtUtil.get(config, "fluid"));
                     if (config.contains("redstone")) {
                         Map<RedstoneConfiguration.Element, RedstoneConfiguration.State> stateMap = accessor.getRedstoneConfiguration().stateMap();
-                        NbtCompound redstone = config.getCompound("redstone");
+                        NbtCompound redstone = NbtUtil.get(config, "redstone");
                         stateMap.forEach((element, state) -> {
                             if (redstone.contains(element.name())) {
-                                stateMap.put(element, RedstoneConfiguration.State.valueOf(redstone.getString(element.name())));
+                                stateMap.put(element, RedstoneConfiguration.State.valueOf(NbtUtil.getString(redstone, element.name())));
                             }
                         });
                     }

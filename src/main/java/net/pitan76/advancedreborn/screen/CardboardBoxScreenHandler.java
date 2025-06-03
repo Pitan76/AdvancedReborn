@@ -13,6 +13,7 @@ import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.gui.ExtendedScreenHandler;
 import net.pitan76.mcpitanlib.api.network.PacketByteUtil;
 import net.pitan76.mcpitanlib.api.util.InventoryUtil;
+import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,11 +28,11 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
         NbtCompound data = PacketByteUtil.readNbt(buf);
 
         if (data == null) return;
-        if (data.contains("x") && data.contains("y") && data.contains("z")) {
-            pos = PosUtil.flooredBlockPos(data.getDouble("x"), data.getDouble("y"), data.getDouble("z"));
+        if (NbtUtil.has(data, "x") && NbtUtil.has(data, "y") && NbtUtil.has(data, "z")) {
+            pos = PosUtil.flooredBlockPos(NbtUtil.getDouble(data, "x"), NbtUtil.getDouble(data, "y"), NbtUtil.getDouble(data, "z"));
         }
-        if (data.contains("note")) {
-            tmpNote = data.getString("note");
+        if (NbtUtil.has(data, "note")) {
+            tmpNote = NbtUtil.getString(data, "note");
         }
     }
 
@@ -41,7 +42,7 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
         this.inventory = inventory;
         this.tmpNote = note;
         if (tile != null) {
-            pos = tile.getPos();
+            pos = tile.callGetPos();
         }
         inventory.onOpen(playerInventory.player);
         int m;

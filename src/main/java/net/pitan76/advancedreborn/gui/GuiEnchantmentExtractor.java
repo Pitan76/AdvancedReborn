@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.pitan76.advancedreborn.tile.EnchantmentExtractorTile;
 import net.pitan76.mcpitanlib.api.client.render.DrawObjectDM;
 import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
+import net.pitan76.mcpitanlib.api.util.client.RenderUtil;
 import net.pitan76.mcpitanlib.api.util.client.ScreenUtil;
 import reborncore.client.gui.GuiBase;
 import reborncore.client.gui.GuiBuilder;
@@ -35,7 +36,7 @@ public class GuiEnchantmentExtractor extends GuiBase<BuiltScreenHandler> {
         super.drawBackground(context, lastFrameDuration, mouseX, mouseY);
         Layer layer = Layer.BACKGROUND;
 
-        RenderSystem.setShaderTexture(0, GuiBuilder.GUI_ELEMENTS);
+        RenderUtil.setShaderTexture(0, GuiBuilder.GUI_ELEMENTS);
         drawSlot(context, 40, 25, layer); // Input slot
         drawSlot(context, 40, 65, layer); // Output slot
 

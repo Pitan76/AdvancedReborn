@@ -31,8 +31,8 @@ public class FreqTrans extends CompatItem {
                     NbtCompound tag = CustomDataUtil.getNbt(stack);
                     if (!tag.contains("tpX") || !tag.contains("tpY") || !tag.contains("tpZ")) return ActionResult.FAIL;
                     TeleporterTile machine = (TeleporterTile) tile;
-                    machine.setTeleportPos(PosUtil.flooredBlockPos(tag.getDouble("tpX"), tag.getDouble("tpY"), tag.getDouble("tpZ")));
-                    player.sendMessage(TextUtil.literal("Loaded Teleport Pos from The Frequency Transmitter.(" + tag.getDouble("tpX") + "," + tag.getDouble("tpY") + "," + tag.getDouble("tpZ") + ")"), false);
+                    machine.setTeleportPos(PosUtil.flooredBlockPos(NbtUtil.getDouble(tag, "tpX"), NbtUtil.getDouble(tag, "tpY"), NbtUtil.getDouble(tag, "tpZ")));
+                    player.sendMessage(TextUtil.literal("Loaded Teleport Pos from The Frequency Transmitter.(" + NbtUtil.getDouble(tag, "tpX") + "," + NbtUtil.getDouble(tag, "tpY") + "," + NbtUtil.getDouble(tag, "tpZ") + ")"), false);
                     return ActionResult.SUCCESS;
                 }
             }
@@ -57,7 +57,7 @@ public class FreqTrans extends CompatItem {
         tag.putDouble("tpZ", machine.getZ());
         CustomDataUtil.setNbt(stack, tag);
 
-        e.player.sendMessage(TextUtil.literal("Saved Machine's Pos to The Frequency Transmitter.(" + tag.getDouble("tpX") + "," + tag.getDouble("tpY") + "," + tag.getDouble("tpZ") + ")"));
+        e.player.sendMessage(TextUtil.literal("Saved Machine's Pos to The Frequency Transmitter.(" + NbtUtil.getDouble(tag, "tpX") + "," + NbtUtil.getDouble(tag, "tpY") + "," + NbtUtil.getDouble(tag, "tpZ") + ")"));
         return e.success();
     }
 

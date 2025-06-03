@@ -152,12 +152,12 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         NbtCompound nbt = e.stack.get(DataComponentTypes.BLOCK_ENTITY_DATA).copyNbt();
         if (nbt != null) {
             if (nbt.contains("note")) {
-                e.addTooltip(TextUtil.literal(nbt.getString("note")));
+                e.addTooltip(TextUtil.literal(NbtUtil.getString(nbt, "note")));
             }
-            if (nbt.contains("LootTable", 8)) {
+            if (NbtUtil.has(nbt, "LootTable")) {
                 e.addTooltip(TextUtil.literal("???????"));
             }
-            if (nbt.contains("Items", 9)) {
+            if (NbtUtil.has(nbt, "Items")) {
                 DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
                 NbtRWArgs args = new NbtRWArgs(nbt, e.getRegistryLookup());
                 InventoryUtil.readNbt(args, defaultedList);

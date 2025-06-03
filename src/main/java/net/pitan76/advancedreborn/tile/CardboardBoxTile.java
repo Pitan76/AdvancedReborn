@@ -65,13 +65,13 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, S
 
     public void writeNbt(WriteNbtArgs args) {
         InventoryUtil.writeNbt(args, inventory);
-        args.nbt.putString("note", getNote());
+        NbtUtil.putString(args.nbt, "note", getNote());
         super.writeNbt(args);
     }
 
     public void readNbt(ReadNbtArgs args) {
         super.readNbt(args);
-        setNote(args.nbt.getString("note"));
+        setNote(NbtUtil.getString(args.nbt, "note"));
         InventoryUtil.readNbt(args, inventory);
     }
 
@@ -97,7 +97,7 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, S
 
     public void readInventoryNbt(NbtCompound nbt) {
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-        if (nbt.contains("Items", 9)) {
+        if (NbtUtil.has(nbt, "Items")) {
             InventoryUtil.readNbt(new NbtRWArgs(nbt), this.inventory);
         }
 

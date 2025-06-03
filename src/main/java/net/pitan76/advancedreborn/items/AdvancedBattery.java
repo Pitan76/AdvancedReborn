@@ -36,7 +36,11 @@ public class AdvancedBattery extends CompatItem implements RcEnergyItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+    public void inventoryTick(InventoryTickEvent e) {
+        ItemStack stack = e.stack;
+        World world = e.world;
+        Entity entity = e.entity;
+
         TRItemUtils.checkActive(stack, 1, entity);
         if (WorldUtil.isClient(world)) return;
         if (!TRItemUtils.isActive(stack)) return;
@@ -48,7 +52,7 @@ public class AdvancedBattery extends CompatItem implements RcEnergyItem {
 
     @Override
     public void appendTooltip(ItemAppendTooltipEvent e) {
-        TRItemUtils.buildActiveTooltip(e.stack, e.tooltip);
+        TRItemUtils.buildActiveTooltip(e.stack, e.textConsumer);
     }
 
     @Override

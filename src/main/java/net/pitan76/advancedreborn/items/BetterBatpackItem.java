@@ -41,6 +41,6 @@ public class BetterBatpackItem extends BatpackItem implements CompatItemProvider
     @Override
     public void appendTooltip(ItemAppendTooltipEvent e, Options options) {
         CompatItemProvider.super.appendTooltip(e, options);
-        TRItemUtils.buildActiveTooltip(e.stack, e.tooltip);
+        TRItemUtils.buildActiveTooltip(e.stack, e.textConsumer);
     }
 }

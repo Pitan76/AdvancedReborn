@@ -21,6 +21,7 @@ import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.addons.autoconfig.AutoConfigAddon;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
+import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import org.jetbrains.annotations.Nullable;
@@ -166,15 +167,15 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
         return inventory;
     }
 
-    public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        if (getName() != null) tag.putString("option_name", getName());
-        tag.putInt("option_time", coolDown);
-        super.writeNbt(tag, registryLookup);
+    public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        if (getName() != null) nbt.putString("option_name", getName());
+        nbt.putInt("option_time", coolDown);
+        super.writeNbt(nbt, registryLookup);
     }
 
-    public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(tag, registryLookup);
-        if (tag.contains("option_name")) setName(tag.getString("option_name"));
-        if (tag.contains("option_time")) coolDown = tag.getInt("option_time");
+    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
+        if (NbtUtil.has(nbt, "option_name")) setName(NbtUtil.getString(nbt, "option_name"));
+        if (NbtUtil.has(nbt, "option_time")) coolDown = NbtUtil.getInt(nbt, "option_time");
     }
 }
