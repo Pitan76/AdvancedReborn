@@ -131,7 +131,7 @@ public class DynamiteEntity extends CompatThrownItemEntity {
                     .createExplosion(
                             this,
                             null,
-                            null,
+                            new IndustrialTNTEntity.IndustrialTNTExplosionBehavior(this),
                             this.getX(),
                             this.getBodyY(0.0625),
                             this.getZ(),
