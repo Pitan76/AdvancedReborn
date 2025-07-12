@@ -4,8 +4,12 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.storage.NbtReadView;
+import net.minecraft.storage.NbtWriteView;
+import net.minecraft.storage.ReadView;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ErrorReporter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.pitan76.advancedreborn.Items;
@@ -36,11 +40,13 @@ public class ConfigWrench extends CompatItem {
                     NbtCompound tag = CustomDataUtil.getNbt(stack);
                     if (!tag.contains("configs")) return ActionResult.FAIL;
                     NbtCompound config = NbtUtil.get(tag, "configs");
+                    ReadView readView = NbtReadView.create(ErrorReporter.EMPTY, world.getRegistryManager(), config);
+
                     MachineBaseBlockEntityAccessor accessor = (MachineBaseBlockEntityAccessor) tile;
                     if (config.contains("slot"))
-                        accessor.getSlotConfiguration().read(NbtUtil.get(config, "slot"));
+                        accessor.getSlotConfiguration().read(readView.getReadView("slot"));
                     if (config.contains("fluid"))
-                        accessor.getFluidConfiguration().read(NbtUtil.get(config, "fluid"));
+                        accessor.getFluidConfiguration().read(readView.getReadView("fluid"));
                     if (config.contains("redstone")) {
                         Map<RedstoneConfiguration.Element, RedstoneConfiguration.State> stateMap = accessor.getRedstoneConfiguration().stateMap();
                         NbtCompound redstone = NbtUtil.get(config, "redstone");
@@ -80,10 +86,16 @@ public class ConfigWrench extends CompatItem {
             tag = NbtUtil.create();
         }
         NbtCompound config = NbtUtil.create();
-        if (slotConfig != null)
-            config.put("slot", slotConfig.write());
-        if (fluidConfig != null)
-            config.put("fluid", fluidConfig.write());
+        if (slotConfig != null) {
+            NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY, world.getRegistryManager());
+            slotConfig.write(view);
+            config.put("slot", view.getNbt());
+        }
+        if (fluidConfig != null) {
+            NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY, world.getRegistryManager());
+            fluidConfig.write(view);
+            config.put("fluid", view.getNbt());
+        }
         if (redstoneConfig != null) {
             NbtCompound redstone = NbtUtil.create();
             

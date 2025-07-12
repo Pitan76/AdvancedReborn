@@ -45,15 +45,15 @@ public class IndustrialTNTEntity extends TntEntity {
         }
         setFuse(getFuse() - 1);
         if (getFuse() <= 0) {
-            if (getEntityWorld() instanceof ServerWorld)
-                kill((ServerWorld) getEntityWorld());
-            if (!getEntityWorld().isClient) {
+            if (getWorld() instanceof ServerWorld)
+                kill((ServerWorld) getWorld());
+            if (!getWorld().isClient) {
                 iExplode();
             }
         } else {
             updateWaterState();
-            if (getEntityWorld().isClient) {
-                WorldUtil.addParticle(getEntityWorld(), ParticleTypes.SMOKE, getX(), getY() + 0.5D, getZ(), 0.0D, 0.0D, 0.0D);
+            if (getWorld().isClient) {
+                WorldUtil.addParticle(getWorld(), ParticleTypes.SMOKE, getX(), getY() + 0.5D, getZ(), 0.0D, 0.0D, 0.0D);
             }
         }
 

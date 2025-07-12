@@ -7,11 +7,11 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -21,7 +21,6 @@ import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.addons.autoconfig.AutoConfigAddon;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
-import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import org.jetbrains.annotations.Nullable;
@@ -167,15 +166,17 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
         return inventory;
     }
 
-    public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        if (getName() != null) nbt.putString("option_name", getName());
-        nbt.putInt("option_time", coolDown);
-        super.writeNbt(nbt, registryLookup);
+    @Override
+    public void writeData(WriteView view) {
+        if (getName() != null) view.putString("option_name", getName());
+        view.putInt("option_time", coolDown);
+        super.writeData(view);
     }
 
-    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(nbt, registryLookup);
-        if (NbtUtil.has(nbt, "option_name")) setName(NbtUtil.getString(nbt, "option_name"));
-        if (NbtUtil.has(nbt, "option_time")) coolDown = NbtUtil.getInt(nbt, "option_time");
+    @Override
+    public void readData(ReadView view) {
+        super.readData(view);
+        setName(view.getString("option_name", ""));
+        coolDown = view.getInt("option_time", getCoolDownDefault());
     }
 }

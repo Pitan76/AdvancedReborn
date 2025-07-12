@@ -1,6 +1,5 @@
 package net.pitan76.advancedreborn.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
@@ -88,7 +87,6 @@ public class GuiRenamingMachine extends GuiBase<BuiltScreenHandler> {
         drawOutputSlot(context, 101, 45, layer);
         drawSlot(context, 8, 72, layer);
         getFieldBox().render(context, mouseX, mouseY, lastFrameDuration);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public void drawForeground(DrawContext context, int mouseX, int mouseY) {

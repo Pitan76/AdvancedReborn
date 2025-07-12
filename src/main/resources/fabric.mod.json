@@ -21,9 +21,6 @@
     ],
     "client": [
       "net.pitan76.advancedreborn.AdvancedRebornClient"
-    ],
-    "rei_client": [
-      "net.pitan76.advancedreborn.addons.rei.REIAddon"
     ]
   },
   "mixins": [
@@ -33,6 +30,6 @@
     "fabricloader": "*",
     "minecraft": "*",
     "techreborn": "*",
-    "mcpitanlib": ">3.2.0"
+    "mcpitanlib": ">3.3.0"
   }
 }

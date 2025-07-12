@@ -3,12 +3,11 @@ package net.pitan76.advancedreborn.tile.base;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.pitan76.advancedreborn.tile.InductionFurnaceTile;
-import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
@@ -75,14 +74,14 @@ public abstract class HeatMachineTile extends PowerAcceptorBlockEntity {
     }
 
     @Override
-    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(nbt, registryLookup);
-        setHeat(NbtUtil.getInt(nbt, "heat"));
+    public void readData(ReadView view) {
+        super.readData(view);
+        setHeat(view.getInt("heat", 0));
     }
 
     @Override
-    public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        NbtUtil.putInt(nbt, "heat", getHeat());
-        super.writeNbt(nbt, registryLookup);
+    public void writeData(WriteView view) {
+        view.putInt("heat", getHeat());
+        super.writeData(view);
     }
 }

@@ -38,15 +38,16 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation "curse.maven:reborncore-237903:6502262"
-	modImplementation "curse.maven:techreborn-233564:6502263"
+	modImplementation "curse.maven:reborncore-237903:6712577"
+	modImplementation "curse.maven:techreborn-233564:6712578"
 
-//	modImplementation 'RebornCore:RebornCore-1.21:5.13.3'
-//	modImplementation 'TechReborn:TechReborn-1.21:5.13.3'
+	//modImplementation 'RebornCore:RebornCore-1.21:5.14.1'
+	//modImplementation 'TechReborn:TechReborn-1.21:5.14.1'
 
 	//modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:16.0.754"
-	modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:19.0.806"
-	modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:19.0.806"
+
+	//modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:20.0.9999"
+	//modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:20.0.9999"
 	modApi "teamreborn:energy:4.2.0"
 
 	// CC: Tweaked
@@ -57,7 +58,7 @@ dependencies {
 	//modApi "com.terraformersmc:modmenu:2.0.10"
 
 	// Cloth Config API
-	modApi("me.shedaniel.cloth:cloth-config-fabric:18.0.145") {
+	modApi("me.shedaniel.cloth:cloth-config-fabric:19.0.147") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
@@ -135,7 +136,8 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
 			changelog = project.changelog
 			releaseType = 'release'
 			addGameVersion "Fabric"
-			addGameVersion project.minecraft_version
+			addGameVersion "1.21.6"
+			addGameVersion "1.21.7"
 			relations {
 				requiredDependency "fabric-api"
 				requiredDependency "techreborn"
@@ -155,7 +157,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
 		token = System.getenv("MODRINTH_TOKEN")
 		projectId = 'ir8okcEA'
 		versionNumber = project.mod_version + "-fabric"
-		gameVersions = [project.minecraft_version]
+		gameVersions = ["1.21.6", "1.21.7"]
 		versionType = 'release'
 		uploadFile = tasks.remapJar
 		changelog = project.changelog

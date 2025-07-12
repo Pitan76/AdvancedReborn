@@ -5,9 +5,9 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.addons.autoconfig.AutoConfigAddon;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
-import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 import org.jetbrains.annotations.Nullable;
@@ -124,17 +123,22 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
         return getPos().getZ();
     }
 
-    public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+    @Override
+    public void writeData(WriteView view) {
         if (getTeleportPos() != null) {
-            nbt.putDouble("tpX", getTeleportPos().getX());
-            nbt.putDouble("tpY", getTeleportPos().getY());
-            nbt.putDouble("tpZ", getTeleportPos().getZ());
+            view.putDouble("tpX", getTeleportPos().getX());
+            view.putDouble("tpY", getTeleportPos().getY());
+            view.putDouble("tpZ", getTeleportPos().getZ());
         }
-        super.writeNbt(nbt, registryLookup);
+        super.writeData(view);
     }
 
-    public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(tag, registryLookup);
-        if (tag.contains("tpX") && tag.contains("tpY") && tag.contains("tpZ")) teleportPos = PosUtil.flooredBlockPos(NbtUtil.getDouble(tag, "tpX"), NbtUtil.getDouble(tag, "tpY"), NbtUtil.getDouble(tag, "tpZ"));
+    @Override
+    public void readData(ReadView view) {
+        super.readData(view);
+        double tpX = view.getDouble("tpX", 0);
+        double tpY = view.getDouble("tpY", 0);
+        double tpZ = view.getDouble("tpZ", 0);
+        teleportPos = PosUtil.flooredBlockPos(tpX, tpY, tpZ);
     }
 }
