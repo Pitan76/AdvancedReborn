@@ -2,38 +2,30 @@ package net.pitan76.advancedreborn.tile;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerFactory;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.pitan76.advancedreborn.Tiles;
-import net.pitan76.advancedreborn.inventory.IInventory;
 import net.pitan76.advancedreborn.screen.CardboardBoxScreenHandler;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
-import net.pitan76.mcpitanlib.api.event.container.factory.DisplayNameArgs;
-import net.pitan76.mcpitanlib.api.event.container.factory.ExtraDataArgs;
-import net.pitan76.mcpitanlib.api.event.nbt.NbtRWArgs;
-import net.pitan76.mcpitanlib.api.event.nbt.ReadNbtArgs;
-import net.pitan76.mcpitanlib.api.event.nbt.WriteNbtArgs;
-import net.pitan76.mcpitanlib.api.gui.args.CreateMenuEvent;
-import net.pitan76.mcpitanlib.api.gui.v2.ExtendedScreenHandlerFactory;
-import net.pitan76.mcpitanlib.api.tile.CompatBlockEntity;
-import net.pitan76.mcpitanlib.api.util.InventoryUtil;
-import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import org.jetbrains.annotations.Nullable;
 
-public class CardboardBoxTile extends CompatBlockEntity implements IInventory, SidedInventory, ExtendedScreenHandlerFactory {
+public class CardboardBoxTile extends LootableContainerBlockEntity implements SidedInventory, ScreenHandlerFactory {
 
-    public DefaultedList<ItemStack> inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
-    private Text customName = null;
+    private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
     private String note = "";
+    private static final Text CONTAINER_NAME_TEXT = TextUtil.translatable("block.advanced_reborn.cardboard_box");
 
     public CardboardBoxTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -47,96 +39,86 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, S
         this(event.getBlockPos(), event.getBlockState());
     }
 
-    public DefaultedList<ItemStack> getItems() {
-        return inventory;
-    }
-
     public String getNote() {
         return note;
     }
 
     public void setNote(String note) {
         this.note = note;
+        this.markDirty();
     }
 
     public boolean hasNote() {
         return !note.isEmpty();
     }
 
-    public void writeNbt(WriteNbtArgs args) {
-        InventoryUtil.writeNbt(args, inventory);
-        NbtUtil.putString(args.nbt, "note", getNote());
-        super.writeNbt(args);
+    @Override
+    protected Text getContainerName() {
+        return CONTAINER_NAME_TEXT;
     }
 
-    public void readNbt(ReadNbtArgs args) {
-        super.readNbt(args);
-        setNote(NbtUtil.getString(args.nbt, "note"));
-        InventoryUtil.readNbt(args, inventory);
+    @Override
+    protected DefaultedList<ItemStack> getHeldStacks() {
+        return this.inventory;
     }
 
+    @Override
+    protected void setHeldStacks(DefaultedList<ItemStack> inventory) {
+        this.inventory = inventory;
+    }
+
+    @Override
+    protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
+        return new CardboardBoxScreenHandler(syncId, playerInventory, this, getNote(), this);
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return this.getContainerName();
+    }
+
+    @Override
+    public int size() {
+        return this.inventory.size();
+    }
+
+    @Override
+    protected void readData(ReadView view) {
+        super.readData(view);
+        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+        if (!this.readLootTable(view)) {
+            Inventories.readData(view, this.inventory);
+        }
+        view.getOptionalString("note").ifPresent(this::setNote);
+    }
+
+    @Override
+    protected void writeData(WriteView view) {
+        super.writeData(view);
+        if (!this.writeLootTable(view)) {
+            Inventories.writeData(view, this.inventory, false);
+        }
+        if (hasNote()) {
+            view.putString("note", getNote());
+        }
+    }
+
+    @Override
     public int[] getAvailableSlots(Direction side) {
-        int[] result = new int[getItems().size()];
+        int[] result = new int[this.inventory.size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = i;
         }
         return result;
     }
 
+    @Override
     public boolean canInsert(int slot, ItemStack stack, @Nullable Direction dir) {
         return true;
     }
 
+    @Override
     public boolean canExtract(int slot, ItemStack stack, Direction dir) {
         return true;
-    }
-
-    public void setCustomName(Text customName) {
-        this.customName = customName;
-    }
-
-    public void readInventoryNbt(NbtCompound nbt) {
-        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-        if (NbtUtil.has(nbt, "Items")) {
-            InventoryUtil.readNbt(new NbtRWArgs(nbt), this.inventory);
-        }
-
-    }
-
-    public NbtCompound writeInventoryNbt(NbtCompound nbt) {
-        InventoryUtil.writeNbt(new NbtRWArgs(nbt), this.inventory, false);
-        return nbt;
-    }
-
-    public Text getName() {
-        return customName;
-    }
-
-    @Override
-    public Text getDisplayName(DisplayNameArgs args) {
-        return hasCustomName() ? customName : TextUtil.translatable("block.advanced_reborn.cardboard_box");
-    }
-
-    public boolean hasCustomName() {
-        return customName != null && !customName.getString().isBlank();
-    }
-
-    public Text getCustomName() {
-        return customName;
-    }
-
-    @Override
-    public ScreenHandler createMenu(CreateMenuEvent e) {
-        return new CardboardBoxScreenHandler(e.getSyncId(), e.getPlayerInventory(), this, getNote(), this);
-    }
-
-    @Override
-    public void writeExtraData(ExtraDataArgs args) {
-        NbtCompound data = NbtUtil.create();
-        data.putDouble("x", callGetPos().getX());
-        data.putDouble("y", callGetPos().getY());
-        data.putDouble("z", callGetPos().getZ());
-        data.putString("note", getNote());
-        args.writeVar(data);
     }
 }
