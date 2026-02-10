@@ -35,6 +35,7 @@ import net.pitan76.mcpitanlib.api.state.property.DirectionProperty;
 import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.entity.ItemEntityUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvider {
@@ -74,15 +75,12 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
             CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
             if (!WorldUtil.isClient(world) && !tile.isEmpty()) {
                 ItemStack stack = ItemStackUtil.create(this.asItem());
-//                NbtCompound nbt = tile.writeInventoryNbt(NbtUtil.create());
                 NbtCompound nbt = BlockEntityUtil.getBlockEntityNbt(world, tile);
                 if (!NbtUtil.has(nbt, "id"))
                     NbtUtil.putString(nbt, "id", BlockEntityTypeUtil.toID(Tiles.CARDBOARD_BOX_TILE.get()).toString());
 
                 BlockEntityDataUtil.setBlockEntityNbt(stack, nbt);
-//                if (tile.hasNote()) NbtUtil.set(nbt, "note" ,tile.getNote());
-//                if (!nbt.isEmpty()) stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, TypedEntityData.create(Tiles.CARDBOARD_BOX_TILE.get(), nbt));
-//                if (tile.hasCustomName()) stack.set(DataComponentTypes.CUSTOM_NAME, tile.getCustomName());
+                tile.clear();
 
                 ItemEntity itemEntity = ItemEntityUtil.create(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
                 ItemEntityUtil.setToDefaultPickupDelay(itemEntity);
@@ -101,7 +99,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         if (blockEntity instanceof CardboardBoxTile)
             e.updateComparators();
 
-        super.onStateReplaced(e);
+//        super.onStateReplaced(e);
     }
 
     @Override
@@ -208,15 +206,15 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
 
     @Override
     public List<ItemStack> getDroppedStacks(DroppedStacksArgs args) {
-        BlockEntity blockEntity = args.getBlockEntity();
-        if (blockEntity instanceof CardboardBoxTile) {
-            CardboardBoxTile tile = (CardboardBoxTile)blockEntity;
-            args.builder = args.builder.addDynamicDrop(CONTENTS.toMinecraft(), (consumer) -> {
-                for (int i = 0; i < tile.size(); ++i) {
-                    consumer.accept(tile.getStack(i));
-                }
-            });
-        }
-        return super.getDroppedStacks(args);
+//        BlockEntity blockEntity = args.getBlockEntity();
+//        if (blockEntity instanceof CardboardBoxTile) {
+//            CardboardBoxTile tile = (CardboardBoxTile)blockEntity;
+//            args.builder = args.builder.addDynamicDrop(CONTENTS.toMinecraft(), (consumer) -> {
+//                for (int i = 0; i < tile.size(); ++i) {
+//                    consumer.accept(tile.getStack(i));
+//                }
+//            });
+//        }
+        return Collections.emptyList();
     }
 }
