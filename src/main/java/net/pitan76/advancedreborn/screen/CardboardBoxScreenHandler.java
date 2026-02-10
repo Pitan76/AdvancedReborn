@@ -25,15 +25,12 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
 
     public CardboardBoxScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, InventoryUtil.createSimpleInventory(9), "", null);
-        NbtCompound data = PacketByteUtil.readNbt(buf);
 
-        if (data == null) return;
-        if (NbtUtil.has(data, "x") && NbtUtil.has(data, "y") && NbtUtil.has(data, "z")) {
-            pos = PosUtil.flooredBlockPos(NbtUtil.getDouble(data, "x"), NbtUtil.getDouble(data, "y"), NbtUtil.getDouble(data, "z"));
-        }
-        if (NbtUtil.has(data, "note")) {
-            tmpNote = NbtUtil.getString(data, "note");
-        }
+        int x = buf.readInt();
+        int y = buf.readInt();
+        int z = buf.readInt();
+        pos = PosUtil.flooredBlockPos(x, y, z);
+        tmpNote = buf.readString();
     }
 
     public CardboardBoxScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, String note, @Nullable CardboardBoxTile tile) {
@@ -42,7 +39,7 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
         this.inventory = inventory;
         this.tmpNote = note;
         if (tile != null) {
-            pos = tile.callGetPos();
+            pos = tile.getPos();
         }
         inventory.onOpen(playerInventory.player);
         int m;

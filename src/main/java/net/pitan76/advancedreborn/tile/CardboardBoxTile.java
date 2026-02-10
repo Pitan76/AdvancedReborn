@@ -7,8 +7,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerFactory;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
@@ -18,10 +18,15 @@ import net.minecraft.util.math.Direction;
 import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.screen.CardboardBoxScreenHandler;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
+import net.pitan76.mcpitanlib.api.event.container.factory.DisplayNameArgs;
+import net.pitan76.mcpitanlib.api.event.container.factory.ExtraDataArgs;
+import net.pitan76.mcpitanlib.api.gui.args.CreateMenuEvent;
+import net.pitan76.mcpitanlib.api.gui.v2.ExtendedScreenHandlerFactory;
+import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import org.jetbrains.annotations.Nullable;
 
-public class CardboardBoxTile extends LootableContainerBlockEntity implements SidedInventory, ScreenHandlerFactory {
+public class CardboardBoxTile extends LootableContainerBlockEntity implements SidedInventory, ExtendedScreenHandlerFactory {
 
     private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
     private String note = "";
@@ -73,8 +78,21 @@ public class CardboardBoxTile extends LootableContainerBlockEntity implements Si
     }
 
     @Override
-    public Text getDisplayName() {
+    public ScreenHandler createMenu(CreateMenuEvent e) {
+        return new CardboardBoxScreenHandler(e.getSyncId(), e.getPlayerInventory(), this, getNote(), this);
+    }
+
+    @Override
+    public Text getDisplayName(DisplayNameArgs args) {
         return this.getContainerName();
+    }
+
+    @Override
+    public void writeExtraData(ExtraDataArgs args) {
+        args.writeVar(this.pos.getX());
+        args.writeVar(this.pos.getY());
+        args.writeVar(this.pos.getZ());
+        args.writeVar(getNote());
     }
 
     @Override

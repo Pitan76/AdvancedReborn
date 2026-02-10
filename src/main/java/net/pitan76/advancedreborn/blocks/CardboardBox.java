@@ -98,7 +98,6 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         LivingEntity placer = e.placer;
         World world = e.world;
         BlockPos pos = e.pos;
-        ItemStack stack = e.stack;
 
         if (placer != null)
             setFacing(placer.getHorizontalFacing().getOpposite(), world, pos);
@@ -116,7 +115,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile) {
             CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
-            e.player.getPlayerEntity().openHandledScreen(tile);
+            e.player.openExtendedMenu(tile);
             return e.consume();
         }
         return e.pass();
