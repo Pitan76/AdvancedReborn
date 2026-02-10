@@ -72,7 +72,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile) {
             CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
-            if (!WorldUtil.isClient(world) && e.player.isCreative() && !tile.isEmpty()) {
+            if (!WorldUtil.isClient(world) && !tile.isEmpty()) {
                 ItemStack stack = ItemStackUtil.create(this.asItem());
 //                NbtCompound nbt = tile.writeInventoryNbt(NbtUtil.create());
                 NbtCompound nbt = BlockEntityUtil.getBlockEntityNbt(world, tile);
