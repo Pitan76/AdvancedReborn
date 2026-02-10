@@ -7,7 +7,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
@@ -22,7 +21,6 @@ import net.pitan76.mcpitanlib.api.event.container.factory.DisplayNameArgs;
 import net.pitan76.mcpitanlib.api.event.container.factory.ExtraDataArgs;
 import net.pitan76.mcpitanlib.api.gui.args.CreateMenuEvent;
 import net.pitan76.mcpitanlib.api.gui.v2.ExtendedScreenHandlerFactory;
-import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,21 +102,15 @@ public class CardboardBoxTile extends LootableContainerBlockEntity implements Si
     protected void readData(ReadView view) {
         super.readData(view);
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-        if (!this.readLootTable(view)) {
-            Inventories.readData(view, this.inventory);
-        }
+        Inventories.readData(view, this.inventory);
         view.getOptionalString("note").ifPresent(this::setNote);
     }
 
     @Override
     protected void writeData(WriteView view) {
         super.writeData(view);
-        if (!this.writeLootTable(view)) {
-            Inventories.writeData(view, this.inventory, false);
-        }
-        if (hasNote()) {
-            view.putString("note", getNote());
-        }
+        Inventories.writeData(view, this.inventory, false);
+        if (hasNote()) view.putString("note", getNote());
     }
 
     @Override

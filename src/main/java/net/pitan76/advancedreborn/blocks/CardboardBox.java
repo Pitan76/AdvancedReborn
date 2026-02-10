@@ -34,7 +34,6 @@ import net.pitan76.mcpitanlib.api.state.property.DirectionProperty;
 import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.entity.ItemEntityUtil;
 
-import java.util.List;
 
 public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvider {
 
@@ -72,17 +71,14 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         if (blockEntity instanceof CardboardBoxTile) {
             CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
             // ShulkerBoxと同じ: クリエイティブモードで中身がある場合のみ手動ドロップ
-            // サバイバルモードはLoot Tableシステムが自動的に処理
             if (!e.isClient() && e.player.isCreative() && !tile.isEmpty()) {
                 ItemStack stack = ItemStackUtil.create(this.asItem());
                 stack.applyComponentsFrom(tile.createComponentMap());
                 ItemEntity itemEntity = ItemEntityUtil.create(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
                 ItemEntityUtil.setToDefaultPickupDelay(itemEntity);
                 WorldUtil.spawnEntity(world, itemEntity);
-            } else {
-                // サバイバルモードの場合はLoot Tableの生成を準備
-                tile.generateLoot(e.player.getPlayerEntity());
             }
+            // サバイバルモードはMinecraftが自動的にLoot Tableを処理
         }
         return super.onBreak(e);
     }
@@ -187,24 +183,5 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
     @Override
     public int getComparatorOutput(GetComparatorOutputArgs args) {
         return args.calcComparatorOutputFromBlockEntity();
-    }
-
-    @Override
-    public List<ItemStack> getDroppedStacks(DroppedStacksArgs args) {
-        BlockEntity blockEntity = args.getBlockEntity();
-        if (blockEntity instanceof CardboardBoxTile) {
-            CardboardBoxTile tile = (CardboardBoxTile)blockEntity;
-            // 中身が空でない場合はブロックアイテムにデータを保存
-            if (!tile.isEmpty()) {
-                List<ItemStack> drops = super.getDroppedStacks(args);
-                for (ItemStack stack : drops) {
-                    if (stack.isOf(this.asItem())) {
-                        stack.applyComponentsFrom(tile.createComponentMap());
-                    }
-                }
-                return drops;
-            }
-        }
-        return super.getDroppedStacks(args);
     }
 }

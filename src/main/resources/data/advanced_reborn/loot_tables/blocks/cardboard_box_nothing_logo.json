@@ -11,7 +11,8 @@
               "function": "minecraft:copy_components",
               "include": [
                 "minecraft:custom_name",
-                "minecraft:container"
+                "minecraft:container",
+                "minecraft:block_entity_data"
               ],
               "source": "block_entity"
             }
