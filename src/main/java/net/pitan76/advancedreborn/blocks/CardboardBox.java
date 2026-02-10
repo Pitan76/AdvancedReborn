@@ -17,6 +17,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.tile.CardboardBoxTile;
 import net.pitan76.mcpitanlib.api.block.CompatBlockRenderType;
 import net.pitan76.mcpitanlib.api.block.args.RenderTypeArgs;
@@ -34,9 +35,11 @@ import net.pitan76.mcpitanlib.api.state.property.DirectionProperty;
 import net.pitan76.mcpitanlib.api.util.*;
 import net.pitan76.mcpitanlib.api.util.entity.ItemEntityUtil;
 
+import java.util.List;
 
 public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvider {
 
+    public static CompatIdentifier CONTENTS = CompatIdentifier.of("contents");
     public static DirectionProperty FACING = CompatProperties.HORIZONTAL_FACING;
 
     public CardboardBox(CompatibleBlockSettings settings) {
@@ -62,7 +65,6 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         return new CardboardBoxTile(event);
     }
 
-    @Override
     public BlockBreakResult onBreak(BlockBreakEvent e) {
         World world = e.world;
         BlockPos pos = e.pos;
@@ -70,23 +72,36 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof CardboardBoxTile) {
             CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
-            // ShulkerBoxと同じ: クリエイティブモードで中身がある場合のみ手動ドロップ
-            if (!e.isClient() && e.player.isCreative() && !tile.isEmpty()) {
+            if (!WorldUtil.isClient(world) && e.player.isCreative() && !tile.isEmpty()) {
                 ItemStack stack = ItemStackUtil.create(this.asItem());
-                stack.applyComponentsFrom(tile.createComponentMap());
+//                NbtCompound nbt = tile.writeInventoryNbt(NbtUtil.create());
+                NbtCompound nbt = BlockEntityUtil.getBlockEntityNbt(world, tile);
+                if (!NbtUtil.has(nbt, "id"))
+                    NbtUtil.putString(nbt, "id", BlockEntityTypeUtil.toID(Tiles.CARDBOARD_BOX_TILE.get()).toString());
+
+                BlockEntityDataUtil.setBlockEntityNbt(stack, nbt);
+//                if (tile.hasNote()) NbtUtil.set(nbt, "note" ,tile.getNote());
+//                if (!nbt.isEmpty()) stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, TypedEntityData.create(Tiles.CARDBOARD_BOX_TILE.get(), nbt));
+//                if (tile.hasCustomName()) stack.set(DataComponentTypes.CUSTOM_NAME, tile.getCustomName());
+
                 ItemEntity itemEntity = ItemEntityUtil.create(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
                 ItemEntityUtil.setToDefaultPickupDelay(itemEntity);
                 WorldUtil.spawnEntity(world, itemEntity);
             }
-            // サバイバルモードはMinecraftが自動的にLoot Tableを処理
         }
         return super.onBreak(e);
     }
 
     @Override
     public void onStateReplaced(StateReplacedEvent e) {
-        if (e.isSameState()) return;
-        e.updateComparators();
+        if (e.isSameState())
+            return;
+
+        BlockEntity blockEntity = e.getBlockEntity();
+        if (blockEntity instanceof CardboardBoxTile)
+            e.updateComparators();
+
+        super.onStateReplaced(e);
     }
 
     @Override
@@ -94,10 +109,17 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         LivingEntity placer = e.placer;
         World world = e.world;
         BlockPos pos = e.pos;
+        ItemStack stack = e.stack;
 
         if (placer != null)
             setFacing(placer.getHorizontalFacing().getOpposite(), world, pos);
 
+        if (stack.contains(DataComponentTypes.CUSTOM_NAME)) {
+            BlockEntity blockEntity = WorldUtil.getBlockEntity(world, pos);
+            if (blockEntity instanceof CardboardBoxTile) {
+                ((CardboardBoxTile)blockEntity).setCustomName(stack.getName());
+            }
+        }
         super.onPlaced(e);
     }
 
@@ -121,10 +143,9 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
     public ItemStack getPickStack(PickStackEvent e) {
         ItemStack itemStack = super.getPickStack(e);
         BlockEntity blockEntity = e.getBlockEntity();
-        if (blockEntity instanceof CardboardBoxTile) {
-            CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
-            itemStack.applyComponentsFrom(tile.createComponentMap());
-        }
+        if (blockEntity instanceof CardboardBoxTile)
+            BlockEntityUtil.setStackNbt(blockEntity, itemStack, RegistryLookupUtil.getRegistryLookup(blockEntity));
+
         return itemStack;
     }
 
@@ -183,5 +204,19 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
     @Override
     public int getComparatorOutput(GetComparatorOutputArgs args) {
         return args.calcComparatorOutputFromBlockEntity();
+    }
+
+    @Override
+    public List<ItemStack> getDroppedStacks(DroppedStacksArgs args) {
+        BlockEntity blockEntity = args.getBlockEntity();
+        if (blockEntity instanceof CardboardBoxTile) {
+            CardboardBoxTile tile = (CardboardBoxTile)blockEntity;
+            args.builder = args.builder.addDynamicDrop(CONTENTS.toMinecraft(), (consumer) -> {
+                for (int i = 0; i < tile.size(); ++i) {
+                    consumer.accept(tile.getStack(i));
+                }
+            });
+        }
+        return super.getDroppedStacks(args);
     }
 }

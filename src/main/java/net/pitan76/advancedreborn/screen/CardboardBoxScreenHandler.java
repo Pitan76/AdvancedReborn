@@ -3,7 +3,6 @@ package net.pitan76.advancedreborn.screen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
@@ -11,9 +10,7 @@ import net.pitan76.advancedreborn.ScreenHandlers;
 import net.pitan76.advancedreborn.tile.CardboardBoxTile;
 import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.gui.ExtendedScreenHandler;
-import net.pitan76.mcpitanlib.api.network.PacketByteUtil;
 import net.pitan76.mcpitanlib.api.util.InventoryUtil;
-import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +36,7 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
         this.inventory = inventory;
         this.tmpNote = note;
         if (tile != null) {
-            pos = tile.getPos();
+            pos = tile.callGetPos();
         }
         inventory.onOpen(playerInventory.player);
         int m;
