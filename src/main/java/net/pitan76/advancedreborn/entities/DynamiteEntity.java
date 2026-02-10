@@ -111,23 +111,23 @@ public class DynamiteEntity extends CompatThrownItemEntity {
         if (stopped) {
             fuseTimer--;
             if (fuseTimer <= 0) {
-                if (getWorld() instanceof ServerWorld)
-                    kill((ServerWorld) getWorld());
-                if (!getWorld().isClient()) {
+                if (getEntityWorld() instanceof ServerWorld)
+                    kill((ServerWorld) getEntityWorld());
+                if (!getEntityWorld().isClient()) {
                     explode();
                 }
             } else {
                 updateWaterState();
             }
         }
-        if (getWorld().isClient()) {
-            WorldUtil.addParticle(getWorld(), ParticleTypes.FLAME, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
+        if (getEntityWorld().isClient()) {
+            WorldUtil.addParticle(getEntityWorld(), ParticleTypes.FLAME, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
         }
     }
 
     public void explode() {
         if (isIndustrial) {
-            this.getWorld()
+            this.getEntityWorld()
                     .createExplosion(
                             this,
                             null,
@@ -141,6 +141,6 @@ public class DynamiteEntity extends CompatThrownItemEntity {
                     );
             return;
         }
-        getWorld().createExplosion(this, getX(), getBodyY(0.0625D), getZ(), 4.0F, World.ExplosionSourceType.TNT);
+        getEntityWorld().createExplosion(this, getX(), getBodyY(0.0625D), getZ(), 4.0F, World.ExplosionSourceType.TNT);
     }
 }

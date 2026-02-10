@@ -2,6 +2,7 @@ package net.pitan76.advancedreborn.gui;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -40,24 +41,25 @@ public class GuiRenamingMachine extends GuiBase<BuiltScreenHandler> {
         addSelectableChild(getFieldBox());
     }
 
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    @Override
+    public boolean keyPressed(KeyInput input) {
         if (fieldBox.isFocused()) {
-            if (keyCode != 256) {
-                return fieldBox.keyPressed(keyCode, scanCode, modifiers);
+            if (input.getKeycode() != 256) {
+                return fieldBox.keyPressed(input);
             }
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(input);
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(KeyInput input) {
         if (fieldBox.isFocused()) {
-            if (keyCode != 256) {
+            if (input.getKeycode() != 256) {
                 tile.setNameClient(getFieldBox().getText());
                 sendPacket();
             }
         }
-        return super.keyReleased(keyCode, scanCode, modifiers);
+        return super.keyReleased(input);
     }
 
     public void sendPacket() {
@@ -71,6 +73,7 @@ public class GuiRenamingMachine extends GuiBase<BuiltScreenHandler> {
         ClientNetworking.send(Defines.RENAMING_PACKET_ID.toMinecraft(), buf);
     }
 
+    @Override
     public void removed() {
         super.removed();
         //client.keyboard.setRepeatEvents(false);

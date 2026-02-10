@@ -1,10 +1,10 @@
 package net.pitan76.advancedreborn.screen;
 
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.pitan76.advancedreborn.Defines;
 import net.pitan76.mcpitanlib.api.client.gui.screen.CompatInventoryScreen;
@@ -75,7 +75,7 @@ public class CardboardBoxScreen extends CompatInventoryScreen<CardboardBoxScreen
     }
 
     public boolean keyPressed(KeyEventArgs args) {
-        if (getNoteBox().keyPressed(args.keyCode, args.scanCode, args.modifiers)) return true;
+        if (getNoteBox().keyPressed(new KeyInput(args.keyCode, args.scanCode, args.modifiers))) return true;
         return super.keyPressed(args);
     }
 

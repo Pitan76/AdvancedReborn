@@ -4,10 +4,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.TypedEntityData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
@@ -16,6 +17,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.tile.CardboardBoxTile;
 import net.pitan76.mcpitanlib.api.block.CompatBlockRenderType;
 import net.pitan76.mcpitanlib.api.block.args.RenderTypeArgs;
@@ -74,7 +76,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
                 ItemStack stack = ItemStackUtil.create(this.asItem());
                 NbtCompound nbt = tile.writeInventoryNbt(NbtUtil.create());
                 if (tile.hasNote()) NbtUtil.set(nbt, "note" ,tile.getNote());
-                if (!nbt.isEmpty()) stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(nbt));
+                if (!nbt.isEmpty()) stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, TypedEntityData.create(Tiles.CARDBOARD_BOX_TILE.get(), nbt));
                 if (tile.hasCustomName()) stack.set(DataComponentTypes.CUSTOM_NAME, tile.getCustomName());
 
                 ItemEntity itemEntity = ItemEntityUtil.create(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
@@ -149,8 +151,9 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
 
         if (!e.stack.contains(DataComponentTypes.BLOCK_ENTITY_DATA)) return;
 
-        NbtCompound nbt = e.stack.get(DataComponentTypes.BLOCK_ENTITY_DATA).copyNbt();
-        if (nbt != null) {
+        TypedEntityData<BlockEntityType<?>> entityData = e.stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
+        if (entityData != null) {
+            NbtCompound nbt = entityData.copyNbtWithoutId();
             if (nbt.contains("note")) {
                 e.addTooltip(TextUtil.literal(NbtUtil.getString(nbt, "note")));
             }
