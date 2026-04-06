@@ -92,12 +92,12 @@ public class CanningMachineTile extends PowerAcceptorBlockEntity implements IToo
 
     public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
-        if (world == null || WorldUtil.isClient(world)) {
+        if (WorldUtil.isClient(world)) {
             return;
         }
         charge(energySlot);
         BlockMachineBase block = (BlockMachineBase) state.getBlock();
-        block.setActive(!inventory.getItem(0).isEmpty() && !inventory.getItem(1).isEmpty(), world, getPos());
+        block.setActive(!inventory.getItem(0).isEmpty() && !inventory.getItem(1).isEmpty(), world, getBlockPos());
     }
 
     public Container getInventory() {

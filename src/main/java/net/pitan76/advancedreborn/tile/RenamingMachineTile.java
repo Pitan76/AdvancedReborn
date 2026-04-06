@@ -8,8 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.core.BlockPos;
@@ -20,6 +18,8 @@ import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.addons.autoconfig.AutoConfigAddon;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
+import net.pitan76.mcpitanlib.api.sound.CompatSoundCategory;
+import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
@@ -62,7 +62,7 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
     public BuiltScreenHandler createScreenHandler(int syncID, Player player) {
         return new ScreenHandlerBuilder(AdvancedReborn.MOD_ID + "__renaming_machine").player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this).slot(0, 55, 45).outputSlot(1, 101, 45).energySlot(2, 8, 72).syncEnergyValue()
-            .sync(ByteBufCodecs.STRING, this::getName, this::setName).sync(ByteBufCodecs.INTEGER, this::getCoolDown, this::setCoolDown).sync(ByteBufCodecs.INTEGER, this::getCoolDownDefault, this::setCoolDownDefault).addInventory().create(this, syncID);
+            .sync(ByteBufCodecs.STRING_UTF8, this::getName, this::setName).sync(ByteBufCodecs.VAR_INT, this::getCoolDown, this::setCoolDown).sync(ByteBufCodecs.VAR_INT, this::getCoolDownDefault, this::setCoolDownDefault).addInventory().create(this, syncID);
     }
 
 
@@ -133,7 +133,7 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
 
         //BlockState state = getWorld().getBlockState(getPos());
         BlockMachineBase block = (BlockMachineBase) state.getBlock();
-        block.setActive(getCoolDown() != getCoolDownDefault(), world, getPos());
+        block.setActive(getCoolDown() != getCoolDownDefault(), world, getBlockPos());
         if (!getInventory().getItem(1).isEmpty()) {
             if (getCoolDown() <= 0) setCoolDown(getCoolDownDefault());
             return; // 出力スロットにアイテムがあれば停止
@@ -143,12 +143,12 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
                 useEnergy(getEuPerTick(getBaseUsePower()));
                 if (getCoolDown() <= 0) {
                     setCoolDown(getCoolDownDefault());
-                    ItemStack stack = getStack(0).copy();
-                    getInventory().setStack(0, ItemStack.EMPTY);
+                    ItemStack stack = getItem(0).copy();
+                    getInventory().setItem(0, ItemStack.EMPTY);
                     if (getName().isEmpty()) stack.remove(DataComponents.CUSTOM_NAME);
                     else stack.set(DataComponents.CUSTOM_NAME, TextUtil.literal(getName()));
-                    getInventory().setStack(1, stack);
-                    world.playSound(null, getPos(), SoundEvents.BLOCK_ANVIL_USE, SoundSource.BLOCKS, 0.75F, 1.5F);
+                    getInventory().setItem(1, stack);
+                    WorldUtil.playSound(world, null, getBlockPos(), CompatSoundEvents.BLOCK_ANVIL_USE, CompatSoundCategory.BLOCKS, 0.75F, 1.5F);
                     return;
                 }
                 setCoolDown(getCoolDown() - 1);
@@ -158,7 +158,7 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
                 }
             }
         } else {
-            block.setActive(false, world, getPos());
+            block.setActive(false, world, getBlockPos());
         }
     }
 
@@ -176,7 +176,7 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
     @Override
     public void loadAdditional(ValueInput view) {
         super.loadAdditional(view);
-        setName(view.getString("option_name", ""));
-        coolDown = view.getInt("option_time", getCoolDownDefault());
+        setName(view.getStringOr("option_name", ""));
+        coolDown = view.getIntOr("option_time", getCoolDownDefault());
     }
 }

@@ -80,7 +80,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
                     NbtUtil.putString(nbt, "id", BlockEntityTypeUtil.toID(Tiles.CARDBOARD_BOX_TILE.get()).toString());
 
                 BlockEntityDataUtil.setBlockEntityNbt(stack, nbt);
-                tile.clear();
+                tile.clearContent();
 
                 ItemEntity itemEntity = ItemEntityUtil.create(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
                 ItemEntityUtil.setToDefaultPickupDelay(itemEntity);
@@ -110,12 +110,12 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
         ItemStack stack = e.stack;
 
         if (placer != null)
-            setFacing(placer.getHorizontalFacing().getOpposite(), world, pos);
+            setFacing(placer.getDirection().getOpposite(), world, pos);
 
-        if (stack.contains(DataComponents.CUSTOM_NAME)) {
+        if (stack.has(DataComponents.CUSTOM_NAME)) {
             BlockEntity blockEntity = WorldUtil.getBlockEntity(world, pos);
             if (blockEntity instanceof CardboardBoxTile) {
-                ((CardboardBoxTile)blockEntity).setCustomName(stack.getName());
+                ((CardboardBoxTile)blockEntity).setCustomName(stack.getCustomName());
             }
         }
         super.onPlaced(e);
@@ -152,11 +152,11 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
     public void appendTooltip(ItemAppendTooltipEvent e) {
         super.appendTooltip(e);
 
-        if (!e.stack.contains(DataComponents.BLOCK_ENTITY_DATA)) return;
+        if (!e.stack.has(DataComponents.BLOCK_ENTITY_DATA)) return;
 
         TypedEntityData<BlockEntityType<?>> entityData = e.stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (entityData != null) {
-            CompoundTag nbt = entityData.copyNbtWithoutId();
+            CompoundTag nbt = entityData.copyTagWithoutId();
             if (nbt.contains("note")) {
                 e.addTooltip(TextUtil.literal(NbtUtil.getString(nbt, "note")));
             }
@@ -164,7 +164,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
                 e.addTooltip(TextUtil.literal("???????"));
             }
             if (NbtUtil.has(nbt, "Items")) {
-                NonNullList<ItemStack> defaultedList = NonNullList.ofSize(27, ItemStack.EMPTY);
+                NonNullList<ItemStack> defaultedList = NonNullList.withSize(27, ItemStack.EMPTY);
                 NbtRWArgs args = new NbtRWArgs(nbt, e.getRegistryLookup());
                 InventoryUtil.readNbt(args, defaultedList);
                 int i = 0;
@@ -175,14 +175,14 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
                         ++j;
                         if (i <= 4) {
                             ++i;
-                            MutableComponent mutableText = itemStack.getName().copy();
+                            MutableComponent mutableText = itemStack.getCustomName().copy();
                             mutableText.append(" x").append(String.valueOf(itemStack.getCount()));
                             e.addTooltip(mutableText);
                         }
                     }
                 }
                 if (j - i > 0) {
-                    e.addTooltip((TextUtil.translatable("container.advanced_reborn.cardboard_box.more", new Object[]{j - i})).copy().formatted(ChatFormatting.ITALIC));
+                    e.addTooltip((TextUtil.translatable("container.advanced_reborn.cardboard_box.more", new Object[]{j - i})).copy().withStyle(ChatFormatting.ITALIC));
                 }
             }
         }

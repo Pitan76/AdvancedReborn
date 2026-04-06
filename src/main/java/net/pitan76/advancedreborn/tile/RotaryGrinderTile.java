@@ -96,13 +96,13 @@ public class RotaryGrinderTile extends HeatMachineTile implements IToolDrop, Inv
         }
         charge(energySlot);
         if (!getInventory().getItem(1).isEmpty()) {
-            if (getStack(1).getItem().equals(getStack(2).getItem())) {
-                if (getStack(2).getCount() == getStack(2).getMaxStackSize()) return;
-                getStack(2).grow(1);
-                getStack(1).shrink(1);
-            } else if (getStack(2).isEmpty()) {
-                setStack(2, ItemStackUtil.create(getStack(1).getItem(), 1));
-                getStack(1).shrink(1);
+            if (getItem(1).getItem().equals(getItem(2).getItem())) {
+                if (getItem(2).getCount() == getItem(2).getMaxStackSize()) return;
+                getItem(2).grow(1);
+                getItem(1).shrink(1);
+            } else if (getItem(2).isEmpty()) {
+                setItem(2, ItemStackUtil.create(getItem(1).getItem(), 1));
+                getItem(1).shrink(1);
             }
         }
     }

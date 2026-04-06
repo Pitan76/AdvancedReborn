@@ -70,7 +70,7 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
                 .slot(2, 82, 40).slot(3, 100, 40).slot(4, 118, 40).slot(5, 136, 40)
                 .slot(6, 82, 58).slot(7, 100, 58).slot(8, 118, 58).slot(9, 136, 58)
                 .energySlot(10, 8, 72).syncEnergyValue()
-                .sync(ByteBufCodecs.INTEGER, this::getCoolDown, this::setCoolDown).sync(ByteBufCodecs.INTEGER, this::getCoolDownDefault, this::setCoolDownDefault).addInventory().create(this, syncID);
+                .sync(ByteBufCodecs.VAR_INT, this::getCoolDown, this::setCoolDown).sync(ByteBufCodecs.VAR_INT, this::getCoolDownDefault, this::setCoolDownDefault).addInventory().create(this, syncID);
     }
 
     public void setCoolDown(int coolDown) {

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class TeleporterTile extends BlockEntity implements BlockEntityTicker<TeleporterTile> {
 
-    private static final VoxelShape SHAPE_RANGE = Shapes.cuboid(-2, -2, -2, 3, 3, 3);
+    private static final VoxelShape SHAPE_RANGE = Shapes.create(-2, -2, -2, 3, 3, 3);
     private BlockPos teleportPos = null;
 
     public TeleporterTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -43,15 +43,14 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
 
     public void tick(Level world, BlockPos pos, BlockState state, TeleporterTile tile) {
         if (!AutoConfigAddon.getConfig().teleporterEnabled) return;
-        if (world == null) return;
         if (WorldUtil.isClient(world)) return;
         if (getTeleportPos() == null) return;
-        List<BlockEntity> entities = getEntities();
+        List<Entity> entities = getEntities();
         if (entities.isEmpty()) return;
-        if (!world.isReceivingRedstonePower(getPos())) return;
+        if (!WorldUtil.isReceivingRedstonePower(world, getBlockPos())) return;
         if (use()) {
-            for (BlockEntity entity : entities) {
-                entity.requestTeleport(getTeleportPos().getX() - 0.5D, getTeleportPos().getY() - 0.5D, getTeleportPos().getZ() - 0.5D);
+            for (Entity entity : entities) {
+                entity.teleportTo(getTeleportPos().getX() - 0.5D, getTeleportPos().getY() - 0.5D, getTeleportPos().getZ() - 0.5D);
                 return;
             }
         }
@@ -69,13 +68,15 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
     }
 
     public boolean use() {
-        if (world == null) return false;
-        BlockEntity up = WorldUtil.getBlockEntity(world, pos.above());
-        BlockEntity down =  WorldUtil.getBlockEntity(world, pos.below());
-        BlockEntity north = WorldUtil.getBlockEntity(world, pos.north());
-        BlockEntity south = WorldUtil.getBlockEntity(world, pos.south());
-        BlockEntity east =  WorldUtil.getBlockEntity(world, pos.east());
-        BlockEntity west =  WorldUtil.getBlockEntity(world, pos.west());
+        if (level == null) return false;
+        BlockPos pos = getBlockPos();
+
+        BlockEntity up = WorldUtil.getBlockEntity(level, pos.above());
+        BlockEntity down =  WorldUtil.getBlockEntity(level, pos.below());
+        BlockEntity north = WorldUtil.getBlockEntity(level, pos.north());
+        BlockEntity south = WorldUtil.getBlockEntity(level, pos.south());
+        BlockEntity east =  WorldUtil.getBlockEntity(level, pos.east());
+        BlockEntity west =  WorldUtil.getBlockEntity(level, pos.west());
 
         if (useTile(up))
             return true;
@@ -103,24 +104,24 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
         this.teleportPos = teleportPos;
     }
 
-    public List<BlockEntity> getEntities() {
+    public List<Entity> getEntities() {
         try {
-            return SHAPE_RANGE.getBoundingBoxes().stream().flatMap((box) -> WorldUtil.getEntitiesByClass(getWorld(), BlockEntity.class, box.offset(getX(), getY(), getZ()), EntitySelector.VALID_ENTITY).stream()).collect(Collectors.toList());
+            return SHAPE_RANGE.toAabbs().stream().flatMap((box) -> WorldUtil.getEntitiesByClass(level, Entity.class, box.inflate(getX(), getY(), getZ()), EntitySelector.ENTITY_STILL_ALIVE).stream()).collect(Collectors.toList());
         } catch (NullPointerException e) {
             return new ArrayList<>();
         }
     }
 
     public double getX() {
-        return getPos().getX();
+        return getBlockPos().getX();
     }
 
     public double getY() {
-        return getPos().getY();
+        return getBlockPos().getY();
     }
 
     public double getZ() {
-        return getPos().getZ();
+        return getBlockPos().getZ();
     }
 
     @Override
@@ -136,9 +137,9 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
     @Override
     public void loadAdditional(ValueInput view) {
         super.loadAdditional(view);
-        double tpX = view.getDouble("tpX", 0);
-        double tpY = view.getDouble("tpY", 0);
-        double tpZ = view.getDouble("tpZ", 0);
+        double tpX = view.getDoubleOr("tpX", 0);
+        double tpY = view.getDoubleOr("tpY", 0);
+        double tpZ = view.getDoubleOr("tpZ", 0);
         teleportPos = PosUtil.flooredBlockPos(tpX, tpY, tpZ);
     }
 }

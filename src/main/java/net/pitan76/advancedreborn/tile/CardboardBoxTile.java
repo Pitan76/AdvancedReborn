@@ -11,7 +11,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.pitan76.advancedreborn.Tiles;
-import net.pitan76.advancedreborn.inventory.IInventory;
+import net.pitan76.mcpitanlib.api.gui.inventory.IInventory;
 import net.pitan76.advancedreborn.screen.CardboardBoxScreenHandler;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
 import net.pitan76.mcpitanlib.api.event.container.factory.DisplayNameArgs;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CardboardBoxTile extends CompatBlockEntity implements IInventory, WorldlyContainer, ExtendedScreenHandlerFactory {
 
-    public NonNullList<ItemStack> inventory = NonNullList.ofSize(9, ItemStack.EMPTY);
+    public NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private Component customName = null;
     private String note = "";
 
@@ -94,7 +94,7 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, W
     }
 
     public void readInventoryNbt(CompoundTag nbt) {
-        this.inventory = NonNullList.ofSize(this.size(), ItemStack.EMPTY);
+        this.inventory = NonNullList.withSize(this.size(), ItemStack.EMPTY);
         if (NbtUtil.has(nbt, "Items")) {
             InventoryUtil.readNbt(new NbtRWArgs(nbt), this.inventory);
         }

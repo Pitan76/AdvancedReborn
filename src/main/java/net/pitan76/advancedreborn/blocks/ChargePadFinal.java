@@ -20,7 +20,7 @@ public class ChargePadFinal extends ChargePad {
         Player player = new Player(e.getPlayerEntity().get());
 
         boolean needCharge = false;
-        for (int i = 0; i < player.getInventory().size(); i++) {
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack invStack = player.getInventory().getItem(i);
 
             if (invStack.isEmpty()) {
