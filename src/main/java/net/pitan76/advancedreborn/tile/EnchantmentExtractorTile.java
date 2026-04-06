@@ -125,7 +125,7 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
         charge(energySlot);
 
         BlockMachineBase block = (BlockMachineBase) state.getBlock();
-        block.setActive(getCoolDown() != getCoolDownDefault(), world, getPos());
+        block.setActive(getCoolDown() != getCoolDownDefault(), world, getBlockPos());
         if (!getInventory().getItem(1).isEmpty() || getInventory().getItem(0).isEmpty() || getInventory().getItem(11).isEmpty()) {
             if (getCoolDown() <= 0) setCoolDown(getCoolDownDefault());
             return;
@@ -138,7 +138,7 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
 
                     ItemStack bookStack = inventory.getItem(11);
                     ItemStack inputStack = inventory.getItem(0);
-                    if (bookStack.getItem() == Items.BOOK && inputStack.hasEnchantments()) {
+                    if (bookStack.getItem() == Items.BOOK && inputStack.isEnchanted()) {
                         Map<CompatEnchantment, Integer> enchantments = EnchantmentUtil.getEnchantment(inputStack, world);
                         if (bookStack.getCount() >= enchantments.size()) {
                             for (Map.Entry<CompatEnchantment, Integer> entry : enchantments.entrySet()) {
@@ -186,7 +186,8 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
             }
         }
 
-        WorldUtil.spawnEntity(world, ItemEntityUtil.create(world, pos.getX(), pos.getY(), pos.getZ(), stack));
+        BlockPos pos = getBlockPos();
+        WorldUtil.spawnEntity(level, ItemEntityUtil.create(level, pos.getX(), pos.getY(), pos.getZ(), stack));
     }
 
     public Container getInventory() {

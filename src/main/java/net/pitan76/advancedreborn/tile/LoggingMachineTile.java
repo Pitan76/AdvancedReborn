@@ -104,7 +104,7 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
         charge(energySlot);
         BlockMachineBase block = (BlockMachineBase) state.getBlock();
 
-        block.setActive(getEnergy() > 0, world, getPos());
+        block.setActive(getEnergy() > 0, world, getBlockPos());
         if (coolDown <= 0) coolDown = coolDownDefault;
         else {
             coolDown--;
@@ -157,18 +157,19 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
             }
         }
 
-        WorldUtil.spawnEntity(world, ItemEntityUtil.create(world, pos.getX(), pos.getY(), pos.getZ(), stack));
+        BlockPos pos = getBlockPos();
+        WorldUtil.spawnEntity(level, ItemEntityUtil.create(level, pos.getX(), pos.getY(), pos.getZ(), stack));
     }
 
     public static boolean tryLogging(ServerLevel world, BlockPos pos, Direction direction, int range, List<ItemStack> drops) {
         for (int x = -range; x < range + 1; x++) {
             for (int z = -range; z < range + 1; z++) {
                 for (int y = 0; y < range * 2 + 1; y++) {
-                    BlockPos executePos = pos.offset(direction).add(x, y, z);
+                    BlockPos executePos = pos.relative(direction).offset(x, y, z);
                     BlockState state = WorldUtil.getBlockState(world, executePos);
-                    if (state.isIn(BlockTags.LOGS) || state.isIn(BlockTags.LEAVES)) {
+                    if (state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)) {
                         if (drops != null)
-                            drops.addAll(CropBlock.getDroppedStacks(state, (ServerLevel) world, executePos, null));
+                            drops.addAll(CropBlock.getDrops(state, world, executePos, null));
                         WorldUtil.breakBlock(world, executePos, false);
                         return true;
                     }
@@ -180,10 +181,10 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
     }
 
     public static boolean tryPlant(ServerLevel world, BlockPos pos, Direction direction, ItemStack stack) {
-        BlockPos executePos = pos.offset(direction);
+        BlockPos executePos = pos.relative(direction);
         if (!WorldUtil.getBlockState(world, executePos).isAir()) return false;
 
-        if (WorldUtil.getBlockState(world, executepos.below()).isIn(BlockTags.DIRT)) {
+        if (WorldUtil.getBlockState(world, executePos.below()).is(BlockTags.DIRT)) {
             if (stack.is(ItemTags.SAPLINGS)) {
                 WorldUtil.setBlockState(world, executePos, ((BlockItem) stack.getItem()).getBlock().defaultBlockState(), 11);
                 return true;

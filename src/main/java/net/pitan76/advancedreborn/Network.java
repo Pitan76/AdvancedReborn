@@ -20,7 +20,7 @@ public class Network {
                 if (!NbtUtil.has(data, "y")) return;
                 if (!NbtUtil.has(data, "z")) return;
                 if (!NbtUtil.has(data, "note")) return;
-                BlockEntity blockEntity = WorldUtil.getBlockEntity(player.getEntityWorld(), PosUtil.flooredBlockPos(NbtUtil.getDouble(data, "x"), NbtUtil.getDouble(data, "y"), NbtUtil.getDouble(data, "z")));
+                BlockEntity blockEntity = WorldUtil.getBlockEntity(player.level(), PosUtil.flooredBlockPos(NbtUtil.getDouble(data, "x"), NbtUtil.getDouble(data, "y"), NbtUtil.getDouble(data, "z")));
                 if (!(blockEntity instanceof CardboardBoxTile)) return;
 
                 CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
@@ -35,7 +35,7 @@ public class Network {
                 if (!NbtUtil.has(data, "y")) return;
                 if (!NbtUtil.has(data, "z")) return;
                 if (!NbtUtil.has(data, "name")) return;
-                BlockEntity blockEntity = WorldUtil.getBlockEntity(player.getEntityWorld(), PosUtil.flooredBlockPos(NbtUtil.getDouble(data, "x"), NbtUtil.getDouble(data, "y"), NbtUtil.getDouble(data, "z")));
+                BlockEntity blockEntity = WorldUtil.getBlockEntity(player.level(), PosUtil.flooredBlockPos(NbtUtil.getDouble(data, "x"), NbtUtil.getDouble(data, "y"), NbtUtil.getDouble(data, "z")));
                 if (!(blockEntity instanceof RenamingMachineTile)) return;
 
                 RenamingMachineTile tile = (RenamingMachineTile) blockEntity;

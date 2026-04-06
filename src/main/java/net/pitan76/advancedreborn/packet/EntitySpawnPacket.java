@@ -8,7 +8,7 @@ public class EntitySpawnPacket {
 
     /*
     public static Packet<ClientCommonPacketListener> create(Entity entity, Identifier packetID) {
-        if (entity.getEntityWorld().isClient)
+        if (entity.level().isClient)
             throw new IllegalStateException("SpawnPacketUtil.create called on the logical client!");
         PacketByteBuf byteBuf = PacketByteUtil.create();
         byteBuf.writeVarInt(Registries.ENTITY_TYPE.getRawId(entity.getType()));

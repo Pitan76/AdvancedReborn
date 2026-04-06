@@ -26,6 +26,10 @@ public class IndustrialTNTEntity extends PrimedTnt {
         super(world, x, y, z, entity);
     }
 
+    public IndustrialTNTEntity(EntityType<IndustrialTNTEntity> industrialTNTEntityEntityType, Level level) {
+        super(industrialTNTEntityEntityType, level);
+    }
+
     /*
     public Packet<ClientPlayPacketListener> getAddEntityPacket() {
         return super.getAddEntityPacket(); //EntitySpawnPacket.create(this, Defines.SPAWN_PACKET_ID);

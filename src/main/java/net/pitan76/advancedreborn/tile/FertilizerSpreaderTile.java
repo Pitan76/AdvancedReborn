@@ -90,13 +90,13 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
 
     public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
-        if (world == null || WorldUtil.isClient(world)) {
+        if (WorldUtil.isClient(world)) {
             return;
         }
         charge(energySlot);
         BlockMachineBase block = (BlockMachineBase) state.getBlock();
 
-        block.setActive(getEnergy() > 0, world, getPos());
+        block.setActive(getEnergy() > 0, world, getBlockPos());
         if (coolDown <= 0) coolDown = coolDownDefault;
         else {
             coolDown--;
@@ -139,12 +139,12 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
                 for (int y = -range; y < range + 1; y++) {
                     BlockPos executePos = PosUtil.flooredBlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     BlockState state = WorldUtil.getBlockState(world, executePos);
-                    if (state.getBlock() instanceof CropBlock || state.getBlock() instanceof SaplingBlock || state.isIn(BlockTags.SAPLINGS) || state.isIn(BlockTags.CROPS)) {
+                    if (state.getBlock() instanceof CropBlock || state.getBlock() instanceof SaplingBlock || state.is(BlockTags.SAPLINGS) || state.is(BlockTags.CROPS)) {
                         if (state.getBlock() instanceof CropBlock) {
                             CropBlock block = (CropBlock) state.getBlock();
-                            if (block.isMature(state)) continue;
+                            if (block.isMaxAge(state)) continue;
                         }
-                        BoneMealItem.useOnFertilizable(ItemStack.EMPTY, world, executePos);
+                        BoneMealItem.growCrop(ItemStack.EMPTY, world, executePos);
                         return true;
                     }
                 }
