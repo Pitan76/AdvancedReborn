@@ -121,7 +121,8 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
 			changelog = project.changelog
 			releaseType = 'release'
 			addGameVersion "Fabric"
-			addGameVersion "1.21.10"
+			addGameVersion "26.1"
+            addGameVersion "26.1.1"
 			relations {
 				requiredDependency "fabric-api"
 				requiredDependency "techreborn"
@@ -141,7 +142,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
 		token = System.getenv("MODRINTH_TOKEN")
 		projectId = 'ir8okcEA'
 		versionNumber = project.mod_version + "-fabric"
-		gameVersions = ["1.21.10"]
+		gameVersions = ["26.1", "26.1.1"]
 		versionType = 'release'
 		uploadFile = tasks.jar
 		changelog = project.changelog
