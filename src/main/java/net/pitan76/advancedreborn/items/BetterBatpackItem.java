@@ -24,16 +24,13 @@ public class BetterBatpackItem extends ExtendItem implements CompatItemProvider,
 
     protected CompatibleItemSettings settings;
 
-    private static int num = 0;
-
     @Override
     public CompatibleItemSettings getCompatSettings() {
         return settings;
     }
 
     public BetterBatpackItem(CompatibleItemSettings settings, int maxCharge, CompatibleArmorMaterial material, RcEnergyTier tier) {
-//        super(maxCharge, material.build(), tier, "better_batpack_" + num++);
-        super(CompatibleItemSettings.of(AdvancedReborn._id("better_batpack_" + num++)).maxCount(1).build().humanoidArmor(material.build(), ArmorType.CHESTPLATE));
+        super(settings.maxCount(1).build().humanoidArmor(material.build(), ArmorType.CHESTPLATE));
         this.settings = settings;
         this.maxCharge = maxCharge;
         this.energyTier = tier;
