@@ -31,7 +31,7 @@ public class ConfigWrench extends CompatItem {
     public ConfigWrench(CompatibleItemSettings settings) {
         super(settings);
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            ItemStack stack = player.getStackInHand(hand);
+            ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem().equals(Items.CONFIG_WRENCH.getOrNull())) {
                 if (WorldUtil.isClient(world)) return InteractionResult.PASS;
                 BlockEntity tile = WorldUtil.getBlockEntity(world, pos);
@@ -40,13 +40,13 @@ public class ConfigWrench extends CompatItem {
                     CompoundTag tag = CustomDataUtil.getNbt(stack);
                     if (!tag.contains("configs")) return InteractionResult.FAIL;
                     CompoundTag config = NbtUtil.get(tag, "configs");
-                    TagValueInput readView = TagValueInput.create(ProblemReporter.EMPTY, world.getRegistryManager(), config);
+                    ValueInput readView = TagValueInput.create(ProblemReporter.DISCARDING, world.registryAccess(), config);
 
                     MachineBaseBlockEntityAccessor accessor = (MachineBaseBlockEntityAccessor) tile;
                     if (config.contains("slot"))
-                        accessor.getSlotConfiguration().read(readView.getReadView("slot"));
+                        accessor.getSlotConfiguration().read(readView.childOrEmpty("slot"));
                     if (config.contains("fluid"))
-                        accessor.getFluidConfiguration().read(readView.getReadView("fluid"));
+                        accessor.getFluidConfiguration().read(readView.childOrEmpty("fluid"));
                     if (config.contains("redstone")) {
                         Map<RedstoneConfiguration.Element, RedstoneConfiguration.State> stateMap = accessor.getRedstoneConfiguration().stateMap();
                         CompoundTag redstone = NbtUtil.get(config, "redstone");
@@ -56,7 +56,7 @@ public class ConfigWrench extends CompatItem {
                             }
                         });
                     }
-                    player.sendMessage(TextUtil.literal("Loaded Configuration from The Config Wrench."), false);
+                    player.sendSystemMessage(TextUtil.literal("Loaded Configuration from The Config Wrench."));
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -87,14 +87,15 @@ public class ConfigWrench extends CompatItem {
         }
         CompoundTag config = NbtUtil.create();
         if (slotConfig != null) {
-            TagValueOutput view = TagValueOutput.create(ProblemReporter.EMPTY, world.getRegistryManager());
+            TagValueOutput view = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, 
+                    world.registryAccess());
             slotConfig.write(view);
-            config.put("slot", view.getNbt());
+            config.put("slot", view.buildResult());
         }
         if (fluidConfig != null) {
-            TagValueOutput view = TagValueOutput.create(ProblemReporter.EMPTY, world.getRegistryManager());
+            TagValueOutput view = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, world.registryAccess());
             fluidConfig.write(view);
-            config.put("fluid", view.getNbt());
+            config.put("fluid", view.buildResult());
         }
         if (redstoneConfig != null) {
             CompoundTag redstone = NbtUtil.create();

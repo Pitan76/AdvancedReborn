@@ -35,12 +35,12 @@ public class DynamiteEntity extends CompatThrownItemEntity {
         setFuse(fuseTimerInit);
     }
 
-    public DynamiteEntity(ServerLevel world, LivingEntity owner) {
+    public DynamiteEntity(Level world, LivingEntity owner) {
         super((EntityType<? extends ThrowableItemProjectile>) Entities.DYNAMITE.getOrNull(), owner, world);
         setFuse(fuseTimerInit);
     }
 
-    public DynamiteEntity(ServerLevel world, double x, double y, double z) {
+    public DynamiteEntity(Level world, double x, double y, double z) {
         super((EntityType<? extends ThrowableItemProjectile>) Entities.DYNAMITE.getOrNull(), x, y, z, world);
         setFuse(fuseTimerInit);
     }

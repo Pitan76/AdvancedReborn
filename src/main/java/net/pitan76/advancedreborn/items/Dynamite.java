@@ -47,7 +47,7 @@ public class Dynamite extends CompatItem implements ProjectileItem {
         if (!e.user.isCreative()) stack.shrink(1);
 
         DynamiteEntity dynamiteEntity = new DynamiteEntity(e.world, e.user.getEntity());
-        dynamiteEntity.setVelocity(e.user.getPlayerEntity(), e.user.getPitch(), e.user.getYaw(), 0.0F, 1.5F, 1.0F);
+        dynamiteEntity.shootFromRotation(e.user.getPlayerEntity(), e.user.getPitch(), e.user.getYaw(), 0.0F, 1.5F, 1.0F);
         dynamiteEntity.callSetItem(stack);
         dynamiteEntity.setSticky(isSticky);
         dynamiteEntity.setIndustrial(isIndustrial);
@@ -59,8 +59,8 @@ public class Dynamite extends CompatItem implements ProjectileItem {
     }
 
     @Override
-    public Projectile createEntity(Level world, Position pos, ItemStack stack, Direction direction) {
-        DynamiteEntity dynamiteEntity = new DynamiteEntity(world, pos.getX(), pos.getY(), pos.getZ());
+    public Projectile asProjectile(Level world, Position pos, ItemStack stack, Direction direction) {
+        DynamiteEntity dynamiteEntity = new DynamiteEntity(world, pos.x(), pos.y(), pos.z());
         dynamiteEntity.callSetItem(stack);
         dynamiteEntity.setSticky(isSticky);
         dynamiteEntity.setIndustrial(isIndustrial);

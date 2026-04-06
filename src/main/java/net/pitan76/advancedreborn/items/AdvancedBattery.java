@@ -27,7 +27,7 @@ public class AdvancedBattery extends CompatItem implements RcEnergyItem {
 
     @Override
     public StackActionResult onRightClick(ItemUseEvent e) {
-        final ItemStack stack = e.user.getPlayerEntity().getStackInHand(e.hand);
+        final ItemStack stack = e.user.getStackInHand(e.hand);
         if (e.isSneaking()) {
             TRItemUtils.switchActive(stack, 1, e.user.getEntity());
             return e.success();

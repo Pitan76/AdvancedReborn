@@ -15,10 +15,8 @@ public class GuiRotaryGrinder extends GuiBase<BuiltScreenHandler> {
 
     public RotaryGrinderTile tile;
     public GuiRotaryGrinder(int syncId, Player player, RotaryGrinderTile tile) {
-        super(player, tile, tile.createScreenHandler(syncId, player));
+        super(player, tile, tile.createScreenHandler(syncId, player), 176, 166);
         this.tile = tile;
-        backgroundWidth = 176;
-        backgroundHeight = 166;
     }
 
     public boolean isConfigEnabled() {
@@ -41,8 +39,8 @@ public class GuiRotaryGrinder extends GuiBase<BuiltScreenHandler> {
 
     public void drawOutputTwoLongSlot(GuiGraphicsExtractor context, int x, int y, Layer layer) {
         if (layer == Layer.BACKGROUND) {
-            x += this.x;
-            y += this.y;
+            x += this.leftPos;
+            y += this.topPos;
         }
         drawOutputTwoLongSlotBuilder(context, this, x - 5, y - 5);
     }

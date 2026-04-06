@@ -21,7 +21,7 @@ public class FreqTrans extends CompatItem {
     public FreqTrans(CompatibleItemSettings settings) {
         super(settings);
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            ItemStack stack = player.getStackInHand(hand);
+            ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem().equals(Items.FREQ_TRANS.getOrNull())) {
                 if (WorldUtil.isClient(world)) return InteractionResult.PASS;
                 BlockEntity tile = WorldUtil.getBlockEntity(world, pos);
