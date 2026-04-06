@@ -1,6 +1,6 @@
 package net.pitan76.advancedreborn;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.pitan76.advancedreborn.mixins.GuiTypeInvoker;
 import net.pitan76.advancedreborn.tile.*;
 import techreborn.blockentity.GuiType;

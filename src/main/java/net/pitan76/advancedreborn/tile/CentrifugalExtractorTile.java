@@ -1,16 +1,16 @@
 package net.pitan76.advancedreborn.tile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.AdvancedReborn;
 import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Tiles;
@@ -29,7 +29,7 @@ import reborncore.common.screen.BuiltScreenHandlerProvider;
 import reborncore.common.screen.builder.ScreenHandlerBuilder;
 import reborncore.common.util.RebornInventory;
 import techreborn.init.ModRecipes;
-import techreborn.items.DynamicCellItem;
+import techreborn.items.CellItem;
 
 public class CentrifugalExtractorTile extends HeatMachineTile implements IToolDrop, InventoryProvider, IRecipeCrafterProvider, BuiltScreenHandlerProvider {
     public Block toolDrop;
@@ -54,7 +54,7 @@ public class CentrifugalExtractorTile extends HeatMachineTile implements IToolDr
         this(event.getBlockPos(), event.getBlockState());
     }
 
-    public BuiltScreenHandler createScreenHandler(int syncID, PlayerEntity player) {
+    public BuiltScreenHandler createScreenHandler(int syncID, Player player) {
         return new ScreenHandlerBuilder(AdvancedReborn.MOD_ID + "__centrifugal_extractor_machine").player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this).slot(0, 55, 45).outputSlot(1, 101 + 18 * 2, 45).outputSlot(2, 101 + 18, 45).outputSlot(3, 101, 45).energySlot(4, 8, 72).syncEnergyValue()
                 .syncCrafterValue().addInventory().create(this, syncID);
@@ -87,11 +87,11 @@ public class CentrifugalExtractorTile extends HeatMachineTile implements IToolDr
         return crafter;
     }
 
-    public ItemStack getToolDrop(PlayerEntity p0) {
+    public ItemStack getToolDrop(Player p0) {
         return ItemStackUtil.create(toolDrop.asItem(), 1);
     }
 
-    public void tick(World world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
         if (world == null || WorldUtil.isClient(world)) {
             return;
@@ -99,39 +99,38 @@ public class CentrifugalExtractorTile extends HeatMachineTile implements IToolDr
         // Charge
         charge(energySlot);
 
-        if (!getInventory().getStack(1).isEmpty()) {
-            if (getStack(1).getItem().equals(getStack(2).getItem())) {
-                if (getStack(2).getCount() == getStack(2).getMaxCount()) return;
-                getStack(2).increment(1);
-                getStack(1).decrement(1);
-            } else if (getStack(2).isEmpty()) {
-                setStack(2, ItemStackUtil.create(getStack(1).getItem(), 1));
-                getStack(1).decrement(1);
+        if (!getInventory().getItem(1).isEmpty()) {
+            if (getItem(1).getItem().equals(getItem(2).getItem())) {
+                if (getItem(2).getCount() == getItem(2).getMaxStackSize()) return;
+                getItem(2).grow(1);
+                getItem(1).shrink(1);
+            } else if (getItem(2).isEmpty()) {
+                setItem(2, ItemStackUtil.create(getItem(1).getItem(), 1));
+                getItem(1).shrink(1);
             }
         }
 
-        if (!getInventory().getStack(2).isEmpty()) {
-            if (getStack(2).getItem().equals(getStack(3).getItem())) {
-                if (getStack(3).getCount() == getStack(3).getMaxCount()) return;
-                getStack(3).increment(2);
-                getStack(2).decrement(2);
-            } else if (getStack(3).isEmpty()) {
-                if (getStack(2).getItem() instanceof DynamicCellItem) {
-                    DynamicCellItem cellItem = (DynamicCellItem) getStack(2).getItem();
-                    Fluid fluid = cellItem.getFluid(getStack(2));
+        if (!getInventory().getItem(2).isEmpty()) {
+            if (getItem(2).getItem().equals(getItem(3).getItem())) {
+                if (getItem(3).getCount() == getItem(3).getMaxStackSize()) return;
+                getItem(3).grow(2);
+                getItem(2).shrink(2);
+            } else if (getItem(3).isEmpty()) {
+                if (getItem(2).getItem() instanceof CellItem cellItem) {
+                    Fluid fluid = cellItem.getFluid(getItem(2));
                     if (fluid == Fluids.EMPTY) {
-                        setStack(3, ItemStackUtil.create(getStack(2).getItem(), 1));
-                        getStack(2).decrement(1);
+                        setItem(3, ItemStackUtil.create(getItem(2).getItem(), 1));
+                        getItem(2).shrink(1);
                         return;
                     }
                 }
-                setStack(3, ItemStackUtil.create(getStack(2).getItem(), 2));
-                getStack(2).decrement(2);
+                setItem(3, ItemStackUtil.create(getItem(2).getItem(), 2));
+                getItem(2).shrink(2);
             }
         }
     }
 
-    public Inventory getInventory() {
+    public Container getInventory() {
         return inventory;
     }
 }

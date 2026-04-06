@@ -1,20 +1,20 @@
 package net.pitan76.advancedreborn.tile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CropBlock;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.AdvancedReborn;
 import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Tiles;
@@ -67,7 +67,7 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
         this(event.getBlockPos(), event.getBlockState());
     }
 
-    public BuiltScreenHandler createScreenHandler(int syncID, PlayerEntity player) {
+    public BuiltScreenHandler createScreenHandler(int syncID, Player player) {
         return new ScreenHandlerBuilder(AdvancedReborn.MOD_ID + "__LOGGING_MACHINE").player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this)
                 .slot(0, 55, 50)
@@ -92,11 +92,11 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
         return false;
     }
 
-    public ItemStack getToolDrop(PlayerEntity p0) {
+    public ItemStack getToolDrop(Player p0) {
         return ItemStackUtil.create(toolDrop.asItem(), 1);
     }
 
-    public void tick(World world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    public void tick(ServerLevel world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
         if (world == null || WorldUtil.isClient(world)) {
             return;
@@ -130,9 +130,9 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
             long plantUseEnergy = getEuPerTick(AutoConfigAddon.config.loggingMachinePlantUseEnergy);
 
             if (getEnergy() > plantUseEnergy) {
-                ItemStack stack =  inventory.getStack(saplingSlot);
+                ItemStack stack =  inventory.getItem(saplingSlot);
                 if (tryPlant(world, pos, getFacing(), stack)) {
-                    stack.decrement(1);
+                    stack.shrink(1);
                     useEnergy(plantUseEnergy);
                 }
             }
@@ -140,18 +140,18 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
     }
     public void insertStack(ItemStack stack) {
         int[] indexes = insertItemSlots;
-        if (stack.isIn(ItemTags.SAPLINGS) || stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof SaplingBlock) {
+        if (stack.is(ItemTags.SAPLINGS) || stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof SaplingBlock) {
             indexes = ArrayUtils.addFirst(insertItemSlots, saplingSlot);
         }
         for (int i : indexes) {
-            ItemStack slotStack = inventory.getStack(i);
+            ItemStack slotStack = inventory.getItem(i);
             if (slotStack.isEmpty()) {
-                inventory.setStack(i, stack);
+                inventory.setItem(i, stack);
                 BlockEntityUtil.markDirty(this);
                 return;
             }
             if (slotStack.getItem() == stack.getItem() && slotStack.getCount() + stack.getCount() < 64) {
-                inventory.setStack(i, ItemStackUtil.create(stack.getItem(), stack.getCount() + inventory.getStack(i).getCount()));
+                inventory.setItem(i, ItemStackUtil.create(stack.getItem(), stack.getCount() + inventory.getItem(i).getCount()));
                 BlockEntityUtil.markDirty(this);
                 return;
             }
@@ -160,7 +160,7 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
         WorldUtil.spawnEntity(world, ItemEntityUtil.create(world, pos.getX(), pos.getY(), pos.getZ(), stack));
     }
 
-    public static boolean tryLogging(World world, BlockPos pos, Direction direction, int range, List<ItemStack> drops) {
+    public static boolean tryLogging(ServerLevel world, BlockPos pos, Direction direction, int range, List<ItemStack> drops) {
         for (int x = -range; x < range + 1; x++) {
             for (int z = -range; z < range + 1; z++) {
                 for (int y = 0; y < range * 2 + 1; y++) {
@@ -168,7 +168,7 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
                     BlockState state = WorldUtil.getBlockState(world, executePos);
                     if (state.isIn(BlockTags.LOGS) || state.isIn(BlockTags.LEAVES)) {
                         if (drops != null)
-                            drops.addAll(CropBlock.getDroppedStacks(state, (ServerWorld) world, executePos, null));
+                            drops.addAll(CropBlock.getDroppedStacks(state, (ServerLevel) world, executePos, null));
                         WorldUtil.breakBlock(world, executePos, false);
                         return true;
                     }
@@ -179,20 +179,20 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
         return false;
     }
 
-    public static boolean tryPlant(World world, BlockPos pos, Direction direction, ItemStack stack) {
+    public static boolean tryPlant(ServerLevel world, BlockPos pos, Direction direction, ItemStack stack) {
         BlockPos executePos = pos.offset(direction);
         if (!WorldUtil.getBlockState(world, executePos).isAir()) return false;
 
-        if (WorldUtil.getBlockState(world, executePos.down()).isIn(BlockTags.DIRT)) {
-            if (stack.isIn(ItemTags.SAPLINGS)) {
-                WorldUtil.setBlockState(world, executePos, ((BlockItem) stack.getItem()).getBlock().getDefaultState(), 11);
+        if (WorldUtil.getBlockState(world, executepos.below()).isIn(BlockTags.DIRT)) {
+            if (stack.is(ItemTags.SAPLINGS)) {
+                WorldUtil.setBlockState(world, executePos, ((BlockItem) stack.getItem()).getBlock().defaultBlockState(), 11);
                 return true;
             }
         }
         return false;
     }
 
-    public Inventory getInventory() {
+    public Container getInventory() {
         return inventory;
     }
 }

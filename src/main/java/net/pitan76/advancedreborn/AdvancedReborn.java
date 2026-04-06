@@ -1,7 +1,7 @@
 package net.pitan76.advancedreborn;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.resources.Identifier;
 import net.pitan76.advancedreborn.blocks.RaySolar;
 import net.pitan76.mcpitanlib.api.item.CreativeTabBuilder;
 import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
@@ -38,7 +38,7 @@ public class AdvancedReborn extends ExtendModInitializer {
         AR_GROUP = CreativeTabBuilder.create(
                 INSTANCE.compatId("item_group")).
                 setIcon(() -> ItemStackUtil.create(Items.CHARGE_PAD_MK_FINAL.get(), 1));
-        RegistryResult<ItemGroup> result = registry.registerItemGroup(AR_GROUP);
+        RegistryResult<CreativeModeTab> result = registry.registerItemGroup(AR_GROUP);
 
         ModManager.beforeInit();
         Blocks.init();

@@ -1,8 +1,7 @@
 package net.pitan76.advancedreborn.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.world.entity.player.Player;
 import net.pitan76.advancedreborn.tile.EnchantmentExtractorTile;
 import net.pitan76.mcpitanlib.api.client.render.DrawObjectDM;
 import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
@@ -19,7 +18,7 @@ public class GuiEnchantmentExtractor extends GuiBase<BuiltScreenHandler> {
     public static final CompatIdentifier GUI = INSTANCE.compatId("textures/gui/slot_texture.png");
 
     public EnchantmentExtractorTile tile;
-    public GuiEnchantmentExtractor(int syncId, PlayerEntity player, EnchantmentExtractorTile tile) {
+    public GuiEnchantmentExtractor(int syncId, Player player, EnchantmentExtractorTile tile) {
         super(player, tile, tile.createScreenHandler(syncId, player));
         this.tile = tile;
     }
@@ -32,8 +31,8 @@ public class GuiEnchantmentExtractor extends GuiBase<BuiltScreenHandler> {
         super.init();
     }
 
-    public void drawBackground(DrawContext context, float lastFrameDuration, int mouseX, int mouseY) {
-        super.drawBackground(context, lastFrameDuration, mouseX, mouseY);
+    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float lastFrameDuration) {
+        super.extractBackground(context, mouseX, mouseY, lastFrameDuration);
         Layer layer = Layer.BACKGROUND;
 
         RenderUtil.setShaderTexture(0, GuiBuilder.GUI_ELEMENTS);
@@ -53,11 +52,11 @@ public class GuiEnchantmentExtractor extends GuiBase<BuiltScreenHandler> {
 
         //RenderSystem.setShaderTexture(0, GUI);
         // Book slot
-        ScreenUtil.RendererUtil.drawTexture(new DrawObjectDM(context), GUI.toMinecraft(), 60 + this.x - 1, 25 + this.y - 1, 0, 0, 18, 18);
+        ScreenUtil.RendererUtil.drawTexture(new DrawObjectDM(context), GUI.toMinecraft(), 60 + this.leftPos - 1, 25 + this.topPos - 1, 0, 0, 18, 18);
     }
 
-    public void drawForeground(DrawContext context, int mouseX, int mouseY) {
-        super.drawForeground(context, mouseX, mouseY);
+    public void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+        super.extractLabels(context, mouseX, mouseY);
         Layer layer = Layer.FOREGROUND;
         builder.drawProgressBar(context, this, tile.getProgressScaled(100), 100, 43, 45, mouseX, mouseY, GuiBuilder.ProgressDirection.DOWN, layer);
         builder.drawMultiEnergyBar(context, this, 9, 19, (int) tile.getEnergy(), (int) tile.getMaxStoredPower(), mouseX, mouseY, 0, layer);

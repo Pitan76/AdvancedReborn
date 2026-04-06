@@ -1,14 +1,14 @@
 package net.pitan76.advancedreborn.blocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.Particles;
 import net.pitan76.advancedreborn.api.Energy;
 import net.pitan76.mcpitanlib.api.block.args.v2.OutlineShapeEvent;
@@ -38,18 +38,18 @@ public class ChargePad extends CompatBlock {
         return true;
     }
 
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+    public int getComparatorOutput(BlockState state, Level world, BlockPos pos) {
         return USING.get(state) ? 15 : 0;
     }
 
     public ChargePad(CompatibleBlockSettings settings, int multiple) {
         super(settings);
-        setNewDefaultState(getNewDefaultState().with(FACING.getProperty(), Direction.NORTH).with(USING.getProperty(), false));
+        setNewDefaultState(getNewDefaultState().setValue(FACING.getProperty(), Direction.NORTH).setValue(USING.getProperty(), false));
         this.multiple = multiple;
     }
 
-    public void setFacing(Direction facing, World world, BlockPos pos) {
-        WorldUtil.setBlockState(world, pos, WorldUtil.getBlockState(world, pos).with(FACING.getProperty(), facing));
+    public void setFacing(Direction facing, Level world, BlockPos pos) {
+        WorldUtil.setBlockState(world, pos, WorldUtil.getBlockState(world, pos).setValue(FACING.getProperty(), facing));
     }
 
     public Direction getFacing(BlockState state) {
@@ -58,12 +58,12 @@ public class ChargePad extends CompatBlock {
 
     public void onPlaced(BlockPlacedEvent e) {
         super.onPlaced(e);
-        World world = e.getWorld();
+        Level world = e.getWorld();
         BlockPos pos = e.getPos();
         LivingEntity placer = e.getPlacer();
 
-        if(placer != null)
-            setFacing(placer.getHorizontalFacing().getOpposite(), world, pos);
+        if (placer != null)
+            setFacing(placer.getDirection().getOpposite(), world, pos);
 
         BlockEntity blockEntity = e.getBlockEntity();
         if (blockEntity instanceof MachineBaseBlockEntity) {
@@ -84,13 +84,13 @@ public class ChargePad extends CompatBlock {
         if (e.isClient()) return;
         if (!(e.getPlayerEntity().isPresent())) return;
 
-        World world = e.getWorld();
+        Level world = e.getWorld();
         BlockPos pos = e.getBlockPos();
         BlockState state = e.getState();
         Player player = new Player(e.getPlayerEntity().get());
 
-        if (WorldUtil.getBlockEntity(world, pos.down()) instanceof EnergyStorageBlockEntity) {
-            EnergyStorageBlockEntity tile = (EnergyStorageBlockEntity) WorldUtil.getBlockEntity(world, pos.down());
+        if (WorldUtil.getBlockEntity(world, pos.below()) instanceof EnergyStorageBlockEntity) {
+            EnergyStorageBlockEntity tile = (EnergyStorageBlockEntity) WorldUtil.getBlockEntity(world, pos.below());
             if (tile == null) return;
             long eu = (long) tile.getEnergy();
             if (eu <= 5) return;
@@ -106,7 +106,7 @@ public class ChargePad extends CompatBlock {
             for (int i = 0; i < player.getInvSize(); i++) {
                 if (storageEU <= 0) break;
 
-                ItemStack invStack = player.getInv().getStack(i);
+                ItemStack invStack = player.getInv().getItem(i);
 
                 if (invStack.isEmpty()) continue;
 
@@ -122,7 +122,7 @@ public class ChargePad extends CompatBlock {
             double rZ = random.nextInt(9) * 0.1;
 
             WorldUtil.spawnParticles(world, (SimpleParticleType) Particles.ENERGY.getOrNull(), pos.getX() + 0.1 + rX, pos.getY() + 0.25, pos.getZ() + 0.1 + rZ, 1, 0, 0.3, 0, 0);
-            WorldUtil.setBlockState(world, pos, state.with(USING.getProperty(), true));
+            WorldUtil.setBlockState(world, pos, state.setValue(USING.getProperty(), true));
             WorldUtil.scheduleBlockTick(world, pos, this, 5);
             WorldUtil.updateComparators(world, pos, this);
         }
@@ -131,13 +131,14 @@ public class ChargePad extends CompatBlock {
     @Override
     public void scheduledTick(BlockScheduledTickEvent e) {
         super.scheduledTick(e);
-        World world = e.getWorld();
+        Level world = e.getWorld();
         BlockPos pos = e.getPos();
 
-        WorldUtil.setBlockState(world, pos, e.state.with(USING.getProperty(), false));
+        WorldUtil.setBlockState(world, pos, e.state.setValue(USING.getProperty(), false));
         WorldUtil.updateComparators(world, pos, this);
     }
 
+    @Override
     public VoxelShape getOutlineShape(OutlineShapeEvent e) {
         return SHAPE;
     }

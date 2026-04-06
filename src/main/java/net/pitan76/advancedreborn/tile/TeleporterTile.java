@@ -1,17 +1,17 @@
 package net.pitan76.advancedreborn.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.addons.autoconfig.AutoConfigAddon;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class TeleporterTile extends BlockEntity implements BlockEntityTicker<TeleporterTile> {
 
-    private static final VoxelShape SHAPE_RANGE = VoxelShapes.cuboid(-2, -2, -2, 3, 3, 3);
+    private static final VoxelShape SHAPE_RANGE = Shapes.cuboid(-2, -2, -2, 3, 3, 3);
     private BlockPos teleportPos = null;
 
     public TeleporterTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -41,16 +41,16 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
         this(event.getBlockPos(), event.getBlockState());
     }
 
-    public void tick(World world, BlockPos pos, BlockState state, TeleporterTile tile) {
+    public void tick(Level world, BlockPos pos, BlockState state, TeleporterTile tile) {
         if (!AutoConfigAddon.getConfig().teleporterEnabled) return;
         if (world == null) return;
         if (WorldUtil.isClient(world)) return;
         if (getTeleportPos() == null) return;
-        List<Entity> entities = getEntities();
+        List<BlockEntity> entities = getEntities();
         if (entities.isEmpty()) return;
         if (!world.isReceivingRedstonePower(getPos())) return;
         if (use()) {
-            for (Entity entity : entities) {
+            for (BlockEntity entity : entities) {
                 entity.requestTeleport(getTeleportPos().getX() - 0.5D, getTeleportPos().getY() - 0.5D, getTeleportPos().getZ() - 0.5D);
                 return;
             }
@@ -70,8 +70,8 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
 
     public boolean use() {
         if (world == null) return false;
-        BlockEntity up = WorldUtil.getBlockEntity(world, pos.up());
-        BlockEntity down =  WorldUtil.getBlockEntity(world, pos.down());
+        BlockEntity up = WorldUtil.getBlockEntity(world, pos.above());
+        BlockEntity down =  WorldUtil.getBlockEntity(world, pos.below());
         BlockEntity north = WorldUtil.getBlockEntity(world, pos.north());
         BlockEntity south = WorldUtil.getBlockEntity(world, pos.south());
         BlockEntity east =  WorldUtil.getBlockEntity(world, pos.east());
@@ -103,9 +103,9 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
         this.teleportPos = teleportPos;
     }
 
-    public List<Entity> getEntities() {
+    public List<BlockEntity> getEntities() {
         try {
-            return SHAPE_RANGE.getBoundingBoxes().stream().flatMap((box) -> WorldUtil.getEntitiesByClass(getWorld(), Entity.class, box.offset(getX(), getY(), getZ()), EntityPredicates.VALID_ENTITY).stream()).collect(Collectors.toList());
+            return SHAPE_RANGE.getBoundingBoxes().stream().flatMap((box) -> WorldUtil.getEntitiesByClass(getWorld(), BlockEntity.class, box.offset(getX(), getY(), getZ()), EntitySelector.VALID_ENTITY).stream()).collect(Collectors.toList());
         } catch (NullPointerException e) {
             return new ArrayList<>();
         }
@@ -124,18 +124,18 @@ public class TeleporterTile extends BlockEntity implements BlockEntityTicker<Tel
     }
 
     @Override
-    public void writeData(WriteView view) {
+    public void saveAdditional(ValueOutput view) {
         if (getTeleportPos() != null) {
             view.putDouble("tpX", getTeleportPos().getX());
             view.putDouble("tpY", getTeleportPos().getY());
             view.putDouble("tpZ", getTeleportPos().getZ());
         }
-        super.writeData(view);
+        super.saveAdditional(view);
     }
 
     @Override
-    public void readData(ReadView view) {
-        super.readData(view);
+    public void loadAdditional(ValueInput view) {
+        super.loadAdditional(view);
         double tpX = view.getDouble("tpX", 0);
         double tpY = view.getDouble("tpY", 0);
         double tpZ = view.getDouble("tpZ", 0);

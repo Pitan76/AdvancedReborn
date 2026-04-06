@@ -1,13 +1,13 @@
 package net.pitan76.advancedreborn.items;
 
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ProjectileItem;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Position;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileItem;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.entities.DynamiteEntity;
 import net.pitan76.mcpitanlib.api.event.item.ItemUseEvent;
 import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
@@ -44,7 +44,7 @@ public class Dynamite extends CompatItem implements ProjectileItem {
         ItemStack stack = e.user.getStackInHand(e.hand);
         if (e.isClient()) return e.success();
 
-        if (!e.user.isCreative()) stack.decrement(1);
+        if (!e.user.isCreative()) stack.shrink(1);
 
         DynamiteEntity dynamiteEntity = new DynamiteEntity(e.world, e.user.getEntity());
         dynamiteEntity.setVelocity(e.user.getPlayerEntity(), e.user.getPitch(), e.user.getYaw(), 0.0F, 1.5F, 1.0F);
@@ -59,7 +59,7 @@ public class Dynamite extends CompatItem implements ProjectileItem {
     }
 
     @Override
-    public ProjectileEntity createEntity(World world, Position pos, ItemStack stack, Direction direction) {
+    public Projectile createEntity(Level world, Position pos, ItemStack stack, Direction direction) {
         DynamiteEntity dynamiteEntity = new DynamiteEntity(world, pos.getX(), pos.getY(), pos.getZ());
         dynamiteEntity.callSetItem(stack);
         dynamiteEntity.setSticky(isSticky);

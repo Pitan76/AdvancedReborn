@@ -1,12 +1,12 @@
 package net.pitan76.advancedreborn.tile.base;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.tile.InductionFurnaceTile;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import reborncore.common.blockentity.MachineBaseBlockEntity;
@@ -25,8 +25,8 @@ public abstract class HeatMachineTile extends PowerAcceptorBlockEntity {
     }
 
     public int getHeatPer() {
-        if (world == null) return 0;
-        BlockEntity be = WorldUtil.getBlockEntity(world, getPos());
+        if (level == null) return 0;
+        BlockEntity be = WorldUtil.getBlockEntity(level, getBlockPos());
         if (!(be instanceof HeatMachineTile)) return 0;
         HeatMachineTile tile = (HeatMachineTile) be;
         float heat = tile.getHeat();
@@ -50,16 +50,15 @@ public abstract class HeatMachineTile extends PowerAcceptorBlockEntity {
         setHeat(getHeat() + amount);
     }
 
-    public void tick(World world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
-        if (world == null) return;
-        if (getWorld().isClient()) {
-            if (getWorld().isReceivingRedstonePower(getPos())) {
+        if (WorldUtil.isClient(world)) {
+            if (WorldUtil.isReceivingRedstonePower(world, pos)) {
                 if (getHeat() <= 100 * getHeatMultiple()) addHeat(1); //+0.1%
             } else if (getHeat() > 0) addHeat(-1);
             return;
         }
-        if (getWorld().isReceivingRedstonePower(getPos())) {
+        if (WorldUtil.isReceivingRedstonePower(world, pos)) {
             if (getHeat() <= 100 * getHeatMultiple()) addHeat(1); //+0.1%
             useEnergy(1);
         } else if (getHeat() > 0) addHeat(-1);
@@ -74,14 +73,14 @@ public abstract class HeatMachineTile extends PowerAcceptorBlockEntity {
     }
 
     @Override
-    public void readData(ReadView view) {
-        super.readData(view);
-        setHeat(view.getInt("heat", 0));
+    public void loadAdditional(ValueInput view) {
+        super.loadAdditional(view);
+        setHeat(view.getIntOr("heat", 0));
     }
 
     @Override
-    public void writeData(WriteView view) {
+    public void saveAdditional(ValueOutput view) {
         view.putInt("heat", getHeat());
-        super.writeData(view);
+        super.saveAdditional(view);
     }
 }

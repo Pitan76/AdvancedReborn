@@ -1,6 +1,6 @@
 package net.pitan76.advancedreborn;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.pitan76.advancedreborn.armormaterials.BBArmorMaterial;
 import net.pitan76.advancedreborn.items.*;
 import net.pitan76.mcpitanlib.api.item.CompatFoodComponent;

@@ -1,9 +1,9 @@
 package net.pitan76.advancedreborn.blocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
 import reborncore.api.blockentity.IMachineGuiHandler;
@@ -20,7 +20,7 @@ public abstract class AdvancedMachineBlock extends BlockMachineBase {
         return createBlockEntity(new TileCreateEvent(pos, state));
     }
 
-    public BlockEntity createBlockEntity(BlockView world) {
+    public BlockEntity createBlockEntity(BlockGetter world) {
         return createBlockEntity(new TileCreateEvent(world));
     }
 

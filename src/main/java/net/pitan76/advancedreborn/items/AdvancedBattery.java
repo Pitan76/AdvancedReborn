@@ -1,9 +1,9 @@
 package net.pitan76.advancedreborn.items;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.pitan76.mcpitanlib.api.event.item.*;
 import net.pitan76.mcpitanlib.api.item.v2.CompatibleItemSettings;
 import net.pitan76.mcpitanlib.api.item.v2.CompatItem;
@@ -38,15 +38,15 @@ public class AdvancedBattery extends CompatItem implements RcEnergyItem {
     @Override
     public void inventoryTick(InventoryTickEvent e) {
         ItemStack stack = e.stack;
-        World world = e.world;
+        Level world = e.world;
         Entity entity = e.entity;
 
         TRItemUtils.checkActive(stack, 1, entity);
         if (WorldUtil.isClient(world)) return;
         if (!TRItemUtils.isActive(stack)) return;
 
-        if (entity instanceof PlayerEntity) {
-            ItemUtils.distributePowerToInventory((PlayerEntity) entity, stack, tier.getMaxOutput(), (testStack) -> !(testStack.getItem() instanceof BatteryItem));
+        if (entity instanceof Player) {
+            ItemUtils.distributePowerToInventory((Player) entity, stack, tier.getMaxOutput(), (testStack) -> !(testStack.getItem() instanceof BatteryItem));
         }
     }
 

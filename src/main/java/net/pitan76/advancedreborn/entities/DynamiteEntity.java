@@ -1,17 +1,17 @@
 package net.pitan76.advancedreborn.entities;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
-import net.minecraft.item.Item;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.Entities;
 import net.pitan76.advancedreborn.Items;
 import net.pitan76.mcpitanlib.api.entity.CompatThrownItemEntity;
@@ -21,7 +21,7 @@ import net.pitan76.mcpitanlib.api.util.WorldUtil;
 
 public class DynamiteEntity extends CompatThrownItemEntity {
 
-    public static TrackedData<Integer> FUSE = DataTracker.registerData(DynamiteEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    public static EntityDataAccessor<Integer> FUSE = SynchedEntityData.registerData(DynamiteEntity.class, EntityDataSerializers.INTEGER);
 
     public boolean stopped = false;
     public boolean isSticky = false;
@@ -29,18 +29,18 @@ public class DynamiteEntity extends CompatThrownItemEntity {
     public static int fuseTimerInit = 60;
     public int fuseTimer = fuseTimerInit;
 
-    public DynamiteEntity(EntityType<? extends ThrownItemEntity> entityType, World world) {
+    public DynamiteEntity(EntityType<? extends ThrowableItemProjectile> entityType, ServerLevel world) {
         super(entityType, world);
         setFuse(fuseTimerInit);
     }
 
-    public DynamiteEntity(World world, LivingEntity owner) {
-        super((EntityType<? extends ThrownItemEntity>) Entities.DYNAMITE.getOrNull(), owner, world);
+    public DynamiteEntity(ServerLevel world, LivingEntity owner) {
+        super((EntityType<? extends ThrowableItemProjectile>) Entities.DYNAMITE.getOrNull(), owner, world);
         setFuse(fuseTimerInit);
     }
 
-    public DynamiteEntity(World world, double x, double y, double z) {
-        super((EntityType<? extends ThrownItemEntity>) Entities.DYNAMITE.getOrNull(), x, y, z, world);
+    public DynamiteEntity(ServerLevel world, double x, double y, double z) {
+        super((EntityType<? extends ThrowableItemProjectile>) Entities.DYNAMITE.getOrNull(), x, y, z, world);
         setFuse(fuseTimerInit);
     }
 
@@ -68,7 +68,7 @@ public class DynamiteEntity extends CompatThrownItemEntity {
         fuseTimer = fuse;
     }
 
-    public void onTrackedDataSet(TrackedData<?> data) {
+    public void onTrackedDataSet(EntityDataAccessor<?> data) {
         super.onTrackedDataSet(data);
         if (FUSE.equals(data)) {
             fuseTimer = getFuse();
@@ -84,9 +84,9 @@ public class DynamiteEntity extends CompatThrownItemEntity {
     }
 
     public void onBlockHit(BlockHitResult blockHitResult) {
-        Vec3d distance = blockHitResult.getPos().subtract(getX(), getY(), getZ());
+        Vec3 distance = blockHitResult.getPos().subtract(getX(), getY(), getZ());
         setVelocity(distance);
-        Vec3d pos = distance.normalize().multiply(0.05000000074505806D);
+        Vec3 pos = distance.normalize().multiply(0.05000000074505806D);
         setPos(getX() - pos.x, getY() - pos.y, getZ() - pos.z);
         setOnGround(true);
         stopped = true;
@@ -96,9 +96,9 @@ public class DynamiteEntity extends CompatThrownItemEntity {
     public void onCollision(CollisionEvent e) {
         super.onCollision(e);
         if (isSticky) {
-            Vec3d distance = e.getPos().subtract(getX(), getY(), getZ());
+            Vec3 distance = e.getPos().subtract(getX(), getY(), getZ());
             setVelocity(distance);
-            Vec3d pos = distance.normalize().multiply(0.05000000074505806D);
+            Vec3 pos = distance.normalize().multiply(0.05000000074505806D);
             setPos(getX() - pos.x, getY() - pos.y, getZ() - pos.z);
             setOnGround(true);
             setNoGravity(true);
@@ -111,8 +111,8 @@ public class DynamiteEntity extends CompatThrownItemEntity {
         if (stopped) {
             fuseTimer--;
             if (fuseTimer <= 0) {
-                if (getEntityWorld() instanceof ServerWorld)
-                    kill((ServerWorld) getEntityWorld());
+                if (getEntityWorld() instanceof ServerLevel)
+                    kill((ServerLevel) getEntityWorld());
                 if (!getEntityWorld().isClient()) {
                     explode();
                 }
@@ -137,10 +137,10 @@ public class DynamiteEntity extends CompatThrownItemEntity {
                             this.getZ(),
                             2.5F,
                             false,
-                            World.ExplosionSourceType.BLOCK
+                            ServerLevel.ExplosionSourceType.BLOCK
                     );
             return;
         }
-        getEntityWorld().createExplosion(this, getX(), getBodyY(0.0625D), getZ(), 4.0F, World.ExplosionSourceType.TNT);
+        getEntityWorld().createExplosion(this, getX(), getBodyY(0.0625D), getZ(), 4.0F, ServerLevel.ExplosionSourceType.TNT);
     }
 }

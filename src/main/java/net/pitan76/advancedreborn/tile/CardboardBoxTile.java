@@ -1,15 +1,15 @@
 package net.pitan76.advancedreborn.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.inventory.IInventory;
 import net.pitan76.advancedreborn.screen.CardboardBoxScreenHandler;
@@ -27,10 +27,10 @@ import net.pitan76.mcpitanlib.api.util.NbtUtil;
 import net.pitan76.mcpitanlib.api.util.TextUtil;
 import org.jetbrains.annotations.Nullable;
 
-public class CardboardBoxTile extends CompatBlockEntity implements IInventory, SidedInventory, ExtendedScreenHandlerFactory {
+public class CardboardBoxTile extends CompatBlockEntity implements IInventory, WorldlyContainer, ExtendedScreenHandlerFactory {
 
-    public DefaultedList<ItemStack> inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
-    private Text customName = null;
+    public NonNullList<ItemStack> inventory = NonNullList.ofSize(9, ItemStack.EMPTY);
+    private Component customName = null;
     private String note = "";
 
     public CardboardBoxTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -45,7 +45,7 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, S
         this(event.getBlockPos(), event.getBlockState());
     }
 
-    public DefaultedList<ItemStack> getItems() {
+    public NonNullList<ItemStack> getItems() {
         return inventory;
     }
 
@@ -89,29 +89,29 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, S
         return true;
     }
 
-    public void setCustomName(Text customName) {
+    public void setCustomName(Component customName) {
         this.customName = customName;
     }
 
-    public void readInventoryNbt(NbtCompound nbt) {
-        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+    public void readInventoryNbt(CompoundTag nbt) {
+        this.inventory = NonNullList.ofSize(this.size(), ItemStack.EMPTY);
         if (NbtUtil.has(nbt, "Items")) {
             InventoryUtil.readNbt(new NbtRWArgs(nbt), this.inventory);
         }
 
     }
 
-    public NbtCompound writeInventoryNbt(NbtCompound nbt) {
+    public CompoundTag writeInventoryNbt(CompoundTag nbt) {
         InventoryUtil.writeNbt(new NbtRWArgs(nbt), this.inventory, false);
         return nbt;
     }
 
-    public Text getName() {
+    public Component getName() {
         return customName;
     }
 
     @Override
-    public Text getDisplayName(DisplayNameArgs args) {
+    public Component getDisplayName(DisplayNameArgs args) {
         return hasCustomName() ? customName : TextUtil.translatable("block.advanced_reborn.cardboard_box");
     }
 
@@ -119,12 +119,12 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, S
         return customName != null && !customName.getString().isBlank();
     }
 
-    public Text getCustomName() {
+    public Component getCustomName() {
         return customName;
     }
 
     @Override
-    public ScreenHandler createMenu(CreateMenuEvent e) {
+    public AbstractContainerMenu createMenu(CreateMenuEvent e) {
         return new CardboardBoxScreenHandler(e.getSyncId(), e.getPlayerInventory(), this, getNote(), this);
     }
 

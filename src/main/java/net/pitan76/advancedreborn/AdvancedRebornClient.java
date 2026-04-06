@@ -1,10 +1,10 @@
 package net.pitan76.advancedreborn;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.particle.EmotionParticle;
-import net.minecraft.entity.EntityType;
-import net.minecraft.particle.SimpleParticleType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.HeartParticle;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.pitan76.advancedreborn.entities.IndustrialTNTEntity;
 import net.pitan76.advancedreborn.renderer.IndustrialTNTEntityRenderer;
 import net.pitan76.advancedreborn.screen.CardboardBoxScreen;
@@ -15,14 +15,14 @@ import static net.pitan76.advancedreborn.AdvancedReborn.INSTANCE;
 
 public class AdvancedRebornClient implements ClientModInitializer {
 
-    public static MinecraftClient client = MinecraftClient.getInstance();
+    public static Minecraft client = Minecraft.getInstance();
     public static boolean isCopiedIconMap = false;
 
     public void onInitializeClient() {
         CompatRegistryClient.registryClientSpriteAtlasTexture(INSTANCE.id("particle/energy"));
         INSTANCE.info("Registered particle texture");
 
-        CompatRegistryClient.registerParticle((SimpleParticleType) Particles.ENERGY.getOrNull(), EmotionParticle.HeartFactory::new);
+        CompatRegistryClient.registerParticle((SimpleParticleType) Particles.ENERGY.getOrNull(), HeartParticle.Provider::new);
         INSTANCE.info("Registered particle type");
 
         EntityRendererRegistry.registerEntityRendererAsFlyingItem(() -> Entities.DYNAMITE.getOrNull());

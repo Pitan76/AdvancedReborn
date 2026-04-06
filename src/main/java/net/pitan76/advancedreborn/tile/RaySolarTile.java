@@ -1,12 +1,12 @@
 package net.pitan76.advancedreborn.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.blocks.RaySolar;
@@ -45,7 +45,7 @@ public class RaySolarTile extends PowerAcceptorBlockEntity implements IToolDrop 
     }
 
     @Override
-    public void tick(World world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
         if (world == null) {
             return;
@@ -54,7 +54,7 @@ public class RaySolarTile extends PowerAcceptorBlockEntity implements IToolDrop 
         if (WorldUtil.isClient(world)) {
             return;
         }
-        if ((!world.isRaining() && !world.isThundering() && world.isDay() && world.isSkyVisible(pos.up())) || solar.isRayGenerator) {
+        if ((!world.isRaining() && !world.isThundering() && world.isDay() && world.isSkyVisible(pos.above())) || solar.isRayGenerator) {
             addEnergy(getEuPerTick(energy));
         }
     }
@@ -75,7 +75,7 @@ public class RaySolarTile extends PowerAcceptorBlockEntity implements IToolDrop 
         return energy * 4;
     }
 
-    public ItemStack getToolDrop(PlayerEntity p0) {
+    public ItemStack getToolDrop(Player p0) {
         return ItemStackUtil.create(solar.asItem());
     }
 }

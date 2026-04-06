@@ -1,7 +1,7 @@
 package net.pitan76.advancedreborn;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.pitan76.advancedreborn.tile.CardboardBoxTile;
 import net.pitan76.advancedreborn.tile.RenamingMachineTile;
 import net.pitan76.mcpitanlib.api.network.PacketByteUtil;
@@ -13,7 +13,7 @@ import net.pitan76.mcpitanlib.api.util.math.PosUtil;
 public class Network {
     public static void init() {
         ServerNetworking.registerReceiver(Defines.CARDBOARD_BOX_CLOSE_PACKET_ID.toMinecraft(), (server, player, buf) -> {
-            NbtCompound data = PacketByteUtil.readNbt(buf);
+            CompoundTag data = PacketByteUtil.readNbt(buf);
             server.execute(() -> {
                 if (data == null) return;
                 if (!NbtUtil.has(data, "x")) return;
@@ -28,7 +28,7 @@ public class Network {
             });
         });
         ServerNetworking.registerReceiver(Defines.RENAMING_PACKET_ID.toMinecraft(), (server, player, buf) -> {
-            NbtCompound data = PacketByteUtil.readNbt(buf);
+            CompoundTag data = PacketByteUtil.readNbt(buf);
             server.execute(() -> {
                 if (data == null) return;
                 if (!NbtUtil.has(data, "x")) return;

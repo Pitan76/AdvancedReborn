@@ -1,6 +1,6 @@
 package net.pitan76.advancedreborn.client;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.pitan76.advancedreborn.GuiTypes;
 import net.pitan76.advancedreborn.gui.*;
 import net.pitan76.advancedreborn.tile.*;

@@ -1,8 +1,8 @@
 package net.pitan76.advancedreborn;
 
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import reborncore.common.crafting.RebornRecipe;
 import reborncore.common.crafting.RecipeManager;
 
@@ -12,7 +12,7 @@ public class Recipes {
     public static RecipeType<RebornRecipe> CANNING_MACHINE = RecipeManager.newRecipeType(INSTANCE.id("canning_machine"));
 
     public static RecipeType<?> byName(Identifier identifier) {
-        return (RecipeType<?>) Registries.RECIPE_SERIALIZER.get(identifier);
+        return (RecipeType<?>) BuiltInRegistries.RECIPE_SERIALIZER.get(identifier);
     }
 
     public static void init() {

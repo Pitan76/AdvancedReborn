@@ -1,11 +1,11 @@
 package net.pitan76.advancedreborn.screen;
 
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.pitan76.advancedreborn.Defines;
 import net.pitan76.mcpitanlib.api.client.gui.screen.CompatInventoryScreen;
 import net.pitan76.mcpitanlib.api.client.render.handledscreen.DrawBackgroundArgs;
@@ -22,11 +22,11 @@ import static net.pitan76.advancedreborn.AdvancedReborn.INSTANCE;
 
 public class CardboardBoxScreen extends CompatInventoryScreen<CardboardBoxScreenHandler> {
     private static final CompatIdentifier TEXTURE = INSTANCE.compatId("textures/gui/cardboard_box.png");
-    private TextFieldWidget noteBox;
+    private EditBox noteBox;
 
     private final CardboardBoxScreenHandler handler;
 
-    public CardboardBoxScreen(CardboardBoxScreenHandler handler, PlayerInventory inventory, Text title) {
+    public CardboardBoxScreen(CardboardBoxScreenHandler handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
         backgroundHeight = 133;
         this.playerInventoryTitleY = this.backgroundHeight - 94;
@@ -52,19 +52,19 @@ public class CardboardBoxScreen extends CompatInventoryScreen<CardboardBoxScreen
 
     public void initOverride() {
         super.initOverride();
-        noteBox = new TextFieldWidget(textRenderer, x + 98,  y + 7, 70, 9, TextUtil.literal(""));
-        getNoteBox().setText(handler.tmpNote);
+        noteBox = new EditBox(font, x + 98,  y + 7, 70, 9, TextUtil.literal(""));
+        getNoteBox().setValue(handler.tmpNote);
         getNoteBox().setDrawsBackground(false);
-        getNoteBox().setFocusUnlocked(false);
+        getNoteBox().setCanLoseFocus(false);
         ScreenUtil.TextFieldUtil.setFocused(getNoteBox(), true);
         getNoteBox().setMaxLength(2048);
-        addSelectableChild(getNoteBox());
+        addWidget(getNoteBox());
     }
 
     public void close() {
         super.close();
-        PacketByteBuf buf = PacketByteUtil.create();
-        NbtCompound data = NbtUtil.create();
+        FriendlyByteBuf buf = PacketByteUtil.create();
+        CompoundTag data = NbtUtil.create();
         data.putString("note", getNote());
         data.putDouble("x", handler.pos.getX());
         data.putDouble("y", handler.pos.getY());
@@ -84,15 +84,15 @@ public class CardboardBoxScreen extends CompatInventoryScreen<CardboardBoxScreen
         ScreenUtil.setRepeatEvents(false);
     }
 
-    public TextFieldWidget getNoteBox() {
+    public EditBox getNoteBox() {
         return noteBox;
     }
 
-    public void setNoteBox(TextFieldWidget noteBox) {
+    public void setNoteBox(EditBox noteBox) {
         this.noteBox = noteBox;
     }
 
     public String getNote() {
-        return getNoteBox().getText();
+        return getNoteBox().getValue();
     }
 }

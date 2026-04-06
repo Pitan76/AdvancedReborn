@@ -1,14 +1,14 @@
 package net.pitan76.advancedreborn.tile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.AdvancedReborn;
 import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Tiles;
@@ -52,7 +52,7 @@ public class RotaryGrinderTile extends HeatMachineTile implements IToolDrop, Inv
         this(event.getBlockPos(), event.getBlockState());
     }
 
-    public BuiltScreenHandler createScreenHandler(int syncID, PlayerEntity player) {
+    public BuiltScreenHandler createScreenHandler(int syncID, Player player) {
         return new ScreenHandlerBuilder(AdvancedReborn.MOD_ID + "__rotary_grinder_machine").player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this).slot(0, 55, 45).outputSlot(1, 101 + 18, 45).outputSlot(2, 101, 45).energySlot(3, 8, 72).syncEnergyValue()
                 .syncCrafterValue().addInventory().create(this, syncID);
@@ -85,29 +85,29 @@ public class RotaryGrinderTile extends HeatMachineTile implements IToolDrop, Inv
         return crafter;
     }
 
-    public ItemStack getToolDrop(PlayerEntity p0) {
+    public ItemStack getToolDrop(Player p0) {
         return ItemStackUtil.create(toolDrop.asItem(), 1);
     }
 
-    public void tick(World world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
         if (world == null || WorldUtil.isClient(world)) {
             return;
         }
         charge(energySlot);
-        if (!getInventory().getStack(1).isEmpty()) {
+        if (!getInventory().getItem(1).isEmpty()) {
             if (getStack(1).getItem().equals(getStack(2).getItem())) {
-                if (getStack(2).getCount() == getStack(2).getMaxCount()) return;
-                getStack(2).increment(1);
-                getStack(1).decrement(1);
+                if (getStack(2).getCount() == getStack(2).getMaxStackSize()) return;
+                getStack(2).grow(1);
+                getStack(1).shrink(1);
             } else if (getStack(2).isEmpty()) {
                 setStack(2, ItemStackUtil.create(getStack(1).getItem(), 1));
-                getStack(1).decrement(1);
+                getStack(1).shrink(1);
             }
         }
     }
 
-    public Inventory getInventory() {
+    public Container getInventory() {
         return inventory;
     }
 }

@@ -1,8 +1,8 @@
 package net.pitan76.advancedreborn.packet;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 public class EntitySpawnPacket {
 
@@ -36,7 +36,7 @@ public class EntitySpawnPacket {
          * @return packed angle
          */
         public static byte packAngle(float angle) {
-            return (byte) MathHelper.floor(angle * 256 / 360);
+            return (byte) Mth.floor(angle * 256 / 360);
         }
 
         /**
@@ -58,7 +58,7 @@ public class EntitySpawnPacket {
          * @param angle
          *         angle
          */
-        public static void writeAngle(PacketByteBuf byteBuf, float angle) {
+        public static void writeAngle(FriendlyByteBuf byteBuf, float angle) {
             byteBuf.writeByte(packAngle(angle));
         }
 
@@ -69,7 +69,7 @@ public class EntitySpawnPacket {
          *         source buffer
          * @return angle
          */
-        public static float readAngle(PacketByteBuf byteBuf) {
+        public static float readAngle(FriendlyByteBuf byteBuf) {
             return unpackAngle(byteBuf.readByte());
         }
 
@@ -81,7 +81,7 @@ public class EntitySpawnPacket {
          * @param vec3d
          *         vector
          */
-        public static void writeVec3d(PacketByteBuf byteBuf, Vec3d vec3d) {
+        public static void writeVec3d(FriendlyByteBuf byteBuf, Vec3 vec3d) {
             byteBuf.writeDouble(vec3d.x);
             byteBuf.writeDouble(vec3d.y);
             byteBuf.writeDouble(vec3d.z);
@@ -94,7 +94,7 @@ public class EntitySpawnPacket {
          *         source buffer
          * @return vector
          */
-        public static Vec3d readVec3d(PacketByteBuf byteBuf) {
+        public static Vec3 readVec3d(FriendlyByteBuf byteBuf) {
             double x = byteBuf.readDouble();
             double y = byteBuf.readDouble();
             double z = byteBuf.readDouble();

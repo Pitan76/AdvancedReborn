@@ -1,18 +1,18 @@
 package net.pitan76.advancedreborn.tile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CropBlock;
-import net.minecraft.block.SaplingBlock;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.BoneMealItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.BoneMealItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.AdvancedReborn;
 import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Tiles;
@@ -59,7 +59,7 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
         this(event.getBlockPos(), event.getBlockState());
     }
 
-    public BuiltScreenHandler createScreenHandler(int syncID, PlayerEntity player) {
+    public BuiltScreenHandler createScreenHandler(int syncID, Player player) {
         return new ScreenHandlerBuilder(AdvancedReborn.MOD_ID + "__FERTILIZER_SPREADER").player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this)
                 .slot(0, 55, 32).slot(1, 73, 32).slot(2, 91, 32).slot(3, 109, 32).slot(4, 127, 32)
@@ -84,11 +84,11 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
         return false;
     }
 
-    public ItemStack getToolDrop(PlayerEntity p0) {
+    public ItemStack getToolDrop(Player p0) {
         return ItemStackUtil.create(toolDrop.asItem(), 1);
     }
 
-    public void tick(World world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
         if (world == null || WorldUtil.isClient(world)) {
             return;
@@ -113,7 +113,7 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
             if (getEnergy() > useEnergy) {
                 ItemStack stack =  getFertilizerStack();
                 if (trySpread(world, pos, AutoConfigAddon.config.fertilizerSpreaderRange, stack)) {
-                    stack.decrement(1);
+                    stack.shrink(1);
                     useEnergy(useEnergy);
                 }
             }
@@ -122,7 +122,7 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
 
     public ItemStack getFertilizerStack() {
         for (int i : slotIndex) {
-            ItemStack stack = inventory.getStack(i);
+            ItemStack stack = inventory.getItem(i);
             if (!stack.isEmpty()) {
                 if (!(stack.getItem() instanceof BoneMealItem)) continue;
                 return stack;
@@ -131,7 +131,7 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
         return ItemStack.EMPTY;
     }
 
-    public static boolean trySpread(World world, BlockPos pos, int range, ItemStack stack) {
+    public static boolean trySpread(Level world, BlockPos pos, int range, ItemStack stack) {
         if (!(stack.getItem() instanceof BoneMealItem)) return false;
 
         for (int x = -range; x < range + 1; x++) {
@@ -153,7 +153,7 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
         return false;
     }
 
-    public Inventory getInventory() {
+    public Container getInventory() {
         return inventory;
     }
 }

@@ -2,21 +2,21 @@ package net.pitan76.advancedreborn.blocks;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.TypedEntityData;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.tile.CardboardBoxTile;
 import net.pitan76.mcpitanlib.api.block.CompatBlockRenderType;
@@ -45,11 +45,11 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
 
     public CardboardBox(CompatibleBlockSettings settings) {
         super(settings);
-        setNewDefaultState(getNewDefaultState().with(FACING.getProperty(), Direction.NORTH));
+        setNewDefaultState(getNewDefaultState().setValue(FACING.getProperty(), Direction.NORTH));
     }
 
-    public void setFacing(Direction facing, World world, BlockPos pos) {
-        WorldUtil.setBlockState(world, pos, WorldUtil.getBlockState(world, pos).with(FACING.getProperty(), facing));
+    public void setFacing(Direction facing, Level world, BlockPos pos) {
+        WorldUtil.setBlockState(world, pos, WorldUtil.getBlockState(world, pos).setValue(FACING.getProperty(), facing));
     }
 
     public Direction getFacing(BlockState state) {
@@ -67,7 +67,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
     }
 
     public BlockBreakResult onBreak(BlockBreakEvent e) {
-        World world = e.world;
+        Level world = e.world;
         BlockPos pos = e.pos;
 
         BlockEntity blockEntity = e.getBlockEntity();
@@ -75,7 +75,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
             CardboardBoxTile tile = (CardboardBoxTile) blockEntity;
             if (!WorldUtil.isClient(world) && !tile.isEmpty()) {
                 ItemStack stack = ItemStackUtil.create(this.asItem());
-                NbtCompound nbt = BlockEntityUtil.getBlockEntityNbt(world, tile);
+                CompoundTag nbt = BlockEntityUtil.getBlockEntityNbt(world, tile);
                 if (!NbtUtil.has(nbt, "id"))
                     NbtUtil.putString(nbt, "id", BlockEntityTypeUtil.toID(Tiles.CARDBOARD_BOX_TILE.get()).toString());
 
@@ -105,14 +105,14 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
     @Override
     public void onPlaced(BlockPlacedEvent e) {
         LivingEntity placer = e.placer;
-        World world = e.world;
+        Level world = e.world;
         BlockPos pos = e.pos;
         ItemStack stack = e.stack;
 
         if (placer != null)
             setFacing(placer.getHorizontalFacing().getOpposite(), world, pos);
 
-        if (stack.contains(DataComponentTypes.CUSTOM_NAME)) {
+        if (stack.contains(DataComponents.CUSTOM_NAME)) {
             BlockEntity blockEntity = WorldUtil.getBlockEntity(world, pos);
             if (blockEntity instanceof CardboardBoxTile) {
                 ((CardboardBoxTile)blockEntity).setCustomName(stack.getName());
@@ -152,11 +152,11 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
     public void appendTooltip(ItemAppendTooltipEvent e) {
         super.appendTooltip(e);
 
-        if (!e.stack.contains(DataComponentTypes.BLOCK_ENTITY_DATA)) return;
+        if (!e.stack.contains(DataComponents.BLOCK_ENTITY_DATA)) return;
 
-        TypedEntityData<BlockEntityType<?>> entityData = e.stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> entityData = e.stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (entityData != null) {
-            NbtCompound nbt = entityData.copyNbtWithoutId();
+            CompoundTag nbt = entityData.copyNbtWithoutId();
             if (nbt.contains("note")) {
                 e.addTooltip(TextUtil.literal(NbtUtil.getString(nbt, "note")));
             }
@@ -164,7 +164,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
                 e.addTooltip(TextUtil.literal("???????"));
             }
             if (NbtUtil.has(nbt, "Items")) {
-                DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                NonNullList<ItemStack> defaultedList = NonNullList.ofSize(27, ItemStack.EMPTY);
                 NbtRWArgs args = new NbtRWArgs(nbt, e.getRegistryLookup());
                 InventoryUtil.readNbt(args, defaultedList);
                 int i = 0;
@@ -175,14 +175,14 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
                         ++j;
                         if (i <= 4) {
                             ++i;
-                            MutableText mutableText = itemStack.getName().copy();
+                            MutableComponent mutableText = itemStack.getName().copy();
                             mutableText.append(" x").append(String.valueOf(itemStack.getCount()));
                             e.addTooltip(mutableText);
                         }
                     }
                 }
                 if (j - i > 0) {
-                    e.addTooltip((TextUtil.translatable("container.advanced_reborn.cardboard_box.more", new Object[]{j - i})).copy().formatted(Formatting.ITALIC));
+                    e.addTooltip((TextUtil.translatable("container.advanced_reborn.cardboard_box.more", new Object[]{j - i})).copy().formatted(ChatFormatting.ITALIC));
                 }
             }
         }
@@ -211,7 +211,7 @@ public class CardboardBox extends CompatBlock implements ExtendBlockEntityProvid
 //            CardboardBoxTile tile = (CardboardBoxTile)blockEntity;
 //            args.builder = args.builder.addDynamicDrop(CONTENTS.toMinecraft(), (consumer) -> {
 //                for (int i = 0; i < tile.size(); ++i) {
-//                    consumer.accept(tile.getStack(i));
+//                    consumer.accept(tile.getItem(i));
 //                }
 //            });
 //        }

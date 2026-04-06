@@ -1,17 +1,17 @@
 package net.pitan76.advancedreborn.items;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.storage.NbtReadView;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.storage.ReadView;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ErrorReporter;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.Items;
 import net.pitan76.advancedreborn.mixins.MachineBaseBlockEntityAccessor;
 import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
@@ -33,14 +33,14 @@ public class ConfigWrench extends CompatItem {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
             ItemStack stack = player.getStackInHand(hand);
             if (stack.getItem().equals(Items.CONFIG_WRENCH.getOrNull())) {
-                if (WorldUtil.isClient(world)) return ActionResult.PASS;
+                if (WorldUtil.isClient(world)) return InteractionResult.PASS;
                 BlockEntity tile = WorldUtil.getBlockEntity(world, pos);
                 if (tile instanceof MachineBaseBlockEntity) {
-                    if (!CustomDataUtil.hasNbt(stack)) return ActionResult.FAIL;
-                    NbtCompound tag = CustomDataUtil.getNbt(stack);
-                    if (!tag.contains("configs")) return ActionResult.FAIL;
-                    NbtCompound config = NbtUtil.get(tag, "configs");
-                    ReadView readView = NbtReadView.create(ErrorReporter.EMPTY, world.getRegistryManager(), config);
+                    if (!CustomDataUtil.hasNbt(stack)) return InteractionResult.FAIL;
+                    CompoundTag tag = CustomDataUtil.getNbt(stack);
+                    if (!tag.contains("configs")) return InteractionResult.FAIL;
+                    CompoundTag config = NbtUtil.get(tag, "configs");
+                    TagValueInput readView = TagValueInput.create(ProblemReporter.EMPTY, world.getRegistryManager(), config);
 
                     MachineBaseBlockEntityAccessor accessor = (MachineBaseBlockEntityAccessor) tile;
                     if (config.contains("slot"))
@@ -49,7 +49,7 @@ public class ConfigWrench extends CompatItem {
                         accessor.getFluidConfiguration().read(readView.getReadView("fluid"));
                     if (config.contains("redstone")) {
                         Map<RedstoneConfiguration.Element, RedstoneConfiguration.State> stateMap = accessor.getRedstoneConfiguration().stateMap();
-                        NbtCompound redstone = NbtUtil.get(config, "redstone");
+                        CompoundTag redstone = NbtUtil.get(config, "redstone");
                         stateMap.forEach((element, state) -> {
                             if (redstone.contains(element.name())) {
                                 stateMap.put(element, RedstoneConfiguration.State.valueOf(NbtUtil.getString(redstone, element.name())));
@@ -57,15 +57,15 @@ public class ConfigWrench extends CompatItem {
                         });
                     }
                     player.sendMessage(TextUtil.literal("Loaded Configuration from The Config Wrench."), false);
-                    return ActionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 
     public CompatActionResult onRightClickOnBlock(ItemUseOnBlockEvent e) {
-        World world = e.world;
+        Level world = e.world;
         BlockPos pos = e.getBlockPos();
         BlockEntity tile = WorldUtil.getBlockEntity(world, pos);
         if (tile == null) return e.pass();
@@ -81,23 +81,23 @@ public class ConfigWrench extends CompatItem {
             fluidConfig = machineAccessor.getFluidConfiguration();
 
         ItemStack stack = e.player.getStackInHand(e.hand);
-        NbtCompound tag = CustomDataUtil.getNbt(stack);
+        CompoundTag tag = CustomDataUtil.getNbt(stack);
         if (tag == null) {
             tag = NbtUtil.create();
         }
-        NbtCompound config = NbtUtil.create();
+        CompoundTag config = NbtUtil.create();
         if (slotConfig != null) {
-            NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY, world.getRegistryManager());
+            TagValueOutput view = TagValueOutput.create(ProblemReporter.EMPTY, world.getRegistryManager());
             slotConfig.write(view);
             config.put("slot", view.getNbt());
         }
         if (fluidConfig != null) {
-            NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY, world.getRegistryManager());
+            TagValueOutput view = TagValueOutput.create(ProblemReporter.EMPTY, world.getRegistryManager());
             fluidConfig.write(view);
             config.put("fluid", view.getNbt());
         }
         if (redstoneConfig != null) {
-            NbtCompound redstone = NbtUtil.create();
+            CompoundTag redstone = NbtUtil.create();
             
             redstoneConfig.stateMap().forEach((element, state) -> {
                 redstone.putString(element.name(), state.name());
@@ -113,7 +113,7 @@ public class ConfigWrench extends CompatItem {
 
     @Override
     public void appendTooltip(ItemAppendTooltipEvent e) {
-        List<Text> tooltip = e.getTooltip();
+        List<Component> tooltip = e.getTooltip();
 
         tooltip.add(TextUtil.literal("Save TR Machine configurations to Wrench when Right Click with TR Machine."));
         tooltip.add(TextUtil.literal("Load TR Machine configurations from Wrench when Left Click with TR Machine."));

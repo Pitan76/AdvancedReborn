@@ -1,20 +1,20 @@
 package net.pitan76.advancedreborn.tile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.AdvancedReborn;
 import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Tiles;
@@ -59,10 +59,10 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
         this(event.getBlockPos(), event.getBlockState());
     }
 
-    public BuiltScreenHandler createScreenHandler(int syncID, PlayerEntity player) {
+    public BuiltScreenHandler createScreenHandler(int syncID, Player player) {
         return new ScreenHandlerBuilder(AdvancedReborn.MOD_ID + "__renaming_machine").player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this).slot(0, 55, 45).outputSlot(1, 101, 45).energySlot(2, 8, 72).syncEnergyValue()
-            .sync(PacketCodecs.STRING, this::getName, this::setName).sync(PacketCodecs.INTEGER, this::getCoolDown, this::setCoolDown).sync(PacketCodecs.INTEGER, this::getCoolDownDefault, this::setCoolDownDefault).addInventory().create(this, syncID);
+            .sync(ByteBufCodecs.STRING, this::getName, this::setName).sync(ByteBufCodecs.INTEGER, this::getCoolDown, this::setCoolDown).sync(ByteBufCodecs.INTEGER, this::getCoolDownDefault, this::setCoolDownDefault).addInventory().create(this, syncID);
     }
 
 
@@ -120,11 +120,11 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
         return (getCoolDownDefault() - getCoolDown()) * scale / getCoolDownDefault();
     }
 
-    public ItemStack getToolDrop(PlayerEntity p0) {
+    public ItemStack getToolDrop(Player p0) {
         return ItemStackUtil.create(toolDrop.asItem(), 1);
     }
 
-    public void tick(World world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
         if (world == null || WorldUtil.isClient(world)) {
             return;
@@ -134,21 +134,21 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
         //BlockState state = getWorld().getBlockState(getPos());
         BlockMachineBase block = (BlockMachineBase) state.getBlock();
         block.setActive(getCoolDown() != getCoolDownDefault(), world, getPos());
-        if (!getInventory().getStack(1).isEmpty()) {
+        if (!getInventory().getItem(1).isEmpty()) {
             if (getCoolDown() <= 0) setCoolDown(getCoolDownDefault());
             return; // 出力スロットにアイテムがあれば停止
         }
         if (getEnergy() > getEuPerTick(getBaseUsePower())) {
-            if (!getInventory().getStack(0).isEmpty()) {
+            if (!getInventory().getItem(0).isEmpty()) {
                 useEnergy(getEuPerTick(getBaseUsePower()));
                 if (getCoolDown() <= 0) {
                     setCoolDown(getCoolDownDefault());
                     ItemStack stack = getStack(0).copy();
                     getInventory().setStack(0, ItemStack.EMPTY);
-                    if (getName().isEmpty()) stack.remove(DataComponentTypes.CUSTOM_NAME);
-                    else stack.set(DataComponentTypes.CUSTOM_NAME, TextUtil.literal(getName()));
+                    if (getName().isEmpty()) stack.remove(DataComponents.CUSTOM_NAME);
+                    else stack.set(DataComponents.CUSTOM_NAME, TextUtil.literal(getName()));
                     getInventory().setStack(1, stack);
-                    world.playSound(null, getPos(), SoundEvents.BLOCK_ANVIL_USE, SoundCategory.BLOCKS, 0.75F, 1.5F);
+                    world.playSound(null, getPos(), SoundEvents.BLOCK_ANVIL_USE, SoundSource.BLOCKS, 0.75F, 1.5F);
                     return;
                 }
                 setCoolDown(getCoolDown() - 1);
@@ -162,20 +162,20 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
         }
     }
 
-    public Inventory getInventory() {
+    public Container getInventory() {
         return inventory;
     }
 
     @Override
-    public void writeData(WriteView view) {
+    public void saveAdditional(ValueOutput view) {
         if (getName() != null) view.putString("option_name", getName());
         view.putInt("option_time", coolDown);
-        super.writeData(view);
+        super.saveAdditional(view);
     }
 
     @Override
-    public void readData(ReadView view) {
-        super.readData(view);
+    public void loadAdditional(ValueInput view) {
+        super.loadAdditional(view);
         setName(view.getString("option_name", ""));
         coolDown = view.getInt("option_time", getCoolDownDefault());
     }

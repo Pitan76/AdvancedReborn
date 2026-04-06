@@ -1,11 +1,11 @@
 package net.pitan76.advancedreborn.screen;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.core.BlockPos;
 import net.pitan76.advancedreborn.ScreenHandlers;
 import net.pitan76.advancedreborn.tile.CardboardBoxTile;
 import net.pitan76.mcpitanlib.api.entity.Player;
@@ -20,7 +20,7 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
     public String tmpNote = "";
     public BlockPos pos = PosUtil.flooredBlockPos(0, 0, 0);
 
-    public CardboardBoxScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
+    public CardboardBoxScreenHandler(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
         this(syncId, playerInventory, InventoryUtil.createSimpleInventory(9), "", null);
 
         int x = buf.readInt();
@@ -30,7 +30,7 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
         tmpNote = buf.readString();
     }
 
-    public CardboardBoxScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, String note, @Nullable CardboardBoxTile tile) {
+    public CardboardBoxScreenHandler(int syncId, Inventory playerInventory, Inventory inventory, String note, @Nullable CardboardBoxTile tile) {
         super(ScreenHandlers.CARDBOARD_BOX_SCREEN_HANDLER.getOrNull(), syncId);
         checkSize(inventory, 9);
         this.inventory = inventory;
@@ -63,7 +63,7 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
         ItemStack newStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(invSlot);
         if (slot != null && slot.hasStack()) {
-            ItemStack originalStack = slot.getStack();
+            ItemStack originalStack = slot.getItem();
             newStack = originalStack.copy();
             if (invSlot < this.inventory.size()) {
                 if (!this.callInsertItem(originalStack, this.inventory.size(), this.slots.size(), true)) {

@@ -1,6 +1,6 @@
 package net.pitan76.advancedreborn.items;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.pitan76.mcpitanlib.api.event.item.EnchantableArgs;
 import net.pitan76.mcpitanlib.api.event.item.ItemAppendTooltipEvent;
 import net.pitan76.mcpitanlib.api.item.CompatibleArmorMaterial;

@@ -1,6 +1,6 @@
 package net.pitan76.advancedreborn;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.pitan76.advancedreborn.blocks.*;
 import net.pitan76.mcpitanlib.api.block.v2.BlockSettingsBuilder;
 import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;

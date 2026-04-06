@@ -1,26 +1,32 @@
 package net.pitan76.advancedreborn.blocks;
 
-import net.minecraft.block.*;
-import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPointer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Explosion;
 import net.pitan76.advancedreborn.entities.IndustrialTNTEntity;
 import net.pitan76.mcpitanlib.api.block.v2.CompatibleBlockSettings;
 import net.pitan76.mcpitanlib.api.sound.CompatSoundCategory;
 import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
+import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
+import net.pitan76.mcpitanlib.midohra.block.MCBlocks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -29,58 +35,63 @@ public class IndustrialTNT extends TntBlock {
 
     public IndustrialTNT(CompatibleBlockSettings settings) {
         super(settings.build());
-        DispenserBlock.registerBehavior(this, new ItemDispenserBehavior() {
-            public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
-                World world = pointer.blockEntity().getWorld();
-                BlockPos pointerPos = pointer.blockEntity().getPos();
-                BlockPos blockPos = pointer.blockEntity().getPos().offset(Objects.requireNonNull(world).getBlockState(pointerPos).get(DispenserBlock.FACING));
+        DispenserBlock.registerBehavior(this, new DispenseItemBehavior() {
+            public ItemStack dispense(BlockSource pointer, ItemStack stack) {
+                DispenserBlockEntity blockEntity = pointer.blockEntity();
+                Level world = blockEntity.getLevel();
+                BlockPos pointerPos = blockEntity.getBlockPos();
+                BlockPos blockPos = pointerPos.relative(Objects.requireNonNull(world).getBlockState(pointerPos).getValue(DispenserBlock.FACING));
                 IndustrialTNTEntity tntEntity = new IndustrialTNTEntity(world, blockPos.getX() + 0.5D, blockPos.getY(), blockPos.getZ() + 0.5D, null);
                 WorldUtil.spawnEntity(world, tntEntity);
 
-                world.playSound(null, tntEntity.getX(), tntEntity.getY(), tntEntity.getZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                stack.decrement(1);
+                WorldUtil.playSound(world, null, PosUtil.flooredBlockPos(tntEntity.getX(), tntEntity.getY(), tntEntity.getZ()), CompatSoundEvents.ENTITY_TNT_PRIMED, CompatSoundCategory.BLOCKS, 1.0F, 1.0F);
+                ItemStackUtil.decrementCount(stack, 1);
                 return stack;
             }
         });
     }
 
-    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-        if (!oldState.isOf(state.getBlock())) {
-            if (world.isReceivingRedstonePower(pos)) {
+    @Override
+    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify) {
+        if (!oldState.is(state.getBlock())) {
+            if (WorldUtil.isReceivingRedstonePower(world, pos)) {
                 primeITnt(world, pos);
-                world.removeBlock(pos, false);
+                WorldUtil.removeBlock(world, pos, false);
             }
         }
     }
 
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
-        if (!world.isReceivingRedstonePower(pos)) return;
+    @Override
+    protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!WorldUtil.isReceivingRedstonePower(world, pos)) return;
 
         primeITnt(world, pos);
-        world.removeBlock(pos, false);
+        WorldUtil.removeBlock(world, pos, false);
     }
 
-    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (!WorldUtil.isClient(world) && !player.isCreative() && state.get(UNSTABLE)) {
+    @Override
+    public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+        if (!WorldUtil.isClient(world) && !player.isCreative() && state.getValue(UNSTABLE)) {
             primeITnt(world, pos);
         }
 
-        return super.onBreak(world, pos, state, player);
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
-    public void onDestroyedByExplosion(World world, BlockPos pos, Explosion explosion) {
+    @Override
+    public void wasExploded(ServerLevel world, BlockPos pos, Explosion explosion) {
         if (WorldUtil.isClient(world)) return;
 
-        IndustrialTNTEntity tntEntity = new IndustrialTNTEntity(world, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, explosion.getCausingEntity());
+        IndustrialTNTEntity tntEntity = new IndustrialTNTEntity(world, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, explosion.getIndirectSourceEntity());
         tntEntity.setFuse(WorldUtil.getRandom(world).nextInt(tntEntity.getFuse() / 4) + tntEntity.getFuse() / 8);
         WorldUtil.spawnEntity(world, tntEntity);
     }
 
-    public static void primeITnt(World world, BlockPos pos) {
+    public static void primeITnt(Level world, BlockPos pos) {
         primeITnt(world, pos, null);
     }
 
-    private static void primeITnt(World world, BlockPos pos, @Nullable LivingEntity entity) {
+    private static void primeITnt(Level world, BlockPos pos, @Nullable LivingEntity entity) {
         if (WorldUtil.isClient(world)) return;
 
         IndustrialTNTEntity tntEntity = new IndustrialTNTEntity(world, pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, entity);
@@ -89,14 +100,14 @@ public class IndustrialTNT extends TntBlock {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
         primeITnt(world, pos, player);
-        WorldUtil.setBlockState(world, pos, Blocks.AIR.getDefaultState(), 11);
-        return ActionResult.SUCCESS;
+        WorldUtil.setBlockState(world, pos, MCBlocks.AIR.getDefaultState(), 11);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void onProjectileHit(World world, BlockState state, BlockHitResult hit, ProjectileEntity projectile) {
+    public void onProjectileHit(Level world, BlockState state, BlockHitResult hit, Projectile projectile) {
         if (WorldUtil.isClient(world)) return;
 
         Entity entity = projectile.getOwner();

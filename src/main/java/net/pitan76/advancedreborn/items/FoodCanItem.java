@@ -1,12 +1,11 @@
 package net.pitan76.advancedreborn.items;
 
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.world.World;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.Level;
 import net.pitan76.advancedreborn.Items;
 import net.pitan76.mcpitanlib.api.entity.Player;
 import net.pitan76.mcpitanlib.api.event.item.ItemFinishUsingEvent;
@@ -26,42 +25,42 @@ public class FoodCanItem extends CompatItem {
     @Override
     public StackActionResult onRightClick(ItemUseEvent e) {
         StackActionResult result = super.onRightClick(e);
-        if (result.toActionResult().equals(ActionResult.CONSUME)) {
+        if (result.toActionResult().equals(InteractionResult.CONSUME)) {
             e.user.getPlayerEntity().heal(1);
         }
         return result;
     }
 
     public ItemStack onFinishUsing(ItemFinishUsingEvent e) {
-        World world = e.world;
+        Level world = e.world;
         ItemStack stack = e.stack;
 
-        PlayerEntity playerEntity = e.user instanceof PlayerEntity ? (PlayerEntity) e.user : null;
-        if (playerEntity instanceof ServerPlayerEntity)
-            Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity)playerEntity, stack);
+        net.minecraft.world.entity.player.Player playerEntity = e.user instanceof net.minecraft.world.entity.player.Player ? (net.minecraft.world.entity.player.Player) e.user : null;
+        if (playerEntity instanceof ServerPlayer)
+            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)playerEntity, stack);
 
 
         if (playerEntity != null) {
             Player player = new Player(playerEntity);
 
-            player.incrementStat(Stats.USED.getOrCreateStat(this));
+            player.incrementStat(Stats.ITEM_USED.get(this));
             if (!player.isCreative()) {
-                player.getEntity().getHungerManager().eat(CAN_FOOD_COMPONENT.build());
+                player.getEntity().getFoodData().eat(CAN_FOOD_COMPONENT.build());
             }
         }
 
-        if (playerEntity == null || !playerEntity.getAbilities().creativeMode) {
+        if (playerEntity == null || !playerEntity.getAbilities().instabuild) {
             if (stack.isEmpty()) {
                 return ItemStackUtil.create(Items.EMPTY_CAN.get());
             }
 
             if (playerEntity != null) {
                 ItemStack emptyCan = ItemStackUtil.create(Items.EMPTY_CAN.get());
-                boolean inserted = playerEntity.getInventory().insertStack(emptyCan);
+                boolean inserted = playerEntity.getInventory().add(emptyCan);
                 if (!inserted) {
-                    playerEntity.dropItem(emptyCan, false);
+                    playerEntity.drop(emptyCan, false);
                 }
-                if (playerEntity.canConsume(false)) super.onFinishUsing(e);
+                if (playerEntity.canEat(false)) super.onFinishUsing(e);
             }
         }
 

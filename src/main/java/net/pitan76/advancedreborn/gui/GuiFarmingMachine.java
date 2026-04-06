@@ -1,7 +1,7 @@
 package net.pitan76.advancedreborn.gui;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.world.entity.player.Player;
 import net.pitan76.advancedreborn.tile.FarmingMachineTile;
 import reborncore.client.gui.GuiBase;
 import reborncore.common.screen.BuiltScreenHandler;
@@ -9,7 +9,7 @@ import reborncore.common.screen.BuiltScreenHandler;
 public class GuiFarmingMachine extends GuiBase<BuiltScreenHandler> {
 
     public FarmingMachineTile tile;
-    public GuiFarmingMachine(int syncId, PlayerEntity player, FarmingMachineTile tile) {
+    public GuiFarmingMachine(int syncId, Player player, FarmingMachineTile tile) {
         super(player, tile, tile.createScreenHandler(syncId, player));
         this.tile = tile;
     }
@@ -22,8 +22,8 @@ public class GuiFarmingMachine extends GuiBase<BuiltScreenHandler> {
         super.init();
     }
 
-    public void drawBackground(DrawContext context, float lastFrameDuration, int mouseX, int mouseY) {
-        super.drawBackground(context, lastFrameDuration, mouseX, mouseY);
+    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float lastFrameDuration) {
+        super.extractBackground(context, mouseX, mouseY, lastFrameDuration);
         Layer layer = Layer.BACKGROUND;
         drawSlot(context, 55, 32, layer);
         drawSlot(context, 73, 32, layer);
@@ -39,8 +39,8 @@ public class GuiFarmingMachine extends GuiBase<BuiltScreenHandler> {
         drawSlot(context, 8, 72, layer);
     }
 
-    public void drawForeground(DrawContext context, int mouseX, int mouseY) {
-        super.drawForeground(context, mouseX, mouseY);
+    public void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+        super.extractLabels(context, mouseX, mouseY);
         Layer layer = Layer.FOREGROUND;
         builder.drawMultiEnergyBar(context, this, 9, 19, (int) tile.getEnergy(), (int) tile.getMaxStoredPower(), mouseX, mouseY, 0, layer);
     }

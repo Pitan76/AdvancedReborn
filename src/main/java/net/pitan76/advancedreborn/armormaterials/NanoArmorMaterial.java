@@ -1,11 +1,11 @@
 package net.pitan76.advancedreborn.armormaterials;
 
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.Identifier;
 import net.pitan76.mcpitanlib.api.item.ArmorEquipmentType;
 import net.pitan76.mcpitanlib.api.item.CompatibleArmorMaterial;
+import net.pitan76.mcpitanlib.api.sound.CompatSoundEvents;
 import net.pitan76.mcpitanlib.api.util.IdentifierUtil;
 
 public class NanoArmorMaterial implements CompatibleArmorMaterial {
@@ -49,7 +49,7 @@ public class NanoArmorMaterial implements CompatibleArmorMaterial {
 
     @Override
     public SoundEvent getEquipSound() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND.value();
+        return CompatSoundEvents.ITEM_ARMOR_EQUIP_DIAMOND.get();
     }
 
     @Override

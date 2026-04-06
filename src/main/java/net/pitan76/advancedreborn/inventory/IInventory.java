@@ -1,21 +1,21 @@
 package net.pitan76.advancedreborn.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
 
-public interface IInventory extends Inventory {
+public interface IInventory extends Container {
 
-    DefaultedList<ItemStack> getItems();
+    NonNullList<ItemStack> getItems();
 
-    static IInventory of(DefaultedList<ItemStack> items) {
+    static IInventory of(NonNullList<ItemStack> items) {
         return () -> items;
     }
 
     static IInventory ofSize(int size) {
-        return of(DefaultedList.ofSize(size, ItemStack.EMPTY));
+        return of(NonNullList.ofSize(size, ItemStack.EMPTY));
     }
 
     @Override
@@ -41,7 +41,7 @@ public interface IInventory extends Inventory {
 
     @Override
     default ItemStack removeStack(int slot, int count) {
-        ItemStack result = Inventories.splitStack(getItems(), slot, count);
+        ItemStack result = ContainerHelper.splitStack(getItems(), slot, count);
         if (!result.isEmpty()) {
             markDirty();
         }
@@ -50,7 +50,7 @@ public interface IInventory extends Inventory {
 
     @Override
     default ItemStack removeStack(int slot) {
-        return Inventories.removeStack(getItems(), slot);
+        return ContainerHelper.removeStack(getItems(), slot);
     }
 
     @Override
@@ -71,7 +71,7 @@ public interface IInventory extends Inventory {
     }
 
     @Override
-    default boolean canPlayerUse(PlayerEntity player) {
+    default boolean canPlayerUse(Player player) {
         return true;
     }
 }

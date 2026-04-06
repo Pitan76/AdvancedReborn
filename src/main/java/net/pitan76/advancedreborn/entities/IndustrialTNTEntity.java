@@ -1,87 +1,95 @@
 package net.pitan76.advancedreborn.entities;
 
-import net.minecraft.entity.*;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.EntityTrackerEntry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.EntityExplosionBehavior;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.pitan76.mcpitanlib.api.util.EntityUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
+import net.pitan76.mcpitanlib.api.util.particle.CompatParticleTypes;
 import org.jetbrains.annotations.Nullable;
 
-public class IndustrialTNTEntity extends TntEntity {
-    public IndustrialTNTEntity(EntityType<? extends IndustrialTNTEntity> entityType, World world) {
+public class IndustrialTNTEntity extends PrimedTnt {
+    public IndustrialTNTEntity(EntityType<? extends IndustrialTNTEntity> entityType, ServerLevel world) {
         super(entityType, world);
     }
 
-    public IndustrialTNTEntity(World world, double x, double y, double z, @Nullable LivingEntity entity) {
+    public IndustrialTNTEntity(Level world, double x, double y, double z, @Nullable LivingEntity entity) {
         super(world, x, y, z, entity);
     }
 
     /*
-    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-        return super.createSpawnPacket(); //EntitySpawnPacket.create(this, Defines.SPAWN_PACKET_ID);
+    public Packet<ClientPlayPacketListener> getAddEntityPacket() {
+        return super.getAddEntityPacket(); //EntitySpawnPacket.create(this, Defines.SPAWN_PACKET_ID);
     }
 
      */
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
-        return super.createSpawnPacket(entityTrackerEntry);
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entityTrackerEntry) {
+        return super.getAddEntityPacket(entityTrackerEntry);
     }
 
     public void tick() {
-        if (!hasNoGravity()) {
-            setVelocity(getVelocity().add(0.0D, -0.04D, 0.0D));
+        if (!EntityUtil.hasNoGravity(this)) {
+            EntityUtil.setVelocity(this, EntityUtil.getVelocity(this).add(0.0D, -0.04D, 0.0D));
         }
 
-        move(MovementType.SELF, this.getVelocity());
-        setVelocity(this.getVelocity().multiply(0.98D));
-        if (isOnGround()) {
-            setVelocity(this.getVelocity().multiply(0.7D, -0.5D, 0.7D));
+        move(MoverType.SELF, EntityUtil.getVelocity(this));
+        EntityUtil.setVelocity(this, EntityUtil.getVelocity(this).scale(0.98D));
+        if (EntityUtil.isOnGround(this)) {
+            EntityUtil.setVelocity(this, EntityUtil.getVelocity(this).multiply(0.7D, -0.5D, 0.7D));
         }
         setFuse(getFuse() - 1);
+
+        Level world = EntityUtil.getWorld(this);
+
         if (getFuse() <= 0) {
-            if (getEntityWorld() instanceof ServerWorld)
-                kill((ServerWorld) getEntityWorld());
-            if (!getEntityWorld().isClient()) {
+            if (world instanceof ServerLevel)
+                kill((ServerLevel) world);
+            if (!WorldUtil.isClient(world)) {
                 iExplode();
             }
         } else {
-            updateWaterState();
-            if (getEntityWorld().isClient()) {
-                WorldUtil.addParticle(getEntityWorld(), ParticleTypes.SMOKE, getX(), getY() + 0.5D, getZ(), 0.0D, 0.0D, 0.0D);
+            updateFluidInteraction();
+            if (WorldUtil.isClient(world)) {
+                WorldUtil.addParticle(world, CompatParticleTypes.SMOKE, getX(), getY() + 0.5D, getZ(), 0.0D, 0.0D, 0.0D);
             }
         }
 
     }
 
     public void iExplode() {
-        this.getEntityWorld()
-                .createExplosion(
+        this.level()
+                .explode(
                         this,
                         null,
                         new IndustrialTNTExplosionBehavior(this),
                         this.getX(),
-                        this.getBodyY(0.0625),
+                        this.getY(0.0625),
                         this.getZ(),
                         2.5F,
                         false,
-                        World.ExplosionSourceType.BLOCK
+                        Level.ExplosionInteraction.BLOCK
                 );
     }
 
-    public static class IndustrialTNTExplosionBehavior extends EntityExplosionBehavior {
+    public static class IndustrialTNTExplosionBehavior extends EntityBasedExplosionDamageCalculator {
 
         public IndustrialTNTExplosionBehavior(Entity entity) {
             super(entity);
         }
 
         @Override
-        public boolean shouldDamage(Explosion explosion, Entity entity) {
+        public boolean shouldDamageEntity(Explosion explosion, Entity entity) {
             return false;
         }
     }
