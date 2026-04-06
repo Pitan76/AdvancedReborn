@@ -55,22 +55,27 @@ public class RaySolarTile extends PowerAcceptorBlockEntity implements IToolDrop 
         }
     }
 
+    @Override
     protected boolean canProvideEnergy(@Nullable Direction side) {
         return true;
     }
 
+    @Override
     public long getBaseMaxPower() {
         return energy * 8;
     }
 
+    @Override
     public long getBaseMaxOutput() {
         return energy * 4;
     }
 
+    @Override
     public long getBaseMaxInput() {
         return energy * 4;
     }
 
+    @Override
     public ItemStack getToolDrop(Player p0) {
         return ItemStackUtil.create(solar.asItem());
     }

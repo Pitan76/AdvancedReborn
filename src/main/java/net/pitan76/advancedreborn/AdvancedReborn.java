@@ -2,12 +2,14 @@ package net.pitan76.advancedreborn;
 
 import net.minecraft.world.item.CreativeModeTab;
 import net.pitan76.advancedreborn.blocks.RaySolar;
+import net.pitan76.advancedreborn.tile.RaySolarTile;
 import net.pitan76.mcpitanlib.api.item.CreativeTabBuilder;
 import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
 import net.pitan76.mcpitanlib.api.registry.v2.CompatRegistryV2;
 import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
 import net.pitan76.mcpitanlib.fabric.ExtendModInitializer;
+import team.reborn.energy.api.EnergyStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,13 @@ public class AdvancedReborn extends ExtendModInitializer {
         ScreenHandlers.init();
         Network.init();
         ModManager.afterInit();
+
+        EnergyStorage.SIDED.registerForBlockEntity((be, dir) -> {
+            if (be instanceof RaySolarTile tile) {
+                return tile.getSideEnergyStorage(dir);
+            }
+            return null;
+        }, Tiles.RAY_SOLAR_TILE.getOrNull());
 
         /*
         if (!addStacksIG.isEmpty()) {

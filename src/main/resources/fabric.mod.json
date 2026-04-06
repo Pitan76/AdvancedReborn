@@ -30,6 +30,6 @@
     "fabricloader": "*",
     "minecraft": "*",
     "techreborn": "*",
-    "mcpitanlib": ">3.3.0"
+    "mcpitanlib": ">3.6.2"
   }
 }
