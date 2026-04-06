@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.15-SNAPSHOT'
+	id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.matthewprenger.cursegradle' version '1.+'
 	id "com.modrinth.minotaur" version "2.+"
@@ -29,14 +29,13 @@ repositories {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	modImplementation "curse.maven:reborncore-237903:7503090"
-	modImplementation "curse.maven:techreborn-233564:7503091"
+    implementation "curse.maven:reborncore-237903:7876804"
+    implementation "curse.maven:techreborn-233564:7876806"
 
 	//modImplementation 'RebornCore:RebornCore-1.21:5.14.1'
 	//modImplementation 'TechReborn:TechReborn-1.21:5.14.1'
@@ -45,7 +44,7 @@ dependencies {
 
 	//modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:20.0.9999"
 	//modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:20.0.9999"
-	modApi "teamreborn:energy:4.2.0"
+	api "teamreborn:energy:5.0.0"
 
 	// CC: Tweaked
 	//modImplementation("cc.tweaked:cc-tweaked-1.21-fabric-api:${project.cc_version}")
@@ -55,14 +54,11 @@ dependencies {
 	//modApi "com.terraformersmc:modmenu:2.0.10"
 
 	// Cloth Config API
-	modApi("me.shedaniel.cloth:cloth-config-fabric:20.0.149") {
+	api("me.shedaniel.cloth:cloth-config-fabric:26.1.154") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
-	modImplementation "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-	modImplementation("net.pitan76:mcpitanlib-fabric${rootProject.mcpitanlib_version}") {
-		exclude(group: "dev.architectury")
-	}
+    implementation("net.pitan76:mcpitanlib-fabric${rootProject.mcpitanlib_version}")
 }
 
 processResources {
@@ -73,12 +69,10 @@ processResources {
 	}
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        it.options.release.set(targetJavaVersion)
-    }
+    it.options.release.set(targetJavaVersion)
 }
 
 java {
@@ -101,11 +95,11 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			// add all the jars that should be included when publishing to maven
-			artifact(remapJar) {
-				builtBy remapJar
+			artifact(jar) {
+				builtBy jar
 			}
 			artifact(sourcesJar) {
-				builtBy remapSourcesJar
+				builtBy sourcesJar
 			}
 		}
 	}
@@ -137,7 +131,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
 //				optionalDependency "cc-tweaked"
 			}
 
-			mainArtifact(tasks.remapJar)
+			mainArtifact(tasks.jar)
 		}
 	}
 }
@@ -149,7 +143,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
 		versionNumber = project.mod_version + "-fabric"
 		gameVersions = ["1.21.10"]
 		versionType = 'release'
-		uploadFile = tasks.remapJar
+		uploadFile = tasks.jar
 		changelog = project.changelog
 		loaders = ["fabric"]
 		dependencies {
