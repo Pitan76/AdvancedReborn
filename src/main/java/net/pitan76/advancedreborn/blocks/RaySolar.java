@@ -21,8 +21,8 @@ public class RaySolar extends AdvancedMachineBlock {
         this.energy = energy;
     }
 
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new RaySolarTile(event, this);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new RaySolarTile(e, this);
     }
 
     public BlockEntity createBlockEntity(BlockGetter world) {

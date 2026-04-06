@@ -29,8 +29,8 @@ public class Teleporter extends AdvancedMachineBlock {
         return createBlockEntity(new TileCreateEvent(world));
     }
 
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new TeleporterTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new TeleporterTile(e);
     }
 
 }

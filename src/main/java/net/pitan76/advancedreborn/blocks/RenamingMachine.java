@@ -13,8 +13,8 @@ public class RenamingMachine extends AdvancedMachineBlock {
         super(settings);
     }
 
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new RenamingMachineTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new RenamingMachineTile(e);
     }
 
     public IMachineGuiHandler getGui() {

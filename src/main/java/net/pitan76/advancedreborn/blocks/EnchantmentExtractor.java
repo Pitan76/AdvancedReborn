@@ -13,8 +13,8 @@ public class EnchantmentExtractor extends AdvancedMachineBlock {
     }
 
     @Override
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new EnchantmentExtractorTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new EnchantmentExtractorTile(e);
     }
 
     @Override

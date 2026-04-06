@@ -13,8 +13,8 @@ public class FertilizerSpreader extends AdvancedMachineBlock {
     }
 
     @Override
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new FertilizerSpreaderTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new FertilizerSpreaderTile(e);
     }
 
     @Override

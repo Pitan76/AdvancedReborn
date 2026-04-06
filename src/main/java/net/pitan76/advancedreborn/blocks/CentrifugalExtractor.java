@@ -13,8 +13,8 @@ public class CentrifugalExtractor extends AdvancedMachineBlock {
         super(settings);
     }
 
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new CentrifugalExtractorTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new CentrifugalExtractorTile(e);
     }
 
     public IMachineGuiHandler getGui() {

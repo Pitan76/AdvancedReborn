@@ -13,8 +13,8 @@ public class InductionFurnace extends AdvancedMachineBlock {
         super(settings);
     }
 
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new InductionFurnaceTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new InductionFurnaceTile(e);
     }
 
     public IMachineGuiHandler getGui() {

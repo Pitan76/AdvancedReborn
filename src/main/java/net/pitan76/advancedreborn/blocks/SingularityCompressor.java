@@ -13,8 +13,8 @@ public class SingularityCompressor extends AdvancedMachineBlock {
         super(settings);
     }
 
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new SingularityCompressorTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new SingularityCompressorTile(e);
     }
 
     public IMachineGuiHandler getGui() {

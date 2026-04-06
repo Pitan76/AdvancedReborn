@@ -13,8 +13,8 @@ public class LoggingMachine extends AdvancedMachineBlock {
     }
 
     @Override
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new LoggingMachineTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new LoggingMachineTile(e);
     }
 
     @Override

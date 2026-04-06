@@ -13,8 +13,8 @@ public class CanningMachine extends AdvancedMachineBlock {
         super(settings);
     }
 
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new CanningMachineTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new CanningMachineTile(e);
     }
 
     public IMachineGuiHandler getGui() {

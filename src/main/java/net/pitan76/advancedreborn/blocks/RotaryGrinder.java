@@ -13,8 +13,8 @@ public class RotaryGrinder extends AdvancedMachineBlock {
         super(settings);
     }
 
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new RotaryGrinderTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new RotaryGrinderTile(e);
     }
 
     public IMachineGuiHandler getGui() {

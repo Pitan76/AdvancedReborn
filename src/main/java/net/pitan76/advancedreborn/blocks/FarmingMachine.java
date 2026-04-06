@@ -13,8 +13,8 @@ public class FarmingMachine extends AdvancedMachineBlock {
     }
 
     @Override
-    public BlockEntity createBlockEntity(TileCreateEvent event) {
-        return new FarmingMachineTile(event);
+    public BlockEntity createBlockEntity(TileCreateEvent e) {
+        return new FarmingMachineTile(e);
     }
 
     @Override
