@@ -1,13 +1,11 @@
 package net.pitan76.advancedreborn;
 
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.resources.Identifier;
 import net.pitan76.advancedreborn.blocks.RaySolar;
 import net.pitan76.mcpitanlib.api.item.CreativeTabBuilder;
 import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
 import net.pitan76.mcpitanlib.api.registry.v2.CompatRegistryV2;
 import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
-import net.pitan76.mcpitanlib.api.util.IdentifierUtil;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
 import net.pitan76.mcpitanlib.fabric.ExtendModInitializer;
 
