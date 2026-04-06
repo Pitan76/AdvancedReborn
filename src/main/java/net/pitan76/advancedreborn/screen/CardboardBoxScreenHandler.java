@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
 
-    public Inventory inventory;
+    public Container inventory;
     public String tmpNote = "";
     public BlockPos pos = PosUtil.flooredBlockPos(0, 0, 0);
 
@@ -28,18 +28,18 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
         int y = buf.readInt();
         int z = buf.readInt();
         pos = PosUtil.flooredBlockPos(x, y, z);
-        tmpNote = buf.readString();
+        tmpNote = buf.readUtf();
     }
 
-    public CardboardBoxScreenHandler(int syncId, Inventory playerInventory, Inventory inventory, String note, @Nullable CardboardBoxTile tile) {
+    public CardboardBoxScreenHandler(int syncId, Inventory playerInventory, Container inventory, String note, @Nullable CardboardBoxTile tile) {
         super(ScreenHandlers.CARDBOARD_BOX_SCREEN_HANDLER.getOrNull(), syncId);
-        checkSize(inventory, 9);
+        checkContainerSize(inventory, 9);
         this.inventory = inventory;
         this.tmpNote = note;
         if (tile != null) {
             pos = tile.callGetPos();
         }
-        inventory.onOpen(playerInventory.player);
+        inventory.startOpen(playerInventory.player);
         int m;
         int l;
         for (l = 0; l < 9; ++l) {
@@ -63,7 +63,7 @@ public class CardboardBoxScreenHandler extends ExtendedScreenHandler {
     public ItemStack quickMoveOverride(Player player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(invSlot);
-        if (slot != null && slot.hasStack()) {
+        if (slot != null && slot.hasItem()) {
             ItemStack originalStack = slot.getItem();
             newStack = originalStack.copy();
             if (invSlot < this.inventory.getContainerSize()) {

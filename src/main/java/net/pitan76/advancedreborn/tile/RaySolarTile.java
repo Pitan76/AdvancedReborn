@@ -47,14 +47,10 @@ public class RaySolarTile extends PowerAcceptorBlockEntity implements IToolDrop 
     @Override
     public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
-        if (world == null) {
-            return;
-        }
-
         if (WorldUtil.isClient(world)) {
             return;
         }
-        if ((!world.isRaining() && !world.isThundering() && world.isDay() && world.isSkyVisible(pos.above())) || solar.isRayGenerator) {
+        if ((!WorldUtil.isRaining(world) && !WorldUtil.isThundering(world) && WorldUtil.isDay(world) && WorldUtil.isSkyVisible(world, pos.above())) || solar.isRayGenerator) {
             addEnergy(getEuPerTick(energy));
         }
     }

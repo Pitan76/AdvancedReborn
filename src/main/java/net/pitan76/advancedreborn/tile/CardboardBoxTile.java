@@ -94,7 +94,7 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, W
     }
 
     public void readInventoryNbt(CompoundTag nbt) {
-        this.inventory = NonNullList.withSize(this.size(), ItemStack.EMPTY);
+        this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (NbtUtil.has(nbt, "Items")) {
             InventoryUtil.readNbt(new NbtRWArgs(nbt), this.inventory);
         }
@@ -130,9 +130,25 @@ public class CardboardBoxTile extends CompatBlockEntity implements IInventory, W
 
     @Override
     public void writeExtraData(ExtraDataArgs args) {
-        args.writeVar(this.pos.getX());
-        args.writeVar(this.pos.getY());
-        args.writeVar(this.pos.getZ());
+        BlockPos pos = callGetPos();
+        args.writeVar(pos.getX());
+        args.writeVar(pos.getY());
+        args.writeVar(pos.getZ());
         args.writeVar(getNote());
+    }
+
+    @Override
+    public int[] getSlotsForFace(Direction direction) {
+        return new int[0];
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int slot, ItemStack itemStack, @org.jspecify.annotations.Nullable Direction direction) {
+        return false;
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int slot, ItemStack itemStack, Direction direction) {
+        return false;
     }
 }

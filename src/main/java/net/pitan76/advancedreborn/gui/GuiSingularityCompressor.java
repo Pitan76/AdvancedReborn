@@ -12,10 +12,8 @@ public class GuiSingularityCompressor extends GuiBase<BuiltScreenHandler> {
 
     public SingularityCompressorTile tile;
     public GuiSingularityCompressor(int syncId, Player player, SingularityCompressorTile tile) {
-        super(player, tile, tile.createScreenHandler(syncId, player));
+        super(player, tile, tile.createScreenHandler(syncId, player), 176, 166);
         this.tile = tile;
-        backgroundWidth = 176;
-        backgroundHeight = 166;
     }
 
     public boolean isConfigEnabled() {

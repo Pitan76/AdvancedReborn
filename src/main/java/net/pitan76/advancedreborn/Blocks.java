@@ -8,6 +8,7 @@ import net.pitan76.mcpitanlib.api.block.CompatibleMaterial;
 import net.pitan76.mcpitanlib.api.block.v2.CompatBlock;
 import net.pitan76.mcpitanlib.api.registry.result.RegistryResult;
 import net.pitan76.mcpitanlib.api.sound.CompatBlockSoundGroup;
+import net.pitan76.mcpitanlib.midohra.block.MCBlocks;
 
 import static net.pitan76.advancedreborn.AdvancedReborn.*;
 
@@ -98,6 +99,6 @@ public class Blocks {
         CARDBOARD_BOX_MINETARO = registry.registerBlock(_id("cardboard_box_minetaro"), () -> new CardboardBox(CompatibleBlockSettings.of(_id("cardboard_box_minetaro"), CompatibleMaterial.WOOD).sounds(CompatBlockSoundGroup.WOOD).strength(1, 3)));
         CARDBOARD_BOX_NOTHING = registry.registerBlock(_id("cardboard_box_nothing_logo"), () -> new CardboardBox(CompatibleBlockSettings.of(_id("cardboard_box_nothing_logo"), CompatibleMaterial.WOOD).sounds(CompatBlockSoundGroup.WOOD).strength(1, 3)));
         LIGHT = registry.registerBlock(_id("light"), () -> new CompatBlock(CompatibleBlockSettings.of(_id("light"), CompatibleMaterial.METAL).strength(1.5F, 4).luminance((state) -> 15)));
-        INDUSTRIAL_TNT = registry.registerBlock(_id("industrial_tnt"), () -> new IndustrialTNT(CompatibleBlockSettings.copy(_id("industrial_tnt"), net.minecraft.block.Blocks.TNT)));
+        INDUSTRIAL_TNT = registry.registerBlock(_id("industrial_tnt"), () -> new IndustrialTNT(CompatibleBlockSettings.copy(_id("industrial_tnt"), MCBlocks.TNT.get())));
     }
 }

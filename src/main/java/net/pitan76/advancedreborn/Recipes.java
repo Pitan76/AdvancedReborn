@@ -12,7 +12,7 @@ public class Recipes {
     public static RecipeType<RebornRecipe> CANNING_MACHINE = RecipeManager.newRecipeType(INSTANCE.id("canning_machine"));
 
     public static RecipeType<?> byName(Identifier identifier) {
-        return (RecipeType<?>) BuiltInRegistries.RECIPE_SERIALIZER.get(identifier);
+        return (RecipeType<?>) BuiltInRegistries.RECIPE_SERIALIZER.get(identifier).get();
     }
 
     public static void init() {

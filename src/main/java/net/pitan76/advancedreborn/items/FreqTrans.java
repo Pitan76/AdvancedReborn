@@ -32,7 +32,7 @@ public class FreqTrans extends CompatItem {
                     if (!tag.contains("tpX") || !tag.contains("tpY") || !tag.contains("tpZ")) return InteractionResult.FAIL;
                     TeleporterTile machine = (TeleporterTile) tile;
                     machine.setTeleportPos(PosUtil.flooredBlockPos(NbtUtil.getDouble(tag, "tpX"), NbtUtil.getDouble(tag, "tpY"), NbtUtil.getDouble(tag, "tpZ")));
-                    player.sendMessage(TextUtil.literal("Loaded Teleport Pos from The Frequency Transmitter.(" + NbtUtil.getDouble(tag, "tpX") + "," + NbtUtil.getDouble(tag, "tpY") + "," + NbtUtil.getDouble(tag, "tpZ") + ")"), false);
+                    player.sendSystemMessage(TextUtil.literal("Loaded Teleport Pos from The Frequency Transmitter.(" + NbtUtil.getDouble(tag, "tpX") + "," + NbtUtil.getDouble(tag, "tpY") + "," + NbtUtil.getDouble(tag, "tpZ") + ")"));
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -64,7 +64,7 @@ public class FreqTrans extends CompatItem {
     @Override
     public void appendTooltip(ItemAppendTooltipEvent e) {
         List<Component> tooltip = e.getTooltip();
-        ItemStack stack = e.getItem();
+        ItemStack stack = e.getStack();
 
         tooltip.add(TextUtil.literal("Save pos to Wrench when Right Click with Teleporter."));
         tooltip.add(TextUtil.literal("Load pos from Wrench when Left Click with Teleporter."));

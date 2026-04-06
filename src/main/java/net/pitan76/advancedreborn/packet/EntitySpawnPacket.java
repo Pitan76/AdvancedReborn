@@ -98,7 +98,7 @@ public class EntitySpawnPacket {
             double x = byteBuf.readDouble();
             double y = byteBuf.readDouble();
             double z = byteBuf.readDouble();
-            return new Vec3d(x, y, z);
+            return new Vec3(x, y, z);
         }
     }
 
