@@ -27,7 +27,7 @@ public class NanoSuitItem extends TRArmourItem implements ArmorBlockEntityTicker
     public NanoSuitItem(CompatibleArmorMaterial material, ArmorEquipmentType slot, CompatibleItemSettings settings) {
         super(material.build(), slot.getType(), settings.build());
 
-        ApplyArmorToDamageCallback.EVENT.register(((player, source, amount) -> {
+        ApplyArmorToDamageCallback.EVENT.register((player, amount) -> {
             for (ItemStack stack : player.getArmorItems()) {
                 if (!(stack.getItem() instanceof NanoSuitItem)) {
                     continue;
@@ -42,7 +42,7 @@ public class NanoSuitItem extends TRArmourItem implements ArmorBlockEntityTicker
                 return damageToAbsorb / 2500;
             }
             return amount;
-        }));
+        });
     }
 
     @Override
@@ -99,7 +99,7 @@ public class NanoSuitItem extends TRArmourItem implements ArmorBlockEntityTicker
     }
 
     @Override
-    public void tickArmor(ItemStack stack, PlayerEntity player) {
+    public void tickArmor(ItemStack stack, boolean hasFullSuit, PlayerEntity player) {
         if (stack.getItem().equals(Items.NANO_SUIT_HELMET)) {
             if (getStoredEnergy(stack) > 0) {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 300, 3));
