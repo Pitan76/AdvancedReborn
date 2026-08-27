@@ -1,5 +1,6 @@
 package net.pitan76.advancedreborn.tile;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -32,6 +33,7 @@ import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 import reborncore.common.screen.BuiltScreenHandler;
 import reborncore.common.screen.BuiltScreenHandlerProvider;
 import reborncore.common.screen.builder.ScreenHandlerBuilder;
+import reborncore.common.screen.builder.SyncedObjectTypes;
 import reborncore.common.util.RebornInventory;
 
 public class RenamingMachineTile extends PowerAcceptorBlockEntity implements IToolDrop, InventoryProvider, BuiltScreenHandlerProvider {
@@ -62,7 +64,11 @@ public class RenamingMachineTile extends PowerAcceptorBlockEntity implements ITo
     public BuiltScreenHandler createScreenHandler(int syncID, Player player) {
         return new ScreenHandlerBuilder(AdvancedReborn.MOD_ID + "__renaming_machine").player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this).slot(0, 55, 45).outputSlot(1, 101, 45).energySlot(2, 8, 72).syncEnergyValue()
-            .sync(ByteBufCodecs.STRING_UTF8, this::getName, this::setName).sync(ByteBufCodecs.VAR_INT, this::getCoolDown, this::setCoolDown).sync(ByteBufCodecs.VAR_INT, this::getCoolDownDefault, this::setCoolDownDefault).addInventory().create(this, syncID);
+            .sync(SyncedObjectTypes.COMPOUND_TAG, () -> {
+                CompoundTag nbt = new CompoundTag();
+                nbt.putString("name", getName() == null ? "" : getName());
+                return nbt;
+            }, (nbt) -> setName(nbt.getString("name").orElse(null))).sync(SyncedObjectTypes.INT, this::getCoolDown, this::setCoolDown).sync(SyncedObjectTypes.INT, this::getCoolDownDefault, this::setCoolDownDefault).addInventory().create(this, syncID);
     }
 
 

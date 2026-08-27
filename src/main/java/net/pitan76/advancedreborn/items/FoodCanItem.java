@@ -1,6 +1,6 @@
 package net.pitan76.advancedreborn.items;
 
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -32,7 +32,6 @@ public class FoodCanItem extends CompatItem {
     }
 
     public ItemStack onFinishUsing(ItemFinishUsingEvent e) {
-        Level world = e.world;
         ItemStack stack = e.stack;
 
         net.minecraft.world.entity.player.Player playerEntity = e.user instanceof net.minecraft.world.entity.player.Player ? (net.minecraft.world.entity.player.Player) e.user : null;

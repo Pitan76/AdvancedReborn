@@ -1,5 +1,6 @@
 package net.pitan76.advancedreborn.tile;
 
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.CropBlock;
@@ -18,6 +19,7 @@ import net.pitan76.advancedreborn.Blocks;
 import net.pitan76.advancedreborn.Tiles;
 import net.pitan76.advancedreborn.addons.autoconfig.AutoConfigAddon;
 import net.pitan76.mcpitanlib.api.event.block.TileCreateEvent;
+import net.pitan76.mcpitanlib.api.util.BlockStateUtil;
 import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
 import net.pitan76.mcpitanlib.api.util.WorldUtil;
 import net.pitan76.mcpitanlib.api.util.math.PosUtil;
@@ -139,7 +141,7 @@ public class FertilizerSpreaderTile extends PowerAcceptorBlockEntity implements 
                 for (int y = -range; y < range + 1; y++) {
                     BlockPos executePos = PosUtil.flooredBlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     BlockState state = WorldUtil.getBlockState(world, executePos);
-                    if (state.getBlock() instanceof CropBlock || state.getBlock() instanceof SaplingBlock || state.is(BlockTags.SAPLINGS) || state.is(BlockTags.CROPS)) {
+                    if (state.getBlock() instanceof CropBlock || state.getBlock() instanceof SaplingBlock || ItemStackUtil.create(BlockStateUtil.getBlock(state).asItem()).is(ItemTags.SAPLINGS) || state.is(BlockTags.CROPS)) {
                         if (state.getBlock() instanceof CropBlock) {
                             CropBlock block = (CropBlock) state.getBlock();
                             if (block.isMaxAge(state)) continue;

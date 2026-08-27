@@ -34,6 +34,7 @@ import reborncore.common.recipes.RecipeCrafter;
 import reborncore.common.screen.BuiltScreenHandler;
 import reborncore.common.screen.BuiltScreenHandlerProvider;
 import reborncore.common.screen.builder.ScreenHandlerBuilder;
+import reborncore.common.screen.builder.SyncedObjectTypes;
 import reborncore.common.util.ItemUtils;
 import reborncore.common.util.RebornInventory;
 
@@ -76,7 +77,7 @@ public class InductionFurnaceTile extends HeatMachineTile implements IToolDrop, 
     public BuiltScreenHandler createScreenHandler(int syncID, Player player) {
         return new ScreenHandlerBuilder(AdvancedReborn.MOD_ID + "__induction_furnace_machine").player(player.getInventory()).inventory().hotbar().addInventory()
                 .blockEntity(this).slot(0, 55 - 18, 45).slot(1, 55, 45).outputSlot(2, 101, 45).outputSlot(3, 101 + 18, 45).energySlot(4, 8, 72).syncEnergyValue()
-                .sync(ByteBufCodecs.VAR_INT, this::getCookingTime, this::setCookTime).sync(ByteBufCodecs.VAR_INT, this::getCookingTimeTotal, this::setCookTimeTotal).addInventory().create(this, syncID);
+                .sync(SyncedObjectTypes.INT, this::getCookingTime, this::setCookTime).sync(SyncedObjectTypes.INT, this::getCookingTimeTotal, this::setCookTimeTotal).addInventory().create(this, syncID);
     }
 
     public Container getRecipe2AsInventory() {
@@ -87,7 +88,7 @@ public class InductionFurnaceTile extends HeatMachineTile implements IToolDrop, 
     }
 
     private void setInvDirty(boolean isDirty) {
-        inventory.setHashChanged(isDirty);
+        inventory.setHasChanged(isDirty);
     }
 
     private boolean isInvDirty() {

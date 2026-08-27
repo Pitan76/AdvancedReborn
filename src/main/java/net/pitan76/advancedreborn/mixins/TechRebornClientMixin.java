@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import techreborn.TechRebornClient;
+import techreborn.client.TechRebornClient;
 
 @Mixin(TechRebornClient.class)
 public class TechRebornClientMixin {
