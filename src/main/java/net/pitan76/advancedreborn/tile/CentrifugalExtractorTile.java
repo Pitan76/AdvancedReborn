@@ -99,35 +99,40 @@ public class CentrifugalExtractorTile extends HeatMachineTile implements IToolDr
         // Charge
         charge(energySlot);
 
-        if (!getInventory().getItem(1).isEmpty()) {
-            if (getItem(1).getItem().equals(getItem(2).getItem())) {
-                if (getItem(2).getCount() == getItem(2).getMaxStackSize()) return;
-                getItem(2).grow(1);
-                getItem(1).shrink(1);
-            } else if (getItem(2).isEmpty()) {
-                setItem(2, ItemStackUtil.create(getItem(1).getItem(), 1));
-                getItem(1).shrink(1);
-            }
+        // 出力スロット1 -> 2 -> 3 へ順に送る
+        // (grow/shrinkの数が食い違っていてアイテムが増殖していたのを修正)
+        moveOutput(1, 2, 1);
+        moveOutput(2, 3, 2);
+    }
+
+    /**
+     * fromスロットからtoスロットへ最大max個移動する。移動できた数だけ減らすので増殖しない。
+     */
+    protected void moveOutput(int from, int to, int max) {
+        ItemStack fromStack = getItem(from);
+        if (fromStack.isEmpty()) return;
+
+        ItemStack toStack = getItem(to);
+        int amount = Math.min(max, fromStack.getCount());
+
+        if (toStack.isEmpty()) {
+            // 空セルは1個ずつしか出さない (元の挙動を維持)
+            if (fromStack.getItem() instanceof CellItem cellItem && cellItem.getFluid(fromStack) == Fluids.EMPTY)
+                amount = 1;
+
+            setItem(to, ItemStackUtil.copyWithCount(fromStack, amount));
+            fromStack.shrink(amount);
+            return;
         }
 
-        if (!getInventory().getItem(2).isEmpty()) {
-            if (getItem(2).getItem().equals(getItem(3).getItem())) {
-                if (getItem(3).getCount() == getItem(3).getMaxStackSize()) return;
-                getItem(3).grow(2);
-                getItem(2).shrink(2);
-            } else if (getItem(3).isEmpty()) {
-                if (getItem(2).getItem() instanceof CellItem cellItem) {
-                    Fluid fluid = cellItem.getFluid(getItem(2));
-                    if (fluid == Fluids.EMPTY) {
-                        setItem(3, ItemStackUtil.create(getItem(2).getItem(), 1));
-                        getItem(2).shrink(1);
-                        return;
-                    }
-                }
-                setItem(3, ItemStackUtil.create(getItem(2).getItem(), 2));
-                getItem(2).shrink(2);
-            }
-        }
+        if (!ItemStackUtil.areItemsEqual(toStack, fromStack) || !ItemStackUtil.areNbtOrComponentEqual(toStack, fromStack))
+            return;
+
+        amount = Math.min(amount, toStack.getMaxStackSize() - toStack.getCount());
+        if (amount <= 0) return;
+
+        toStack.grow(amount);
+        fromStack.shrink(amount);
     }
 
     public Container getInventory() {

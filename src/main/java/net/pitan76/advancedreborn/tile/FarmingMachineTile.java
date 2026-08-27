@@ -12,6 +12,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.pitan76.advancedreborn.AdvancedReborn;
@@ -97,9 +98,11 @@ public class FarmingMachineTile extends PowerAcceptorBlockEntity implements IToo
         return ItemStackUtil.create(toolDrop.asItem(), 1);
     }
 
-    public void tick(ServerLevel world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    // RebornCore側のシグネチャはLevel。ServerLevelで宣言するとオーバーライドにならず動かないので注意
+    @Override
+    public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
-        if (WorldUtil.isClient(world)) {
+        if (world == null || WorldUtil.isClient(world) || !(world instanceof ServerLevel serverWorld)) {
             return;
         }
         charge(energySlot);
@@ -116,7 +119,7 @@ public class FarmingMachineTile extends PowerAcceptorBlockEntity implements IToo
             long harvestUseEnergy = getEuPerTick(AutoConfigAddon.config.farmingMachineHarvestUseEnergy);
             if (getEnergy() > harvestUseEnergy) {
                 List<ItemStack> drops = new ArrayList<>();
-                if (tryHarvest(world, pos, AutoConfigAddon.config.farmingMachineRange, drops)) {
+                if (tryHarvest(serverWorld, pos, AutoConfigAddon.config.farmingMachineRange, drops)) {
                     for (ItemStack drop : drops) {
                         insertStack(drop);
                     }
@@ -131,7 +134,7 @@ public class FarmingMachineTile extends PowerAcceptorBlockEntity implements IToo
 
             if (getEnergy() > plantUseEnergy) {
                 ItemStack stack =  getPlantStack();
-                if (tryPlant(world, pos, AutoConfigAddon.config.farmingMachineRange, stack)) {
+                if (tryPlant(serverWorld, pos, AutoConfigAddon.config.farmingMachineRange, stack)) {
                     stack.shrink(1);
                     useEnergy(plantUseEnergy);
                 }
@@ -174,8 +177,8 @@ public class FarmingMachineTile extends PowerAcceptorBlockEntity implements IToo
     }
 
 
-    public static void setFarmland(ServerLevel world, BlockPos pos, int range) {
-        if (WorldUtil.isClient(world)) return;
+    public static void setFarmland(Level world, BlockPos pos, int range) {
+        if (world == null || WorldUtil.isClient(world)) return;
 
         BlockPos downPos = pos.below();
 
@@ -227,7 +230,8 @@ public class FarmingMachineTile extends PowerAcceptorBlockEntity implements IToo
         return inventory;
     }
 
-    public void onPlace(ServerLevel worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    @Override
+    public void onPlace(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         super.onPlace(worldIn, pos, state, placer, stack);
         setFarmland(worldIn, pos, AutoConfigAddon.config.farmingMachineRange);
     }

@@ -32,7 +32,9 @@ public class Tiles {
         CENTRIFUGAL_EXTRACTOR_TILE = registry.registerBlockEntityType(INSTANCE.compatId("centrifugal_extractor"), () -> create(CentrifugalExtractorTile::new, Blocks.CENTRIFUGAL_EXTRACTOR.getOrNull()));
         SINGULARITY_COMPRESSOR_TILE = registry.registerBlockEntityType(INSTANCE.compatId("singularity_compressor"), () -> create(SingularityCompressorTile::new, Blocks.SINGULARITY_COMPRESSOR.getOrNull()));
         RAY_SOLAR_TILE = registry.registerBlockEntityType(INSTANCE.compatId("ray_solar"), () -> create(RaySolarTile::new, AdvancedReborn.solars.toArray(new RaySolar[0])));
-        CARDBOARD_BOX_TILE = registry.registerBlockEntityType(INSTANCE.compatId("cardboard_box"), () -> create(CardboardBoxTile::new, Blocks.CARDBOARD_BOX.getOrNull()));
+        CARDBOARD_BOX_TILE = registry.registerBlockEntityType(INSTANCE.compatId("cardboard_box"), () -> create(CardboardBoxTile::new,
+                Blocks.CARDBOARD_BOX.getOrNull(), Blocks.CARDBOARD_BOX_MINEZON.getOrNull(),
+                Blocks.CARDBOARD_BOX_MINETARO.getOrNull(), Blocks.CARDBOARD_BOX_NOTHING.getOrNull()));
         CANNING_MACHINE_TILE = registry.registerBlockEntityType(INSTANCE.compatId("canning_machine"), () -> create(CanningMachineTile::new, Blocks.CANNING_MACHINE.getOrNull()));
         RENAMING_MACHINE_TILE = registry.registerBlockEntityType(INSTANCE.compatId("renaming_machine"), () -> create(RenamingMachineTile::new, Blocks.RENAMING_MACHINE.getOrNull()));
         TELEPORTER_TILE = registry.registerBlockEntityType(INSTANCE.compatId("teleporter"), () -> create(TeleporterTile::new, Blocks.TELEPORTER.getOrNull()));

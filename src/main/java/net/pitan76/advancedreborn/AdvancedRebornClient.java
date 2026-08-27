@@ -7,6 +7,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.pitan76.advancedreborn.entities.IndustrialTNTEntity;
 import net.pitan76.advancedreborn.renderer.IndustrialTNTEntityRenderer;
+import net.pitan76.advancedreborn.client.ClientGuiTypes;
 import net.pitan76.advancedreborn.screen.CardboardBoxScreen;
 import net.pitan76.mcpitanlib.api.client.registry.CompatRegistryClient;
 import net.pitan76.mcpitanlib.api.client.registry.EntityRendererRegistry;
@@ -19,6 +20,11 @@ public class AdvancedRebornClient implements ClientModInitializer {
     public static boolean isCopiedIconMap = false;
 
     public void onInitializeClient() {
+        // TechRebornのクライアント初期化にmixinで割り込むのではなく、自前のクライアントエントリーポイントで登録する
+        // (TechReborn側のクラス移動でmixinが当たらなくなり、GUIが開かなくなる問題への対策)
+        ClientGuiTypes.init();
+        INSTANCE.info("Registered gui types");
+
         CompatRegistryClient.registryClientSpriteAtlasTexture(INSTANCE.id("particle/energy"));
         INSTANCE.info("Registered particle texture");
 
