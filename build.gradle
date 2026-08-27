@@ -1,72 +1,65 @@
 plugins {
-	id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT'
-	id 'maven-publish'
-	id 'com.matthewprenger.cursegradle' version '1.+'
-	id "com.modrinth.minotaur" version "2.+"
+    id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT'
+    id 'maven-publish'
+    id "me.modmuss50.mod-publish-plugin" version "2.2.0"
 }
-
-apply plugin: "com.modrinth.minotaur"
-apply plugin: "com.matthewprenger.cursegradle"
 
 base.archivesName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-	mavenLocal()
-	mavenCentral()
-	maven {
-		name "SquidDev"
-		url "https://squiddev.cc/maven"
-	}
-	maven { url 'https://jitpack.io' }
-	maven { url "https://maven.shedaniel.me/" }
-	maven { url "https://maven.terraformersmc.com/releases" }
-	maven { url "https://maven.pitan76.net/" }
-	maven { url "https://cursemaven.com" }
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name "SquidDev"
+        url "https://squiddev.cc/maven"
+    }
+    maven { url 'https://jitpack.io' }
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.terraformersmc.com/releases" }
+    maven { url "https://maven.pitan76.net/" }
+    maven { url "https://cursemaven.com" }
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
+    // Fabric API. This is technically optional, but you probably want it anyway.
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-    implementation "curse.maven:reborncore-237903:7876804"
-    implementation "curse.maven:techreborn-233564:7876806"
+    implementation 'RebornCore:RebornCore-26.1:6.0.5'
+    implementation 'TechReborn:TechReborn-26.1:6.0.5'
 
-	//modImplementation 'RebornCore:RebornCore-1.21:5.14.1'
-	//modImplementation 'TechReborn:TechReborn-1.21:5.14.1'
+    //modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:16.0.754"
 
-	//modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:16.0.754"
+    //modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:20.0.9999"
+    //modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:20.0.9999"
+    api "teamreborn:energy:5.0.0"
 
-	//modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:20.0.9999"
-	//modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:20.0.9999"
-	api "teamreborn:energy:5.0.0"
+    // CC: Tweaked
+    //modImplementation("cc.tweaked:cc-tweaked-1.21-fabric-api:${project.cc_version}")
+    //modApi("cc.tweaked:cc-tweaked-1.21-fabric:${project.cc_version}")
 
-	// CC: Tweaked
-	//modImplementation("cc.tweaked:cc-tweaked-1.21-fabric-api:${project.cc_version}")
-	//modApi("cc.tweaked:cc-tweaked-1.21-fabric:${project.cc_version}")
+    // Mod Menu
+    //modApi "com.terraformersmc:modmenu:2.0.10"
 
-	// Mod Menu
-	//modApi "com.terraformersmc:modmenu:2.0.10"
-
-	// Cloth Config API
-	api("me.shedaniel.cloth:cloth-config-fabric:26.1.154") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+    // Cloth Config API
+    api("me.shedaniel.cloth:cloth-config-fabric:26.1.154") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
     implementation("net.pitan76:mcpitanlib-fabric${rootProject.mcpitanlib_version}")
 }
 
 processResources {
-	inputs.property "version", project.version
+    inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
 }
 
 def targetJavaVersion = 25
@@ -85,71 +78,73 @@ java {
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${base.archivesName}"}
-	}
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName}"}
+    }
 }
 
 // configure the maven publication
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(jar) {
-				builtBy jar
-			}
-			artifact(sourcesJar) {
-				builtBy sourcesJar
-			}
-		}
-	}
+    publications {
+        mavenJava(MavenPublication) {
+            // add all the jars that should be included when publishing to maven
+            artifact(jar) {
+                builtBy jar
+            }
+            artifact(sourcesJar) {
+                builtBy sourcesJar
+            }
+        }
+    }
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+    }
 }
 
-if (System.getenv("CURSEFORGE_TOKEN") != null) {
-	curseforge {
-		apiKey = System.getenv("CURSEFORGE_TOKEN")
-		project {
-			id = '543089'
-			changelog = project.changelog
-			releaseType = 'release'
-			addGameVersion "Fabric"
-			addGameVersion "26.1"
-            addGameVersion "26.1.1"
-			relations {
-				requiredDependency "fabric-api"
-				requiredDependency "techreborn"
-				requiredDependency "reborncore"
-				requiredDependency "mcpitanlibarch"
-				optionalDependency "roughly-enough-items"
-//				optionalDependency "cc-tweaked"
-			}
+publishMods {
+    file = jar.archiveFile
+    version = project.mod_version
+    displayName = jar.archiveFileName
+    changelog = rootProject.changelog + "\nMCPitanLib version: " + mcpitanlib_version.split(":")[1]
 
-			mainArtifact(tasks.jar)
-		}
-	}
-}
+    type = STABLE
+    modLoaders.add("fabric")
 
-if (System.getenv("MODRINTH_TOKEN") != null) {
-	modrinth {
-		token = System.getenv("MODRINTH_TOKEN")
-		projectId = 'ir8okcEA'
-		versionNumber = project.mod_version + "-fabric"
-		gameVersions = ["26.1", "26.1.1"]
-		versionType = 'release'
-		uploadFile = tasks.jar
-		changelog = project.changelog
-		loaders = ["fabric"]
-		dependencies {
-			required.project "P7dR8mSH" // Fabric API
-			required.project "mcpitanlibarch"
-		}
-	}
+    var curseforgeToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+    var modrinthToken = providers.environmentVariable("MODRINTH_TOKEN")
+
+    if (curseforgeToken.isPresent()) {
+        curseforge {
+            accessToken = curseforgeToken
+            projectId = "543089"
+            minecraftVersions.addAll(['26.1', '26.1.1', '26.1.2'])
+            client = true
+            server = true
+            requires("fabric-api")
+            requires("techreborn")
+            requires("reborncore")
+            requires("mcpitanlibarch")
+            optional("roughly-enough-items")
+            // optional("cc-tweaked")
+        }
+    }
+
+    if (modrinthToken.isPresent()) {
+        modrinth {
+            accessToken = modrinthToken
+            projectId = "ir8okcEA"
+            minecraftVersions.addAll(['26.1', '26.1.1', '26.1.2'])
+            requires("fabric-api")
+            requires("mcpitanlibarch")
+            requires("techreborn")
+            requires("reborncore")
+            optional("rei")
+            // optional("cc-tweaked")
+        }
+    }
 }
