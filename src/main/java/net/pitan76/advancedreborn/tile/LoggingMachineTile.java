@@ -96,9 +96,11 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
         return ItemStackUtil.create(toolDrop.asItem(), 1);
     }
 
-    public void tick(ServerLevel world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
+    // RebornCore側のシグネチャはLevel。ServerLevelで宣言するとオーバーライドにならず動かないので注意
+    @Override
+    public void tick(Level world, BlockPos pos, BlockState state, MachineBaseBlockEntity blockEntity2) {
         super.tick(world, pos, state, blockEntity2);
-        if (world == null || WorldUtil.isClient(world)) {
+        if (world == null || WorldUtil.isClient(world) || !(world instanceof ServerLevel serverWorld)) {
             return;
         }
         charge(energySlot);
@@ -116,7 +118,7 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
             long loggingUseEnergy = getEuPerTick(AutoConfigAddon.config.loggingMachineLoggingUseEnergy);
             if (getEnergy() > loggingUseEnergy) {
                 List<ItemStack> drops = new ArrayList<>();
-                if (tryLogging(world, pos, getFacing(), AutoConfigAddon.config.loggingMachineRange, drops)) {
+                if (tryLogging(serverWorld, pos, getFacing(), AutoConfigAddon.config.loggingMachineRange, drops)) {
                     for (ItemStack drop : drops) {
                         insertStack(drop);
                     }
@@ -131,7 +133,7 @@ public class LoggingMachineTile extends PowerAcceptorBlockEntity implements IToo
 
             if (getEnergy() > plantUseEnergy) {
                 ItemStack stack =  inventory.getItem(saplingSlot);
-                if (tryPlant(world, pos, getFacing(), stack)) {
+                if (tryPlant(serverWorld, pos, getFacing(), stack)) {
                     stack.shrink(1);
                     useEnergy(plantUseEnergy);
                 }

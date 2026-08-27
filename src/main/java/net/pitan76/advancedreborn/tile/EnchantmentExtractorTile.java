@@ -42,6 +42,8 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
     public RebornInventory<?> inventory;
     public int coolDownDefault = 100;
     public int coolDown = coolDownDefault;
+    // クライアント側の進捗表示用 (サーバーからオーバークロッカー適用後の値が同期される)
+    public int syncedCoolDownDefault = coolDownDefault;
 
     public EnchantmentExtractorTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -82,11 +84,15 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
     }
 
     public void setCoolDownDefault(int coolDownDefault) {
-        this.coolDownDefault = coolDownDefault;
+        this.syncedCoolDownDefault = coolDownDefault;
     }
 
     public int getCoolDownDefault() {
-        return coolDownDefault;
+        if (level != null && WorldUtil.isClient(level)) return Math.max(syncedCoolDownDefault, 1);
+
+        // RecipeCrafterを使わない独自処理のため、オーバークロッカーの速度倍率を自前で適用する
+        double speedMultiplier = Math.min(Math.max(getSpeedMultiplier(), 0), 0.99);
+        return Math.max((int) (coolDownDefault * (1.0 - speedMultiplier)), 1);
     }
 
     public long getBaseMaxPower() {
@@ -110,7 +116,12 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
     }
 
     public int getProgressScaled(int scale) {
-        return (getCoolDownDefault() - getCoolDown()) * scale / getCoolDownDefault();
+        int coolDownDefault = getCoolDownDefault();
+        if (coolDownDefault <= 0) return 0;
+        int progress = coolDownDefault - getCoolDown();
+        if (progress <= 0) return 0;
+        if (progress > coolDownDefault) progress = coolDownDefault;
+        return progress * scale / coolDownDefault;
     }
 
     public ItemStack getToolDrop(Player p0) {
@@ -163,6 +174,7 @@ public class EnchantmentExtractorTile extends PowerAcceptorBlockEntity implement
 
                     return;
                 }
+                if (getCoolDown() > getCoolDownDefault()) setCoolDown(getCoolDownDefault());
                 setCoolDown(getCoolDown() - 1);
             } else {
                 if (getCoolDown() != getCoolDownDefault()) {
