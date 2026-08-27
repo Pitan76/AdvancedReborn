@@ -30,8 +30,13 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-    implementation 'RebornCore:RebornCore-26.1:6.0.5'
-    implementation 'TechReborn:TechReborn-26.1:6.0.5'
+    // TechRebornのpomがJEIをruntime依存として宣言しているが、リポジトリが無く解決に失敗するので除外する
+    implementation('RebornCore:RebornCore-26.1:6.0.5') {
+        exclude(group: "mezz.jei")
+    }
+    implementation('TechReborn:TechReborn-26.1:6.0.5') {
+        exclude(group: "mezz.jei")
+    }
 
     //modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:16.0.754"
 

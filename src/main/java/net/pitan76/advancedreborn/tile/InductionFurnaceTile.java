@@ -87,7 +87,7 @@ public class InductionFurnaceTile extends HeatMachineTile implements IToolDrop, 
     }
 
     private void setInvDirty(boolean isDirty) {
-        inventory.setHashChanged(isDirty);
+        inventory.setHasChanged(isDirty);
     }
 
     private boolean isInvDirty() {
