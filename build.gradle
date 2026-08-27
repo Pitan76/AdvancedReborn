@@ -1,12 +1,8 @@
 plugins {
 	id 'net.fabricmc.fabric-loom' version '1.16-SNAPSHOT'
 	id 'maven-publish'
-	id 'com.matthewprenger.cursegradle' version '1.+'
-	id "com.modrinth.minotaur" version "2.+"
+    id "me.modmuss50.mod-publish-plugin" version "2.2.0"
 }
-
-apply plugin: "com.modrinth.minotaur"
-apply plugin: "com.matthewprenger.cursegradle"
 
 base.archivesName = project.archives_base_name
 version = project.mod_version
@@ -110,42 +106,45 @@ publishing {
 	}
 }
 
-if (System.getenv("CURSEFORGE_TOKEN") != null) {
-	curseforge {
-		apiKey = System.getenv("CURSEFORGE_TOKEN")
-		project {
-			id = '543089'
-			changelog = project.changelog
-			releaseType = 'release'
-			addGameVersion "Fabric"
-			addGameVersion "26.2"
-			relations {
-				requiredDependency "fabric-api"
-				requiredDependency "techreborn"
-				requiredDependency "reborncore"
-				requiredDependency "mcpitanlibarch"
-				optionalDependency "roughly-enough-items"
-//				optionalDependency "cc-tweaked"
-			}
+publishMods {
+    file = jar.archiveFile
+    version = project.mod_version
+    displayName = jar.archiveFileName
+    changelog = rootProject.changelog + "\nMCPitanLib version: " + mcpitanlib_version.split(":")[1]
 
-			mainArtifact(tasks.jar)
-		}
-	}
-}
+    type = STABLE
+    modLoaders.add("fabric")
 
-if (System.getenv("MODRINTH_TOKEN") != null) {
-	modrinth {
-		token = System.getenv("MODRINTH_TOKEN")
-		projectId = 'ir8okcEA'
-		versionNumber = project.mod_version + "-fabric"
-		gameVersions = ["26.2"]
-		versionType = 'release'
-		uploadFile = tasks.jar
-		changelog = project.changelog
-		loaders = ["fabric"]
-		dependencies {
-			required.project "P7dR8mSH" // Fabric API
-			required.project "mcpitanlibarch"
-		}
-	}
+    var curseforgeToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+    var modrinthToken = providers.environmentVariable("MODRINTH_TOKEN")
+
+    if (curseforgeToken.isPresent()) {
+        curseforge {
+            accessToken = curseforgeToken
+            projectId = "543089"
+            minecraftVersions.addAll(['26.2'])
+            client = true
+            server = true
+            requires("fabric-api")
+            requires("techreborn")
+            requires("reborncore")
+            requires("mcpitanlibarch")
+            optional("roughly-enough-items")
+            // optional("cc-tweaked")
+        }
+    }
+
+    if (modrinthToken.isPresent()) {
+        modrinth {
+            accessToken = modrinthToken
+            projectId = "ir8okcEA"
+            minecraftVersions.addAll(['26.2'])
+            requires("fabric-api")
+            requires("mcpitanlibarch")
+            requires("techreborn")
+            requires("reborncore")
+            optional("rei")
+            // optional("cc-tweaked")
+        }
+    }
 }
